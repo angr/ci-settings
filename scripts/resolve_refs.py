@@ -47,6 +47,11 @@ def load_config(fname):
 def main(conf_dir, out_dir, target_repo, ref):
     sources = load_config(join(conf_dir, 'repo-list.txt'))
 
+    if target_repo.endswith('.git'):
+        target_repo = target_repo[:-4]
+    if target_repo.count('/') > 1:
+        target_repo = '/'.join(target_repo.split('/')[-2:])
+
     if ref.startswith('refs/pull/'):
         targets = sync_reqs_pr(sources, target_repo, int(ref.split('/')[2]))
     elif ref.startswith('refs/heads/'):
