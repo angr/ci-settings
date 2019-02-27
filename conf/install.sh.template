@@ -1,0 +1,23 @@
+#!/bin/bash -ex
+
+mkdir src
+cd src
+#{TEMPLATE}
+cd ..
+
+python3 -mvirtualenv --python=`which python3` ./virtualenv
+source ./virtualenv/bin/activate
+pip install -U pip
+
+pip install --requirement ./requirements.txt \
+    --no-cache \
+    --find-links file:///wheels \
+    --src ./src
+pip freeze > freeze.txt
+
+if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat /conf/repo-list.txt | egrep -v '^($|#|!)' | wc -l)" ]; then
+    echo "There is some sort of dependency issue - the number of repositories installed in editable mode is different from the number of repositories in the configuration"
+    echo
+    cat freeze.txt | sort
+    exit 1
+fi

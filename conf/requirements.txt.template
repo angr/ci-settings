@@ -1,0 +1,14 @@
+ipython
+ipdb
+nose
+nose-timer
+coverage
+flaky
+git+https://github.com/nose-devs/nose2#egg=nose2
+pylint
+sphinx
+sphinx_rtd_theme
+recommonmark
+requests[security]
+monkeyhex
+keystone-engine

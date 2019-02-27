@@ -1,0 +1,30 @@
+# repo list
+# lines starting with exclamation points are not python packages
+# lines with a colon indicate that the python package name is different from the repo name
+
+# main angr suite
+angr/archinfo
+!angr/vex
+angr/pyvex
+angr/claripy
+angr/cle
+angr/angr
+
+# docs
+!angr/angr-doc
+angr/angr-platforms:angr_platforms
+
+# test binaries
+!angr/binaries
+
+# applications
+angr/fidget
+salls/angrop
+angr/tracer
+shellphish/driller
+shellphish/fuzzer
+mechaphish/povsim
+mechaphish/compilerex
+shellphish/rex
+mechaphish/colorguard
+angr/patcherex

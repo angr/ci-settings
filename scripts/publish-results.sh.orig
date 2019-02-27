@@ -1,0 +1,18 @@
+#!/bin/bash -ex
+
+BUILD_ID=$1
+WORKER_ID=$2
+<<<<<<< HEAD
+BUILD_DEST="gs://${BUCKET}/${APP_NAME}-builds/${BUILD_ID}/testers/${WORKER_ID}"
+ARTIFACTS="results"
+=======
+BUILD_DEST="gs://${BUCKET}/builds/${BUILD_ID}/testers/${WORKER_ID}"
+ARTIFACTS="results/*"
+>>>>>>> 9550a146d22f21b7cbe1d16df37c8273493ce04c
+
+if [ -f /conf/secret/google-cloud.json ]; then
+    setup-creds.sh
+    gsutil cp -a public-read -r $ARTIFACTS $BUILD_DEST
+else
+    echo 'Cannot upload build results - no private key. If you are doing this manually everything worked fine!'
+fi
