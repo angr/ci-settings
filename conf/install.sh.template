@@ -11,7 +11,7 @@ pip install -U pip
 
 pip install --requirement ./requirements.txt \
     --no-cache \
-    --find-links file:///wheels \
+    --find-links file://../wheels \
     --src ./src
 pip freeze > freeze.txt
 
