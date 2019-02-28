@@ -9,10 +9,11 @@ python3 -mvirtualenv --python=`which python3` ./virtualenv
 source ./virtualenv/bin/activate
 pip install -U pip
 
-pip install --requirement ./requirements.txt \
-    --no-cache \
-    --find-links file://../wheels \
-    --src ./src
+if [ -n "$WHEELS" ]; then
+    WHEELS_CMD="--find-links file://$WHEELS"
+fi
+
+pip install --requirement ./requirements.txt --no-cache --src ./src $WHEELS_CMD
 pip freeze > freeze.txt
 
 if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat /conf/repo-list.txt | egrep -v '^($|#|!)' | wc -l)" ]; then
