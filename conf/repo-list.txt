@@ -10,9 +10,12 @@ angr/claripy
 angr/cle
 angr/angr
 
-# docs
+# docs and add-ons
 !angr/angr-doc
 angr/angr-platforms:angr_platforms
+angr/angr-targets:angr_targets
+angr/pysoot
+angr/archr
 
 # test binaries
 !angr/binaries
