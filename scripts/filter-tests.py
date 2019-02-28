@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # this script transforms the output of the testcase grep into [repo] [testcase].[function] and does the attribute filters!
-# also throws out rex tests
+# also throws out archr/povsim tests
 
 import os
 import sys
@@ -50,7 +50,7 @@ def main():
         while True:
             line = input()
 
-            if '/rex/' in line:
+            if '/archr/' in line:
                 continue
             if '/povsim/' in line:
                 continue
