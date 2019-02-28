@@ -5,7 +5,7 @@ cd src
 #{TEMPLATE}
 cd ..
 
-cp {CONF}/nose2.cfg .
+cp $CONF/nose2.cfg .
 
 python3 -mvirtualenv --python=`which python3` ./virtualenv
 source ./virtualenv/bin/activate
