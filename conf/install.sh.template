@@ -9,14 +9,10 @@ python3 -mvirtualenv --python=`which python3` ./virtualenv
 source ./virtualenv/bin/activate
 pip install -U pip
 
-if [ -n "$WHEELS" ]; then
-    WHEELS_CMD="--find-links file://$WHEELS"
-fi
-
-pip install --requirement ./requirements.txt --no-cache --src ./src $WHEELS_CMD
+pip install --requirement ./requirements.txt --no-cache --src ./src --find-links file://$WHEELS
 pip freeze > freeze.txt
 
-if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat /conf/repo-list.txt | egrep -v '^($|#|!)' | wc -l)" ]; then
+if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat $CONF/repo-list.txt | egrep -v '^($|#|!)' | wc -l)" ]; then
     echo "There is some sort of dependency issue - the number of repositories installed in editable mode is different from the number of repositories in the configuration"
     echo
     cat freeze.txt | sort

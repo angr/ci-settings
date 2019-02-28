@@ -44,7 +44,7 @@ def load_config(fname):
     return sources
 
 
-def main(conf_dir, out_dir, target_repo, ref):
+def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
     sources = load_config(join(conf_dir, 'repo-list.txt'))
 
     if target_repo.endswith('.git'):
@@ -63,7 +63,8 @@ def main(conf_dir, out_dir, target_repo, ref):
     with open(join(conf_dir, 'requirements.txt.template')) as fp:
         reqs_base = fp.read()
     with open(join(conf_dir, 'install.sh.template')) as fp:
-        script_base, script_tail = fp.read().split('#{TEMPLATE}\n')
+        script_body = fp.read()
+    script_base, script_tail = script_body.split('#{TEMPLATE}\n')
 
     with open(join(out_dir, 'requirements.txt'), 'w') as fp_reqs:
         with open(join(out_dir, 'install.sh'), 'w') as fp_script:
@@ -84,6 +85,9 @@ def main(conf_dir, out_dir, target_repo, ref):
                     else:
                         fp_script.write('git clone -b %s https://github.com/%s/%s.git\n' %
                                 (target.branch, target.owner, target.repo))
+
+            fp_script.write('WHEELS=' + wheels_dir + '\n')
+            fp_script.write('CONF=' + conf_dir + '\n')
 
             fp_script.write(script_tail)
 
@@ -170,7 +174,7 @@ def sync_reqs_pr(sources, repo_name, pull_number):
 
 if __name__ == '__main__':
     try:
-        sys.exit(main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
+        sys.exit(main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]))
     except IndexError:
-        print('usage: resolve-refs.py conf_dir out_dir target_repo ref')
+        print('usage: resolve-refs.py conf_dir wheels_dir out_dir target_repo ref')
         print('ref is either refs/heads/<branch> or refs/pull/<pr>')
