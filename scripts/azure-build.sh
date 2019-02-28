@@ -12,7 +12,7 @@ cd -
 
 mkdir build
 cd build
-$SCRIPTS/resolve_refs.py $CONF_ROOT $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
+$SCRIPTS/resolve_refs.py $CONF $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
 ./install.sh
 
 source virtualenv/bin/activate
