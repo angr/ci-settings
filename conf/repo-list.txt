@@ -8,6 +8,7 @@ angr/archinfo
 angr/pyvex
 angr/claripy
 angr/cle
+angr/ailment
 angr/angr
 
 # docs and add-ons
