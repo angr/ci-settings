@@ -12,7 +12,6 @@ source ./virtualenv/bin/activate
 pip install -U pip
 
 pip install --requirement ./requirements.txt --no-cache --src ./src --find-links file://$WHEELS
-python3 -mvirtualenv --relocatable ./virtualenv
 pip freeze > freeze.txt
 
 if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat $CONF/repo-list.txt | egrep -v '^($|#|!)' | wc -l)" ]; then
@@ -21,3 +20,6 @@ if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat $CONF/repo-list.
     cat freeze.txt | sort
     exit 1
 fi
+
+deactivate
+python3 -mvirtualenv --relocatable ./virtualenv
