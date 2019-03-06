@@ -23,9 +23,9 @@ source virtualenv/bin/activate
 # we cut out the first part and then run one instance of nose2 per repo
 for SUITE in $(cat $TESTS_LIST | cut -d ' ' -f 1 | sort -u); do
   nose2 -v -s "./src/$SUITE/tests" -c "nose2.cfg" \
-    -N $(cat /proc/cpuinfo | grep processor | wc -l) \
     --log-level 100 \
     $(grep "^$SUITE " $TESTS_LIST | cut -d ' ' -f 2)
+    # -N $(cat /proc/cpuinfo | grep processor | wc -l) \ <-- needs to be moved up
   CODE=$?
   TOTAL_CODE=$(($CODE + $TOTAL_CODE))
   echo $CODE > results/$SUITE.exitcode
