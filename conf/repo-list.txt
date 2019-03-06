@@ -1,20 +1,21 @@
 # repo list
 # lines starting with exclamation points are not python packages
 # lines with a colon indicate that the python package name is different from the repo name
+# arrows indicate dependencies
 
 # main angr suite
 angr/archinfo
 !angr/vex
-angr/pyvex
+angr/pyvex -> archinfo
 angr/claripy
-angr/cle
+angr/cle -> archinfo, pyvex, cle
 angr/ailment
-angr/angr
+angr/angr -> archinfo, pyvex, claripy, cle, ailment, pysoot
 
 # docs and add-ons
-!angr/angr-doc
-angr/angr-platforms:angr_platforms
-angr/angr-targets:angr_targets
+!angr/angr-doc -> angr
+angr/angr-platforms:angr_platforms -> angr
+angr/angr-targets:angr_targets -> angr
 angr/pysoot
 angr/archr
 
@@ -22,13 +23,13 @@ angr/archr
 !angr/binaries
 
 # applications
-angr/fidget
-salls/angrop
-angr/tracer
-shellphish/driller
+angr/fidget -> angr
+salls/angrop -> angr
+angr/tracer -> angr
+shellphish/driller -> angr
 shellphish/fuzzer
 mechaphish/povsim
 mechaphish/compilerex
-shellphish/rex
-mechaphish/colorguard
-angr/patcherex
+shellphish/rex -> angr, archr
+mechaphish/colorguard -> angr, rex
+angr/patcherex -> angr

@@ -16,6 +16,6 @@ $SCRIPTS/resolve_refs.py $CONF $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRAN
 ./install.sh
 
 source virtualenv/bin/activate
-grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | $SCRIPTS/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
+$SCRIPTS/discover_tests.py --eval-attribute 'speed != "slow"' --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
 cd ..
 tar -czf build.tar.gz build/src build/virtualenv build/tests.txt

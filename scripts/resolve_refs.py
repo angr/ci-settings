@@ -3,45 +3,13 @@
 import sys
 import os
 from github import Github, GithubException
-from collections import namedtuple
 
-Target = namedtuple('Target', ['owner', 'repo', 'branch', 'package_name'])
+sys.path.append(os.path.dirname(os.path.basename(__file__)))
+from repos import load_config
+
 join = os.path.join
 
 # API requests are rate limited... so we try to be thrifty.  API requests are commented.
-
-
-def load_config(fname):
-    sources = []
-
-    with open(fname) as fp:
-        for line in fp:
-            if '#' in line:
-                line = line[:line.index('#')]
-            line = line.strip()
-            if not line:
-                continue
-            if line[0] == '!':
-                line = line[1:]
-                is_package = False
-            else:
-                is_package = True
-
-            namespace, repo = line.split('/')
-            if is_package:
-                if ':' in repo:
-                    repo, package_name = repo.split(':')
-                else:
-                    package_name = repo
-            else:
-                package_name = None
-            sources.append(Target(
-                owner=namespace,
-                repo=repo,
-                branch='master',
-                package_name=package_name))
-
-    return sources
 
 
 def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
