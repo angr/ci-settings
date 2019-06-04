@@ -31,5 +31,5 @@ shellphish/fuzzer
 mechaphish/povsim
 mechaphish/compilerex
 # shellphish/rex -> angr, archr
-mechaphish/colorguard -> angr, rex
+# mechaphish/colorguard -> angr, rex
 angr/patcherex -> angr
