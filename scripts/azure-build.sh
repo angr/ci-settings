@@ -7,7 +7,7 @@ WHEELS=$BASEDIR/wheels
 
 cd $WHEELS
 git fetch
-git reset --hard $(BUILD_SOURCEBRANCHNAME) || true
+git reset --hard $BUILD_SOURCEBRANCHNAME || true
 cd -
 
 mkdir build
