@@ -6,7 +6,7 @@ coverage
 flaky
 git+https://github.com/nose-devs/nose2#egg=nose2
 pylint
-sphinx
+sphinx<2.1.0
 sphinx_rtd_theme
 recommonmark
 requests[security]
