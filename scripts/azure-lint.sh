@@ -9,4 +9,4 @@ cd build
 
 source virtualenv/bin/activate
 
-python ../tests/lint.py
+python $SCRIPTS/lint.py
