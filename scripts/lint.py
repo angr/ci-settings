@@ -67,11 +67,11 @@ def compare_lint():
         return True
 
     new_results = lint_files(tolint)
-    subprocess.check_call("git checkout origin/master".split())
+    subprocess.check_call("git checkout -q origin/master".split())
     try:
         old_results = lint_files(tolint)
     finally:
-        subprocess.check_call("git checkout HEAD^".split())
+        subprocess.check_call("git checkout -q HEAD^".split())
 
     print("")
     print("###")
