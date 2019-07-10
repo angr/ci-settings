@@ -41,20 +41,23 @@ def lint_files(tolint):
     return { f: lint_file(f) for f in tolint if os.path.isfile(f) }
 
 def compare_lint():
-    repo_dir = subprocess.check_output("git rev-parse --show-toplevel".split()).decode().strip()
+    repo_dir = "{}/src/{}".format(os.getcwd(), os.getenv("BUILD_REPOSITORY_URI").split('/')[-1])
     repo_name = os.path.basename(repo_dir)
 
     os.chdir(repo_dir)
     cur_branch = subprocess.check_output("git rev-parse --abbrev-ref HEAD".split()).decode().strip()
-    if cur_branch == "master":
-        print("### Aborting linting for %s because it is on master." % repo_name)
-        return True
 
     # get the files to lint
-    changed_files = [
-        o.split()[-1] for o in
-        subprocess.check_output("git diff --name-status origin/master".split()).decode().split("\n")[:-1]
-    ]
+    if cur_branch == "master":
+        changed_files = [
+            o.split()[-1] for o in
+            subprocess.check_output("git diff --name-status HEAD^".split()).decode().split("\n")[:-1]
+        ]
+    else:
+        changed_files = [
+            o.split()[-1] for o in
+            subprocess.check_output("git diff --name-status origin/master".split()).decode().split("\n")[:-1]
+        ]
     tolint = [ f for f in changed_files if f.endswith(".py") ]
     print("Changed files: %s" % (tolint,))
 
@@ -68,7 +71,7 @@ def compare_lint():
     try:
         old_results = lint_files(tolint)
     finally:
-        subprocess.check_call("git checkout @{-1}".split())
+        subprocess.check_call("git checkout HEAD^".split())
 
     print("")
     print("###")
