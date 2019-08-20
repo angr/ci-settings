@@ -16,6 +16,10 @@ $SCRIPTS/resolve_refs.py $CONF $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRAN
 ./install.sh
 
 source virtualenv/bin/activate
-$SCRIPTS/discover_tests.py --eval-attribute 'speed != "slow"' --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
+if [ "$1" == "nightly" ]; then
+    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
+else
+    $SCRIPTS/discover_tests.py --eval-attribute 'speed != "slow"' --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
+fi
 cd ..
 tar -czf build.tar.gz build/src build/virtualenv build/tests.txt

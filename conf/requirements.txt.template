@@ -13,3 +13,4 @@ requests[security]
 monkeyhex
 keystone-engine
 cvc4-solver
+nose_skinny_report
