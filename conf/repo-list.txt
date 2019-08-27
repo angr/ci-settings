@@ -15,7 +15,7 @@ angr/angr -> archinfo, pyvex, claripy, cle, ailment, pysoot
 # docs and add-ons
 !angr/angr-doc -> angr
 angr/angr-platforms:angr_platforms -> angr
-angr/angr-targets:angr_targets -> angr
+angr/angr-targets:angr_targets
 angr/pysoot
 angr/archr
 
