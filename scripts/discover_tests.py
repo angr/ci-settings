@@ -68,7 +68,7 @@ def main():
 
     for target in whitelist:
         path = os.path.join(src_dir, target)
-        arg_list = "nose2 -s {} --collect-only --plugin nose_skinny_report --plugin nose2.plugins.attrib --exclude-plugin nose2.plugins.result".format(path).split()
+        arg_list = "nose2 -s {} --collect-only --plugin nose_skinny_report --exclude-plugin nose2.plugins.result".format(path).split()
         if a_str != None:
             arg_list.append("-A")
             arg_list.append(a_str)
