@@ -9,4 +9,9 @@ cd build
 cp $CONF/nose2.cfg .
 
 cat tests.txt | awk "NR % $NUM_WORKERS == $WORKER" > todo.txt
-$SCRIPTS/test.sh todo.txt
+source virtualenv/bin/activate
+if [ "$1" == "nightly" ]; then
+    $SCRIPTS/test.py --tests todo.txt --coverage
+else
+    $SCRIPTS/test.py --tests todo.txt
+fi

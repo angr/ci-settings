@@ -17,7 +17,7 @@ $SCRIPTS/resolve_refs.py $CONF $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRAN
 
 source virtualenv/bin/activate
 if [ "$1" == "nightly" ]; then
-    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
+    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src --skip-dependents > tests.txt
 else
     $SCRIPTS/discover_tests.py --eval-attribute 'speed != "slow"' --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
 fi

@@ -20,6 +20,7 @@ def main():
     target_repo = None
     config_dir = None
     src_dir = None
+    skip_dependents = False
 
     for arg in args:
         if arg in ('-A', '--attribute'):
@@ -32,6 +33,8 @@ def main():
             config_dir = next(args)
         elif arg in ('--src',):
             src_dir = next(args)
+        elif arg in ('--skip-dependents'):
+            skip_dependents = True
         else:
             raise ValueError("Bad argument: %s" % arg)
 
@@ -59,7 +62,7 @@ def main():
             seen.add(repo)
 
             for target in targets:
-                if repo in target.deps:
+                if repo in target.deps and not skip_dependents:
                     queue.append(target.repo)
 
         whitelist = list(seen)
