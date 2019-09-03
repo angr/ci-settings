@@ -62,7 +62,7 @@ def main():
                 rcf.close()
 
             if os.path.exists('/tmp/tests.xml'):
-                shutil.move('/tmp/tests.xml', "results/%s.xml" % k)
+                shutil.move('/tmp/tests.xml', "results/%s.tests.xml" % k)
 
             if os.path.exists("coverage.xml"):
                 shutil.move("coverage.xml", "results/%s.coverage.xml" % k)
