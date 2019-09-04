@@ -22,4 +22,3 @@ else
     $SCRIPTS/discover_tests.py --eval-attribute 'speed != "slow"' --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
 fi
 cd ..
-tar -czf build.tar.gz build/src build/virtualenv build/tests.txt
