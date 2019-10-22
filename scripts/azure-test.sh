@@ -4,6 +4,7 @@ BASEDIR=$(dirname $(dirname $0))
 SCRIPTS=$BASEDIR/scripts
 CONF=$BASEDIR/conf
 
+tar -xf build.tar.gz
 cd build
 cp $CONF/nose2.cfg .
 
