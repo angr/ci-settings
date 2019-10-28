@@ -15,7 +15,7 @@ Also note that version 2 is in development and should hopefully be live soon.
 
 ```sh
 # Change these to the relevant repo and branch
-# Your pull request will be refs/pulls/{id}
+# Your pull request will be refs/pull/{id}
 export BUILD_REPOSITORY_URI=angr/angr
 export BUILD_SOURCEBRANCH=refs/heads/master
 
