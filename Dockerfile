@@ -15,3 +15,4 @@ RUN pip3 install virtualenv pygithub
 RUN umask 0; git clone https://github.com/angr/wheels.git
 ADD scripts ./scripts
 ADD conf ./conf
+ENTRYPOINT ["/root/scripts/entrypoint.sh"]
