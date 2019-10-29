@@ -36,7 +36,6 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
 
     with open(join(out_dir, 'requirements.txt'), 'w') as fp_reqs:
         with open(join(out_dir, 'install.sh'), 'w') as fp_script:
-            fp_reqs.write(reqs_base)
             fp_script.write(script_base)
 
             for target in targets:
@@ -58,6 +57,7 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
             fp_script.write('CONF=' + conf_dir + '\n')
 
             fp_script.write(script_tail)
+            fp_reqs.write(reqs_base)
 
     os.chmod(join(out_dir, 'install.sh'), 0o755)
     return 0
