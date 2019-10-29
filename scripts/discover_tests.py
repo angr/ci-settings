@@ -105,7 +105,8 @@ def main():
         assert '/' in path
 
         pathkeys = path.split('/')
-        assert pathkeys[-2] == 'tests'
+        if pathkeys[-2] != 'tests':
+            continue
         repo = pathkeys[-3]
         directory = '/'.join(pathkeys[:-1])
         os.chdir(base_cwd)
