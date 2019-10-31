@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 USER root
 WORKDIR /root
 RUN chmod 755 .
