@@ -48,7 +48,8 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
                         fp_script.write('git clone https://github.com/%s/%s.git && '
                                         'cd %s && '
                                         'git fetch origin %s && '
-                                        'git checkout FETCH_HEAD\n' %
+                                        'git checkout FETCH_HEAD && '
+                                        'cd ..\n' %
                                 (target.owner, target.repo, target.repo, target.branch))
                     else:
                         fp_script.write('git clone -b %s https://github.com/%s/%s.git\n' %
