@@ -4,7 +4,7 @@ nose
 nose-timer
 coverage
 flaky
-git+https://github.com/nose-devs/nose2#egg=nose2
+nose2
 pylint
 sphinx<2.1.0
 sphinx_rtd_theme
@@ -14,3 +14,4 @@ monkeyhex
 keystone-engine
 cvc4-solver
 nose_skinny_report
+shellphish-afl==1.2.1
