@@ -6,17 +6,11 @@ import subprocess
 import sys
 
 
-def append(dict, k, v):
-    if k not in dict:
-        dict[k] = []
-    dict[k].append(v)
-
-
 def parse_tests(f):
-    res = {}
+    res = collections.defaultdict(list)
     for l in f.readlines():
         split = l.strip().split()
-        append(res, split[0], split[1])
+        res[split[0]].append(split[1])
     return res
 
 
