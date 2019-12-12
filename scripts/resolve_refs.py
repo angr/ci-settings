@@ -99,9 +99,18 @@ def sync_reqs_pr(sources, repo_name, pull_number):
         raise ValueError("repo_name %s doesn't match any source spec" % repo_name)
 
     for word in pull.body.split():
-        if '#' not in word:
+        if '#' in word:
+            target_repo_name, target_pull_name = word.strip(',;').split('#', 1)
+        elif "github.com" in word and "pull/" in word:
+            t = word.strip(',;').split("/")[-4:]
+            if len(t) != 4:
+                continue
+            owner, name, p, target_pull_name = t
+            target_repo_name = '%s/%s' % (owner, name)
+            if p != 'pull':
+                continue
+        else:
             continue
-        target_repo_name, target_pull_name = word.strip(',;').split('#', 1)
 
         # some sanity checks
         # pull request number must be... a number
