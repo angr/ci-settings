@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import collections
 import os
 import shutil
 import subprocess
@@ -19,7 +20,7 @@ def test_project(project, tests, coverage=False):
         project, '--with-coverage' if coverage else '', ' '.join(tests))
     print("Running nose2 command:\n{}".format(command), flush=True)
     return subprocess.run(
-        "nose2 -v -s ./src/{}/tests -c /root/config/nose2.cfg --log-level 100 {} {}"
+        "nose2 -v -s ./src/{}/tests -c /root/conf/nose2.cfg --log-level 100 {} {}"
         .format(
             project,
             '--with-coverage' if coverage else '',
