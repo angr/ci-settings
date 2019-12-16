@@ -10,7 +10,7 @@ failing for your pull request.
 To get a shell in the virtualenv associated with a given build (locally!), run:
 
 ```sh
-docker run -it --rm angr/ci:1 <build url>
+docker run -it --rm angr/ci:2 <build url>
 ```
 
 where `<build url>` is where you paste the url for a build page from azure, for
@@ -26,22 +26,31 @@ container will also be about 700mb.
 To perform a build manually:
 
 ```sh
-docker run -it --rm angr/ci:1
+docker run -it --rm angr/ci:2
 ```
 
 And the, in the container:
 
 ```sh
+# This script will put you in the same directory as Azure would. It also sets
+# all the necessary enviroment variables.
+source /root/scripts/manual_defaults.sh
+
+# OPTIONAL: If you need to customize enviroment variables, these are the
+# important ones, along with their default values.
+
 # Change these to the relevant repo and branch
 # Your pull request will be refs/pull/{id}
 export BUILD_REPOSITORY_URI=angr/angr
 export BUILD_SOURCEBRANCH=refs/heads/master
 
-# We slice up our work among workers, 10 currently. You can play with these
-# numbers to run only a subset of the tests. You can change these between
-# running the azure-test.sh script, without rebuilding.
+# We slice up our test execution among workers, 10 currently. You can play with
+# these # numbers to run only a subset of the tests. You can change these
+# between running the azure-test.sh script, without rebuilding.
 export WORKER=0
 export NUM_WORKERS=10
+
+# And finally, to run the individual steps:
 
 # Build step
 /root/scripts/azure-build.sh
@@ -55,7 +64,3 @@ After building, there will be a `build` directory you can `cd` into that has
 everything of interest. Most importantly, the `virtualenv` and `src` directories
 you can use if you need to run specific tests outside of the standard testing
 scripts.
-
-## Versioning
-
-`angr/ci:1` refers to version 1 of the container. Version 2 is in development.
