@@ -1,0 +1,12 @@
+stages:
+- stage: Build
+  jobs:
+  - template: ./jobs/linux-build.yml
+    parameters:
+      nightly: True
+
+- stage: Test
+  jobs:
+  - template: ./jobs/linux-test.yml
+    parameters:
+      nightly: True

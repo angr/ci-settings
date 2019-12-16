@@ -1,0 +1,13 @@
+jobs:
+- job: lint
+  pool:
+    vmImage: ubuntu-16.04
+  container:
+    image: angr/ci:2
+  steps:
+  - task: DownloadPipelineArtifact@0
+    inputs:
+      artifactName: "build_archive"
+      targetPath: .
+
+  - script: /root/scripts/azure-lint.sh

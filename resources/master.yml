@@ -1,0 +1,16 @@
+stages:
+- stage: Build
+  jobs:
+  - template: ./jobs/linux-build.yml
+
+- stage: Lint
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - template: ./jobs/linux-lint.yml
+
+- stage: Test
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - template: ./jobs/linux-test.yml
