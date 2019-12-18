@@ -30,6 +30,6 @@ shellphish/driller -> angr
 shellphish/fuzzer
 mechaphish/povsim
 mechaphish/compilerex
-shellphish/rex -> angr, archr
+angr/rex -> angr, archr
 mechaphish/colorguard -> angr, rex
 angr/patcherex -> angr
