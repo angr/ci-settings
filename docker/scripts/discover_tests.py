@@ -33,7 +33,7 @@ def main():
             config_dir = next(args)
         elif arg in ('--src',):
             src_dir = next(args)
-        elif arg in ('--skip-dependents'):
+        elif arg in ('--skip-dependents',):
             skip_dependents = True
         else:
             raise ValueError("Bad argument: %s" % arg)
@@ -71,11 +71,11 @@ def main():
 
     for target in whitelist:
         path = os.path.join(src_dir, target)
-        arg_list = "nose2 -s {} --collect-only --plugin nose_skinny_report --exclude-plugin nose2.plugins.result".format(path).split()
-        if a_str != None:
+        arg_list = ["nose2", "-s", path, "--collect-only", "--plugin", "nose_skinny_report", "--exclude-plugin", "nose2.plugins.result"]
+        if a_str is not None:
             arg_list.append("-A")
             arg_list.append(a_str)
-        if e_str != None:
+        if e_str is not None:
             arg_list.append("-E")
             arg_list.append(e_str)
         proc = subprocess.Popen(arg_list, stdout=subprocess.PIPE)
