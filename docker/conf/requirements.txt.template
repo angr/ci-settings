@@ -15,3 +15,4 @@ keystone-engine
 cvc4-solver
 nose_skinny_report
 shellphish-afl==1.2.1
+git+https://github.com/rhelmot/pyelftools#egg=pyelftools
