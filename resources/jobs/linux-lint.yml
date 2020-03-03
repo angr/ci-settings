@@ -1,5 +1,6 @@
 jobs:
 - job: lint
+  displayName: Lint
   pool:
     vmImage: ubuntu-16.04
   container:
@@ -11,3 +12,4 @@ jobs:
       targetPath: .
 
   - script: /root/scripts/azure-lint.sh
+    displayName: Run linter

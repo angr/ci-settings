@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: test_linux
+  displayName: Test Linux
   pool:
     vmImage: ubuntu-16.04
   container:
@@ -41,8 +42,10 @@ jobs:
       targetPath: .
 
   - script: /root/scripts/azure-test.sh nightly
+    displayName: Run nightly tests
     condition: eq('${{ parameters.nightly }}', 'true')
   - script: /root/scripts/azure-test.sh
+    displayName: Run standard tests
     condition: eq('${{ parameters.nightly }}', 'false')
 
   - task: PublishTestResults@2
