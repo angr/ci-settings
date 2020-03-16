@@ -2,7 +2,7 @@ jobs:
 - job: lint
   displayName: Lint
   pool:
-    vmImage: ubuntu-16.04
+    vmImage: ubuntu-18.04
   container:
     image: angr/ci:2
   steps:
