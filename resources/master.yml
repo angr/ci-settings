@@ -1,3 +1,6 @@
+parameters:
+  docker_socket: False
+
 stages:
 - stage: Build
   jobs:
@@ -14,3 +17,6 @@ stages:
   condition: succeeded()
   jobs:
   - template: ./jobs/linux-test.yml
+    parameters:
+      ${{ if variables.docker_socket }}:
+        extra_docker_args: -v /var/run/docker.sock:/var/run/docker.sock
