@@ -18,3 +18,4 @@ shellphish-afl==1.2.1
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 minidump
 pyxbe
+sqlalchemy
