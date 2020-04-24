@@ -27,7 +27,7 @@ angr/fidget -> angr
 salls/angrop -> angr
 angr/tracer -> angr
 shellphish/driller -> angr
-shellphish/fuzzer
+angr/phuzzer
 mechaphish/povsim
 mechaphish/compilerex
 angr/rex -> angr, archr
