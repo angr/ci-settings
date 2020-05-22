@@ -4,7 +4,7 @@ nose
 nose-timer
 coverage
 flaky
-nose2
+git+https://github.com/ltfish/nose2.git#egg=nose2
 pylint
 sphinx==2.3.1
 sphinx_rtd_theme
