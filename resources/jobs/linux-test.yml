@@ -42,12 +42,12 @@ jobs:
       artifactName: "build_archive"
       targetPath: .
 
-  - script: /root/scripts/azure-test.sh nightly
-    displayName: Run nightly tests
-    condition: eq('${{ parameters.nightly }}', 'true')
-  - script: /root/scripts/azure-test.sh
-    displayName: Run standard tests
-    condition: eq('${{ parameters.nightly }}', 'false')
+  - ${{ if eq(parameters.nightly, true) }}:
+    - script: /root/scripts/azure-test.sh nightly
+      displayName: Run nightly tests
+  - ${{ if eq(parameters.nightly, false) }}:
+    - script: /root/scripts/azure-test.sh
+      displayName: Run standard tests
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
