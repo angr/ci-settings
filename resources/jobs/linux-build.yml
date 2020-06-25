@@ -11,12 +11,12 @@ jobs:
   steps:
   - checkout: none
 
-  - script: /root/scripts/azure-build.sh nightly
-    condition: eq('${{ parameters.nightly }}', 'true')
-    displayName: Build nightly
-  - script: /root/scripts/azure-build.sh
-    condition: eq('${{ parameters.nightly }}', 'false')
-    displayName: Build standard
+  - ${{ if eq(parameters.nightly, true) }}:
+    - script: /root/scripts/azure-build.sh nightly
+      displayName: Build nightly
+  - ${{ if eq(parameters.nightly, false) }}:
+    - script: /root/scripts/azure-build.sh
+      displayName: Build standard
 
   - task: PublishPipelineArtifact@0
     inputs:
