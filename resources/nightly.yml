@@ -1,5 +1,6 @@
 parameters:
   docker_socket: False
+  afl: False
 
 stages:
 - stage: Build
@@ -15,3 +16,4 @@ stages:
       nightly: True
       ${{ if variables.docker_socket }}:
         extra_docker_args: -v /var/run/docker.sock:/var/run/docker.sock
+      afl: ${{ parameters.afl }}
