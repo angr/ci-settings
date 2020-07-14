@@ -33,3 +33,4 @@ mechaphish/compilerex
 angr/rex -> angr, archr
 mechaphish/colorguard -> angr, rex
 angr/patcherex -> angr
+angr/heaphopper

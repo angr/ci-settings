@@ -19,3 +19,4 @@ git+https://github.com/ltfish/pyelftools#egg=pyelftools
 minidump
 pyxbe
 sqlalchemy
+flaky
