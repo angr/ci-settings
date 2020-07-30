@@ -5,6 +5,13 @@ SCRIPTS=$BASEDIR/scripts
 CONF=$BASEDIR/conf
 WHEELS=$BASEDIR/wheels
 
+mkdir /usr/mips-linux-gnu/etc /usr/mips64-linux-gnuabi64/etc /usr/powerpc-linux-gnu/etc /usr/powerpc64-linux-gnu/etc
+
+ln -s /dev/null /usr/mips-linux-gnu/etc/ld.so.cache
+ln -s /dev/null /usr/mips64-linux-gnuabi64/etc/ld.so.cache
+ln -s /dev/null /usr/powerpc-linux-gnu/etc/ld.so.cache
+ln -s /dev/null /usr/powerpc64-linux-gnu/etc/ld.so.cache
+
 cd $WHEELS
 git fetch
 git reset --hard $BUILD_SOURCEBRANCH || true
