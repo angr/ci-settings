@@ -13,6 +13,15 @@ RUN apt-get install -y gdb gdbserver openjdk-8-jdk-headless docker.io
 RUN apt-get install -y strace
 RUN pip3 install "virtualenv<20" pygithub
 
+# This command is used to fix problems with libc6-cross packages
+# this is only a temporary solution and should be fixed in the ubuntu packages in the future
+# more detail can be found at angr/ci-settings#11 and bugs.launchpad.net/qemu/+bug/1701798
+RUN mkdir /usr/mips-linux-gnu/etc /usr/mips64-linux-gnuabi64/etc /usr/powerpc-linux-gnu/etc /usr/powerpc64-linux-gnu/etc \
+    && ln -s /dev/null /usr/mips-linux-gnu/etc/ld.so.cache \
+    && ln -s /dev/null /usr/mips64-linux-gnuabi64/etc/ld.so.cache \
+    && ln -s /dev/null /usr/powerpc-linux-gnu/etc/ld.so.cache \
+    && ln -s /dev/null /usr/powerpc64-linux-gnu/etc/ld.so.cache
+
 RUN umask 0; git clone https://github.com/angr/wheels.git
 ADD scripts ./scripts
 ADD conf ./conf
