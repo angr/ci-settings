@@ -1,0 +1,50 @@
+name: $(BuildID)
+trigger: none
+parameters:
+- name: dry_run
+  type: boolean
+  default: true
+
+
+stages:
+- stage: get_commits
+  displayName: Get main branch commits
+  jobs:
+  - template: jobs/release/get-commits.yml
+
+#- stage: Perform nightly tests
+
+- stage: make_release_commits
+  displayName: Create release commits
+  jobs:
+  - template: jobs/release/create-release-commits.yml
+    parameters:
+      dry_run: ${{ parameters.dry_run }}
+
+- stage: build_wheels
+  displayName: Build wheels
+  jobs:
+  - template: jobs/release/build-wheels.yml
+
+- stage: verify_wheels
+  displayName: Verify wheels
+  jobs:
+  - template: jobs/release/verify.yml
+
+- stage: publish_api_docs
+  displayName: Publish API Documentation
+  jobs:
+  - template: jobs/release/publish-docs.yml
+    parameters:
+      dry_run: ${{ parameters.dry_run }}
+  dependsOn:
+  - verify_wheels
+
+- stage: upload_pypi
+  displayName: Upload packages to PyPI
+  jobs:
+  - template: jobs/release/upload-to-pypi.yml
+    parameters:
+      dry_run: ${{ parameters.dry_run }}
+  dependsOn:
+  - verify_wheels

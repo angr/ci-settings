@@ -1,0 +1,34 @@
+parameters:
+- name: python
+  type: string
+  default: python
+- name: git
+  type: boolean
+  default: false
+
+steps:
+- task: BatchScript@1
+  displayName: Call vcvars64.bat
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
+  inputs:
+    filename: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
+    failOnStandardError: true
+    modifyEnvironment: true
+
+- bash: echo '##vso[task.setvariable variable=python]${{ parameters.python }}'
+  displayName: Set python variable value
+
+- ${{ if eq(parameters.python, 'python') }}:
+  - task: UsePythonVersion@0
+    displayName: Use python 3.6
+    inputs:
+      versionSpec: 3.6
+
+- script: $(python) -m pip install -r etc/release_requirements.txt
+  displayName: Install requirements
+
+- ${{ if parameters.git }}:
+  - bash: scripts/setup_git.sh
+    displayName: Set up git
+    env:
+      sshKey: $(sshKey)

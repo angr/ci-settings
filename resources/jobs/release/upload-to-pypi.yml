@@ -1,0 +1,36 @@
+parameters:
+- name: dry_run
+  type: boolean
+  default: true
+- name: artifacts
+  type: object
+  default: [ "sdist", "wheels-windows-2019", "wheels-macos-10.15", "wheels-ubuntu-20.04" ]
+
+jobs:
+- job:
+  displayName: Upload artifacts to PyPI
+  pool:
+    vmImage: ubuntu-20.04
+  steps:
+  - task: UsePythonVersion@0
+    displayName: Use python 3.6
+    inputs:
+      versionSpec: 3.6
+  - script: pip install twine
+  - script: mkdir upload
+  - ${{ each artifact in parameters.artifacts }}:
+    - task: DownloadPipelineArtifact@2
+      displayName: Download ${{ artifact }}
+      inputs:
+        artifactName: ${{ artifact }}
+        targetPath: ${{ artifact }}
+  - script: find . \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} upload/ \;
+    displayName: Collect all packages to upload
+  - script: ls upload
+    displayName: List files to be uploaded
+  - script: twine upload --non-interactive upload/*
+    condition: eq(${{ parameters.dry_run }}, false)
+    displayName: Upload to pypi
+    env:
+      TWINE_USERNAME: __token__
+      TWINE_PASSWORD: $(pypiToken)

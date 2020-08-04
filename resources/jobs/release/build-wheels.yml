@@ -1,0 +1,32 @@
+parameters:
+- name: pools
+  type: object
+  default: [ "ubuntu-20.04", "windows-2019", "macos-10.15" ]
+
+jobs:
+- ${{ each pool in parameters.pools }}:
+  - job:
+    displayName: Build wheels on ${{ pool }}
+    pool:
+      vmImage: ${{ pool }}
+    ${{ if contains(pool, 'ubuntu') }}:
+      container:
+        image: quay.io/pypa/manylinux2010_x86_64
+    steps:
+    - template: setup-host.yml
+      ${{ if contains(pool, 'ubuntu') }}:
+        parameters:
+          python: /opt/python/cp36-cp36m/bin/python
+
+    - template: prepare-venv-from-artifact.yml
+      parameters:
+        artifact: sdist
+
+    - bash: scripts/build_wheels.sh $(python) sdist angr_venv
+      displayName: Build wheels
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish wheel artifact
+      inputs:
+        artifactName: wheels-${{ pool }}
+        targetPath: wheels
