@@ -24,7 +24,7 @@ angr/archr
 
 # applications
 angr/fidget -> angr
-salls/angrop -> angr
+angr/angrop -> angr
 angr/tracer -> angr
 shellphish/driller -> angr
 angr/phuzzer
