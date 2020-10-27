@@ -10,7 +10,7 @@ schedules:
 parameters:
 - name: dry_run
   type: boolean
-  default: true
+  default: false
 
 
 stages:
