@@ -9,7 +9,7 @@ cp $CONF/nose2.cfg .
 
 python3 -mvirtualenv --python=`which python3` ./virtualenv
 source ./virtualenv/bin/activate
-pip install -U 'pip>=20.0.2'
+pip install -U 'pip<20.3'
 
 pip install --requirement ./requirements.txt --no-cache --src ./src --find-links file://$WHEELS
 pip freeze > freeze.txt
