@@ -1,5 +1,6 @@
 name: $(BuildID)
 trigger: none
+pr: none
 schedules:
 - cron: "0 17 * * 2"
   displayName: Weekly Tuesday release
