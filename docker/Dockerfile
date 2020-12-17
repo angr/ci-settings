@@ -1,7 +1,10 @@
-FROM ubuntu:bionic
+FROM ubuntu:20.04
 USER root
 WORKDIR /root
 RUN chmod 755 .
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV LC_CTYPE=C.UTF-8
 
 # install deps. make sure not to create too-large layers
 RUN dpkg --add-architecture i386
