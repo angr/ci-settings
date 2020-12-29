@@ -8,7 +8,10 @@ source "$(dirname "$0")/vars.sh"
 for i in $REPOS; do
     pushd "$CHECKOUT_DIR/$i"
 
-    if [ -e setup.py ]; then
+    if [[ -e VERSION ]]; then
+        sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" VERSION
+        VERSION=$(cat VERSION)
+    elif [ -e setup.py ]; then
         # Replace version in setup.py
         sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" setup.py
         # Replace version in __init__.py
@@ -18,9 +21,6 @@ for i in $REPOS; do
     elif [ "$i" == "angr-doc" ]; then
         sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" api-doc/source/conf.py
         VERSION=$(sed -n -e "s/.*version = u'\(.\+\)'.*/\1/p" api-doc/source/conf.py)
-    elif [[ "$i" == "binaries" || "$i" == "vex" ]]; then
-        sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" VERSION
-        VERSION=$(cat VERSION)
     else
         popd
         continue
