@@ -18,7 +18,6 @@ git clone git@github.com:angr/angr.github.io.git angr.github.io
 # This is not doable in other conditions because we don't push to github
 angr_doc_rev="$(cat $starting_dir/release.yml | grep angr-doc | cut -d ' ' -f2)"
 if [ "$DRY_RUN" == "false" ]; then
-    git -C angr-doc fetch $angr_doc_rev
     git -C angr-doc reset --hard $angr_doc_rev
 fi
 angr_doc_version=$(sed -n -e "s/.*version = u'\(.\+\)'.*/\1/p" angr-doc/api-doc/source/conf.py)
