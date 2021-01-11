@@ -39,13 +39,23 @@ stages:
   jobs:
   - template: jobs/release/verify.yml
 
-- stage: publish_api_docs
-  displayName: Publish API Documentation
+- stage: build_api_docs
+  displayName: Build API Documentation
   jobs:
-  - template: jobs/release/publish-docs.yml
+  - template: jobs/release/build-api-docs.yml
     parameters:
       dry_run: ${{ parameters.dry_run }}
   dependsOn:
+  - build_wheels
+
+- stage: publish_api_docs
+  displayName: Publish API Documentation
+  jobs:
+  - template: jobs/release/publish-api-docs.yml
+    parameters:
+      dry_run: ${{ parameters.dry_run }}
+  dependsOn:
+  - build_api_docs
   - verify_wheels
 
 - stage: upload_pypi
@@ -55,4 +65,5 @@ stages:
     parameters:
       dry_run: ${{ parameters.dry_run }}
   dependsOn:
+  - build_api_docs
   - verify_wheels

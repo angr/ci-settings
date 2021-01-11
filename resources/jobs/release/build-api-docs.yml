@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job:
-  displayName: Publish docs
+  displayName: Build docs
   pool:
     vmImage: ubuntu-20.04
   steps:
@@ -32,4 +32,4 @@ jobs:
     displayName: Publish API docs artifact
     inputs:
       artifactName: apidocs
-      targetPath: repos/angr.github.io/api-doc
+      targetPath: repos/angr-doc/api-doc/build/html

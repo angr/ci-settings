@@ -1,0 +1,25 @@
+parameters:
+- name: dry_run
+  type: boolean
+  default: true
+
+jobs:
+- job:
+  displayName: Build docs
+  pool:
+    vmImage: ubuntu-20.04
+  steps:
+  - template: setup-host.yml
+    parameters:
+      git: true
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Download apidocs artifact
+    inputs:
+      artifactName: apidocs
+      targetPath: apidocs
+
+  - bash: scripts/publish_api_docs.sh
+    displayName: Publish API docs
+    env:
+      DRY_RUN: ${{ lower(parameters.dry_run) }}
