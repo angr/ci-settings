@@ -1,8 +1,3 @@
-parameters:
-- name: dry_run
-  type: boolean
-  default: true
-
 jobs:
 - job: make_release_tags
   displayName: Create release tags
@@ -27,8 +22,6 @@ jobs:
 
   - bash: scripts/make_release_commits.sh
     displayName: Make release commits
-    env:
-      DRY_RUN: ${{ lower(parameters.dry_run) }}
 
   - bash: scripts/get_release_versions.sh
     displayName: Get release commit hashes
@@ -41,6 +34,12 @@ jobs:
 
   - bash: scripts/create_sdist.sh
     displayName: Create sdists
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish repos artifact
+    inputs:
+      artifactName: repos
+      targetPath: repos
 
   - task: PublishPipelineArtifact@1
     displayName: Publish sdist pacakges

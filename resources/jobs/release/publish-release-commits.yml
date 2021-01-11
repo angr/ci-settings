@@ -1,0 +1,25 @@
+parameters:
+- name: dry_run
+  type: boolean
+  default: true
+
+jobs:
+- job: make_release_tags
+  displayName: Publish release commits
+  pool:
+    vmImage: ubuntu-20.04
+  steps:
+  - template: setup-host.yml
+    parameters:
+      git: true
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Download versions.yml
+    inputs:
+      artifactName: repos
+      targetPath: repos
+
+  - bash: scripts/publish_release_commits.sh
+    displayName: Publish release commits
+    env:
+      DRY_RUN: ${{ lower(parameters.dry_run) }}

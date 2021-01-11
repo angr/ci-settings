@@ -22,12 +22,10 @@ stages:
 
 #- stage: Perform nightly tests
 
-- stage: make_release_commits
+- stage: create_release_commits
   displayName: Create release commits
   jobs:
   - template: jobs/release/create-release-commits.yml
-    parameters:
-      dry_run: ${{ parameters.dry_run }}
 
 - stage: build_wheels
   displayName: Build wheels
@@ -47,6 +45,16 @@ stages:
       dry_run: ${{ parameters.dry_run }}
   dependsOn:
   - build_wheels
+
+- stage: publish_release_commits
+  displayName: Publish release commits
+  jobs:
+  - template: jobs/release/publish-release-commits.yml
+    parameters:
+      dry_run: ${{ parameters.dry_run }}
+  dependsOn:
+  - build_api_docs
+  - verify_wheels
 
 - stage: publish_api_docs
   displayName: Publish API Documentation
