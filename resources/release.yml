@@ -41,8 +41,6 @@ stages:
   displayName: Build API Documentation
   jobs:
   - template: jobs/release/build-api-docs.yml
-    parameters:
-      dry_run: ${{ parameters.dry_run }}
   dependsOn:
   - build_wheels
 

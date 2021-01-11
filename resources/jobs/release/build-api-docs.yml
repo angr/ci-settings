@@ -1,8 +1,3 @@
-parameters:
-- name: dry_run
-  type: boolean
-  default: true
-
 jobs:
 - job:
   displayName: Build docs
@@ -10,14 +5,12 @@ jobs:
     vmImage: ubuntu-20.04
   steps:
   - template: setup-host.yml
-    parameters:
-      git: true
 
   - task: DownloadPipelineArtifact@2
-    displayName: Download versions.yml
+    displayName: Download repos
     inputs:
-      artifactName: release.yml
-      targetPath: .
+      artifactName: repos
+      targetPath: repos
 
   - template: prepare-venv-from-artifact.yml
     parameters:
@@ -25,8 +18,6 @@ jobs:
 
   - bash: scripts/build_api_docs.sh
     displayName: Build API docs
-    env:
-      DRY_RUN: ${{ lower(parameters.dry_run) }}
 
   - task: PublishPipelineArtifact@1
     displayName: Publish API docs artifact
