@@ -8,14 +8,8 @@ jobs:
     parameters:
       git: true
 
-  - task: DownloadPipelineArtifact@2
-    displayName: Download versions.yml
-    inputs:
-      artifactName: versions.yml
-      targetPath: .
-
   - task: PythonScript@0
-    displayName: Checkout pre-release commits
+    displayName: Checkout all repos
     inputs:
       scriptSource: filePath
       scriptPath: scripts/checkout_all.py

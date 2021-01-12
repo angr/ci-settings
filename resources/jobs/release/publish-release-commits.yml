@@ -14,7 +14,7 @@ jobs:
       git: true
 
   - task: DownloadPipelineArtifact@2
-    displayName: Download versions.yml
+    displayName: Download repos
     inputs:
       artifactName: repos
       targetPath: repos
