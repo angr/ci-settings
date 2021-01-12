@@ -26,14 +26,14 @@ jobs:
       artifactName: release.yml
       targetPath: release.yml
 
-  - bash: scripts/create_sdist.sh
-    displayName: Create sdists
-
   - task: PublishPipelineArtifact@1
     displayName: Publish repos artifact
     inputs:
       artifactName: repos
       targetPath: repos
+
+  - bash: scripts/create_sdist.sh
+    displayName: Create sdists
 
   - task: PublishPipelineArtifact@1
     displayName: Publish sdist pacakges
