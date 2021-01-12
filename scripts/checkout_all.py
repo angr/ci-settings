@@ -9,7 +9,7 @@ from repos import parse_repos, REPOS_CONFIG
 
 def checkout_repo(dir, repo):
     checkout_dir = os.path.join(dir, repo.name)
-    clone_str = f"git clone git@github.com:angr/{repo.name}.git {checkout_dir}"
+    clone_str = f"git clone git@github.com:angr/{repo.name}.git {checkout_dir} --depth=1"
     subprocess.run(shlex.split(clone_str), check=True).check_returncode()
 
 
