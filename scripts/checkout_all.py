@@ -17,6 +17,8 @@ def main():
     repos = parse_repos(REPOS_CONFIG)
 
     os.mkdir("repos")
+    with open(os.path.join("repos", ".artifactignore"), "w") as f:
+        f.write("!.git\n")
 
     for repo in repos:
         checkout_repo("repos", repo)
