@@ -8,7 +8,7 @@ parameters:
 
 jobs:
 - job:
-  displayName: Upload artifacts to PyPI
+  displayName: Publish artifacts to PyPI
   pool:
     vmImage: ubuntu-20.04
   steps:

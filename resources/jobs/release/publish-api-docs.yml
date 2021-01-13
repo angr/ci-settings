@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job:
-  displayName: Build docs
+  displayName: Publish docs
   pool:
     vmImage: ubuntu-20.04
   steps:
