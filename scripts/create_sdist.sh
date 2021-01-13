@@ -1,6 +1,5 @@
 set -ex
 
-python=python
 source $(dirname $0)/vars.sh
 
 mkdir sdist

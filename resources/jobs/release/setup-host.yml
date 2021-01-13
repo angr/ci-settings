@@ -24,9 +24,6 @@ steps:
     inputs:
       versionSpec: 3.6
 
-- script: $(python) -m pip install -r etc/release_requirements.txt
-  displayName: Install requirements
-
 - ${{ if parameters.git }}:
   - bash: scripts/setup_git.sh
     displayName: Set up git

@@ -1,9 +1,7 @@
 #!/bin/bash
 set -ex
 
-python=python
 source "$(dirname "$0")/vars.sh"
-
 
 for i in $REPOS; do
     pushd "$CHECKOUT_DIR/$i"
