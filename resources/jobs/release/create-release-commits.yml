@@ -17,20 +17,20 @@ jobs:
   - bash: scripts/make_release_commits.sh
     displayName: Make release commits
 
-  - bash: scripts/get_release_versions.sh
-    displayName: Get release commit hashes
+  - task: PublishPipelineArtifact@1
+    displayName: Publish repos artifact
+    inputs:
+      artifactName: repos
+      targetPath: repos
+
+  - bash: scripts/create_release_artifact.sh
+    displayName: Create release artifact
 
   - task: PublishPipelineArtifact@1
     displayName: Publish release.yml
     inputs:
       artifactName: release.yml
       targetPath: release.yml
-
-  - task: PublishPipelineArtifact@1
-    displayName: Publish repos artifact
-    inputs:
-      artifactName: repos
-      targetPath: repos
 
   - bash: scripts/create_sdist.sh
     displayName: Create sdists
