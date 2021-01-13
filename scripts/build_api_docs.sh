@@ -4,7 +4,7 @@ python=python
 source $(dirname $0)/vars.sh
 
 source angr_venv/bin/activate
-pip install -r etc/doc_requirements.txt
+pip install ${DOC_REQUIREMENTS[@]}
 
 # Congifure path for sphinx
 modules="$(cd angr-doc/api-doc/source; ls *.rst | sed -r "s/\.rst//g; s/(\s|^)index(\s|$)//g")"
