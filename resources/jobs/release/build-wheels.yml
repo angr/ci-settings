@@ -17,10 +17,7 @@ jobs:
       ${{ if contains(pool, 'ubuntu') }}:
         parameters:
           python: /opt/python/cp36-cp36m/bin/python
-
-    - template: prepare-venv-from-artifact.yml
-      parameters:
-        artifact: sdist
+    - template: setup-venv-from-artifact.yml
 
     - bash: scripts/build_wheels.sh $(python) sdist angr_venv
       displayName: Build wheels

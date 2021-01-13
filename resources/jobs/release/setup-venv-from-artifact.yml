@@ -10,5 +10,5 @@ steps:
       artifactName: ${{ parameters.artifact }}
       targetPath: ${{ parameters.artifact }}
 
-  - bash: scripts/prepare_venv_from_artifact.sh $(python) ${{ parameters.artifact }} angr_venv
-    displayName: Prepare venv
+  - bash: scripts/setup_venv_from_artifact.sh $(python) ${{ parameters.artifact }} angr_venv
+    displayName: Setup venv from ${{ parameters.artifact }}

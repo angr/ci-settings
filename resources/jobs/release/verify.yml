@@ -11,8 +11,7 @@ jobs:
       vmImage: ${{ pool }}
     steps:
     - template: setup-host.yml
-
-    - template: prepare-venv-from-artifact.yml
+    - template: setup-venv-from-artifact.yml
       parameters:
         artifact: wheels-${{ pool }}
 

@@ -5,16 +5,13 @@ jobs:
     vmImage: ubuntu-20.04
   steps:
   - template: setup-host.yml
+  - template: setup-venv-from-artifact.yml
 
   - task: DownloadPipelineArtifact@2
     displayName: Download repos
     inputs:
       artifactName: repos
       targetPath: repos
-
-  - template: prepare-venv-from-artifact.yml
-    parameters:
-      artifact: sdist
 
   - bash: scripts/build_api_docs.sh
     displayName: Build API docs
