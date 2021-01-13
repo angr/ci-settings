@@ -4,7 +4,7 @@ parameters:
   default: true
 
 jobs:
-- job: make_release_tags
+- job:
   displayName: Publish release commits
   pool:
     vmImage: ubuntu-20.04

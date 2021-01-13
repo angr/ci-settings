@@ -8,7 +8,7 @@ jobs:
   - template: setup-venv-from-artifact.yml
 
   - task: DownloadPipelineArtifact@2
-    displayName: Download repos
+    displayName: Download repos artifact
     inputs:
       artifactName: repos
       targetPath: repos

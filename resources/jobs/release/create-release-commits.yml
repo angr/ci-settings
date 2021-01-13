@@ -1,5 +1,5 @@
 jobs:
-- job: make_release_tags
+- job:
   displayName: Create release tags
   pool:
     vmImage: ubuntu-20.04
@@ -12,7 +12,7 @@ jobs:
     displayName: Checkout all repos
 
   - bash: scripts/create_release_commits.sh
-    displayName: Make release commits
+    displayName: Create release commits
 
   - task: PublishPipelineArtifact@1
     displayName: Publish repos artifact
