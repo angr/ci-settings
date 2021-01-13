@@ -36,7 +36,7 @@ stages:
   - build
 
 - stage: publish
-  displayName: Publish release commits
+  displayName: Publish release
   jobs:
   - template: jobs/release/publish-release-commits.yml
     parameters:
