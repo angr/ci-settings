@@ -9,7 +9,6 @@ python="$1"
 sdist_path="$(realpath "$2")"
 venv_path="$(realpath "$3")"
 
-packages=$($python scripts/get_repo_names.py --python-only)
 source "$venv_path/bin/activate" &> /dev/null || source "$venv_path/Scripts/activate"
 
 wheels=$(realpath wheels)
@@ -20,8 +19,8 @@ for f in $(ls "$sdist_path"); do
     tar -xf "$sdist_path/$f"
 done
 
-for package in $packages; do
-    pushd "$package"-[0-9]*
+for package in $(ls); do
+    pushd "$package"
     python setup.py bdist_wheel
     mv dist/* "$wheels"
     popd
