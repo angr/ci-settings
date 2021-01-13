@@ -15,54 +15,37 @@ parameters:
 
 
 stages:
-- stage: create_release_commits
-  displayName: Create release commits
+- stage: create
+  displayName: Create release
   jobs:
   - template: jobs/release/create-release-commits.yml
 
-- stage: build_wheels
-  displayName: Build wheels
+- stage: build
+  displayName: Build docs and wheels
   jobs:
   - template: jobs/release/build-wheels.yml
+  - template: jobs/release/build-api-docs.yml
+  dependsOn:
+  - create
 
-- stage: verify_wheels
+- stage: verify
   displayName: Verify wheels
   jobs:
   - template: jobs/release/verify.yml
-
-- stage: build_api_docs
-  displayName: Build API Documentation
-  jobs:
-  - template: jobs/release/build-api-docs.yml
   dependsOn:
-  - build_wheels
+  - build
 
-- stage: publish_release_commits
+- stage: publish
   displayName: Publish release commits
   jobs:
   - template: jobs/release/publish-release-commits.yml
     parameters:
       dry_run: ${{ parameters.dry_run }}
-  dependsOn:
-  - build_api_docs
-  - verify_wheels
-
-- stage: publish_api_docs
-  displayName: Publish API Documentation
-  jobs:
   - template: jobs/release/publish-api-docs.yml
     parameters:
       dry_run: ${{ parameters.dry_run }}
-  dependsOn:
-  - build_api_docs
-  - verify_wheels
-
-- stage: upload_pypi
-  displayName: Upload packages to PyPI
-  jobs:
-  - template: jobs/release/upload-to-pypi.yml
+  - template: jobs/release/publish-pypi.yml
     parameters:
       dry_run: ${{ parameters.dry_run }}
   dependsOn:
-  - build_api_docs
-  - verify_wheels
+  - verify
