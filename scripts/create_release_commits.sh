@@ -3,7 +3,7 @@ set -ex
 
 source "$(dirname "$0")/vars.sh"
 
-for i in $REPOS; do
+for i in $(ls $CHECKOUT_DIR); do
     pushd "$CHECKOUT_DIR/$i"
 
     if [[ -e VERSION ]]; then
