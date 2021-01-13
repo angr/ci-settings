@@ -8,11 +8,8 @@ jobs:
     parameters:
       git: true
 
-  - task: PythonScript@0
+  - bash: scripts/create_repos.sh
     displayName: Checkout all repos
-    inputs:
-      scriptSource: filePath
-      scriptPath: scripts/checkout_all.py
 
   - bash: scripts/create_release_commits.sh
     displayName: Make release commits
