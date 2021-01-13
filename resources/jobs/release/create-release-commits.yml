@@ -14,7 +14,7 @@ jobs:
       scriptSource: filePath
       scriptPath: scripts/checkout_all.py
 
-  - bash: scripts/make_release_commits.sh
+  - bash: scripts/create_release_commits.sh
     displayName: Make release commits
 
   - task: PublishPipelineArtifact@1
