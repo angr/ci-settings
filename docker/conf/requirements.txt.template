@@ -21,3 +21,4 @@ pyxbe
 sqlalchemy
 flaky
 pypcode
+qtrace
