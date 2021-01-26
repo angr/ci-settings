@@ -1,5 +1,7 @@
 set -ex
 
+source $(dirname $0)/vars.sh
+
 # Apple doesn't incluide realpath
 function realpath() {
     [[ "$1" = /* ]] && echo "$1" || echo "$PWD/${1#./}"
@@ -16,7 +18,10 @@ mkdir -p "$wheels" wheels_build
 pushd wheels_build
 
 for f in $(ls "$sdist_path"); do
-    tar -xf "$sdist_path/$f"
+    # Filter out linux-specific on non-linux
+    if [ $(uname) == "Linux" ] || ! is_linux_only $f; then
+        tar -xf "$sdist_path/$f"
+    fi
 done
 
 for package in $(ls); do
