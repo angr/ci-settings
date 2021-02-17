@@ -14,7 +14,7 @@ monkeyhex
 keystone-engine
 cvc4-solver
 nose_skinny_report
-shellphish-afl==1.2.1
+shellphish-afl
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 minidump
 pyxbe
