@@ -138,6 +138,11 @@ def sync_reqs_pr(sources, repo_name, pull_number):
             print("Warning: multiple references to pull requests of %s" % source.repo)
             continue
 
+        # pull request shouldn't be merged/closed
+        if target_pull.state != "open":
+            print("Warning: PR %s#%d is not open, skipping" % target_repo_name, target_pull_number)
+            continue
+
         result_pulls[source.repo] = source._replace(
             branch='refs/pull/%d/%s' %
                    (target_pull_number,
