@@ -140,7 +140,7 @@ def sync_reqs_pr(sources, repo_name, pull_number):
 
         # pull request shouldn't be merged/closed
         if target_pull.state != "open":
-            print("Warning: PR %s#%d is not open, skipping" % target_repo_name, target_pull_number)
+            print("Warning: PR %s#%d is not open, skipping" % (target_repo_name, target_pull_number))
             continue
 
         result_pulls[source.repo] = source._replace(
