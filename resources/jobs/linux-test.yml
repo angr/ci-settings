@@ -7,8 +7,7 @@ parameters:
 jobs:
 - job: test_linux
   displayName: Test Linux
-  pool:
-    vmImage: ubuntu-18.04
+  pool: Default
   container:
     image: ${{ parameters.container_image }}
     options: --cap-add=SYS_PTRACE --security-opt seccomp:unconfined ${{ parameters.extra_docker_args }}

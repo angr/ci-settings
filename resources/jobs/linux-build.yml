@@ -5,8 +5,7 @@ parameters:
 jobs:
 - job: build_linux
   displayName: Build on Linux
-  pool:
-    vmImage: ubuntu-18.04
+  pool: Default
   container:
     image: ${{ parameters.container_image }}
   steps:
