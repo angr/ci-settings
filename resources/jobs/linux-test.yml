@@ -15,7 +15,7 @@ jobs:
     clean: all
   variables:
     WORKER: 0
-    NUM_WORKERS: 10
+    NUM_WORKERS: 1
     QT_QPA_PLATFORM: minimal
 
   steps:
