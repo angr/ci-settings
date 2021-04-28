@@ -13,7 +13,7 @@ requests[security]
 monkeyhex
 keystone-engine
 cvc4-solver
-nose_skinny_report
+nose_skinny_report>=0.0.5
 shellphish-afl
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 minidump
