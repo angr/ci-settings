@@ -40,20 +40,24 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
             fp_script.write(script_base)
 
             for target in targets:
-                if target.package_name is not None:
-                    fp_reqs.write('-e git+https://github.com/%s/%s.git@%s#egg=%s\n' %
-                            (target.owner, target.repo, target.branch, target.package_name))
+                # clone the target repo first
+                if target.branch.startswith('refs/'):
+                    fp_script.write('git clone https://github.com/%s/%s.git && '
+                                    'cd %s && '
+                                    'git fetch origin %s && '
+                                    'git checkout FETCH_HEAD && '
+                                    'cd ..\n' %
+                            (target.owner, target.repo, target.repo, target.branch))
                 else:
-                    if target.branch.startswith('refs/'):
-                        fp_script.write('git clone https://github.com/%s/%s.git && '
-                                        'cd %s && '
-                                        'git fetch origin %s && '
-                                        'git checkout FETCH_HEAD && '
-                                        'cd ..\n' %
-                                (target.owner, target.repo, target.repo, target.branch))
-                    else:
-                        fp_script.write('git clone -b %s https://github.com/%s/%s.git\n' %
-                                (target.branch, target.owner, target.repo))
+                    fp_script.write('git clone -b %s https://github.com/%s/%s.git\n' %
+                            (target.branch, target.owner, target.repo))
+
+                # if it is a python package, write it into requirements.txt
+                # FIXME: why use package_name to indicate whether it is a python package?
+                if target.package_name is not None:
+                    basename = target.package_name.replace("_", "-")
+                    path = os.path.abspath(os.path.join(out_dir, "src", basename))
+                    fp_reqs.write('-e file:%s\n' % path)
 
             fp_script.write('WHEELS=' + wheels_dir + '\n')
             fp_script.write('CONF=' + conf_dir + '\n')
