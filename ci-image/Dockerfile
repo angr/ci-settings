@@ -23,6 +23,9 @@ RUN mkdir /usr/mips-linux-gnu/etc /usr/mips64-linux-gnuabi64/etc /usr/powerpc-li
     && ln -s /dev/null /usr/powerpc-linux-gnu/etc/ld.so.cache \
     && ln -s /dev/null /usr/powerpc64-linux-gnu/etc/ld.so.cache
 
+# Disable pwntools curses
+ENV PWNLIB_NOTERM=1
+
 RUN umask 0; git clone https://github.com/angr/wheels.git
 ADD scripts ./scripts
 ADD conf ./conf
