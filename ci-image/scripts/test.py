@@ -2,7 +2,6 @@
 
 import collections
 import os
-import shlex
 import shutil
 import subprocess
 import sys
@@ -23,7 +22,7 @@ def test_project(project, tests, coverage=False):
         project, coverage_flags if coverage else '', ' '.join(tests))
 
     print("Running nose2 command:\n{}".format(command), flush=True)
-    return subprocess.run(shlex.split(command), shell=True).returncode
+    return subprocess.run(command, shell=True).returncode
 
 
 def main():
