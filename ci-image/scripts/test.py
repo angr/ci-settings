@@ -2,7 +2,6 @@
 
 import collections
 import os
-import shlex
 import shutil
 import subprocess
 import sys
@@ -17,13 +16,17 @@ def parse_tests(f):
 
 
 def test_project(project, tests, coverage=False):
-    coverage_flags = "--with-coverage --coverage ./src/{}".format(project)
-
     command = "nose2 -v -s ./src/{}/tests -c /root/config/nose2.cfg --log-level 100 {} {}".format(
-        project, coverage_flags if coverage else '', ' '.join(tests))
-
+        project, '--with-coverage' if coverage else '', ' '.join(tests))
     print("Running nose2 command:\n{}".format(command), flush=True)
-    return subprocess.run(shlex.split(command), shell=True).returncode
+    return subprocess.run(
+        "nose2 -v -s ./src/{}/tests -c /root/conf/nose2.cfg --log-level 100 {} {}"
+        .format(
+            project,
+            '--with-coverage' if coverage else '',
+            ' '.join(tests)
+        ), shell=True
+    ).returncode
 
 
 def main():
