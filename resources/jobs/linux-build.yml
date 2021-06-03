@@ -1,5 +1,6 @@
 parameters:
   nightly: false
+  container_image: angr/ci:2
 
 jobs:
 - job: build_linux
@@ -7,7 +8,7 @@ jobs:
   pool:
     vmImage: ubuntu-18.04
   container:
-    image: angr/ci:2
+    image: ${{ parameters.container_image }}
   steps:
   - checkout: none
 

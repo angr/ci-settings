@@ -1,17 +1,22 @@
 parameters:
   docker_socket: False
   afl: False
+  container_image: angr/ci:2
 
 stages:
 - stage: Build
   jobs:
   - template: ./jobs/linux-build.yml
+    parameters:
+      container_image: ${{ parameters.container_image }}
 
 - stage: Lint
   dependsOn: Build
   condition: succeeded()
   jobs:
   - template: ./jobs/linux-lint.yml
+    parameters:
+      container_image: ${{ parameters.container_image }}
 
 - stage: Test
   dependsOn: Build
@@ -22,3 +27,4 @@ stages:
       ${{ if variables.docker_socket }}:
         extra_docker_args: -v /var/run/docker.sock:/var/run/docker.sock
       afl: ${{ parameters.afl }}
+      container_image: ${{ parameters.container_image }}

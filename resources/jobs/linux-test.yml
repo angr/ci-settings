@@ -2,6 +2,7 @@ parameters:
   nightly: false
   afl: false
   extra_docker_args: ""
+  container_image: angr/ci:2
 
 jobs:
 - job: test_linux
@@ -9,7 +10,7 @@ jobs:
   pool:
     vmImage: ubuntu-18.04
   container:
-    image: angr/ci:2
+    image: ${{ parameters.container_image }}
     options: --cap-add=SYS_PTRACE --security-opt seccomp:unconfined ${{ parameters.extra_docker_args }}
   variables:
     NUM_WORKERS: 10

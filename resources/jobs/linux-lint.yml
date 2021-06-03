@@ -1,10 +1,13 @@
+parameters:
+  container_image: angr/ci:2
+
 jobs:
 - job: lint
   displayName: Lint
   pool:
     vmImage: ubuntu-18.04
   container:
-    image: angr/ci:2
+    image: ${{ parameters.container_image }}
   steps:
   - task: DownloadPipelineArtifact@0
     inputs:
