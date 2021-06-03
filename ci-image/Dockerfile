@@ -25,6 +25,8 @@ RUN mkdir /usr/mips-linux-gnu/etc /usr/mips64-linux-gnuabi64/etc /usr/powerpc-li
 
 # Disable pwntools curses
 ENV PWNLIB_NOTERM=1
+# Minimal QT platform for angr-management
+ENV QT_QPA_PLATFORM=minimal
 
 RUN umask 0; git clone https://github.com/angr/wheels.git
 ADD scripts ./scripts
