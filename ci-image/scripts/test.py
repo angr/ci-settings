@@ -22,7 +22,7 @@ def test_project(project, tests, coverage=False):
         project, coverage_flags if coverage else '', ' '.join(tests))
 
     print("Running nose2 command:\n{}".format(command), flush=True)
-    return subprocess.run(command, shell=True).returncode
+    return subprocess.Popen(command, shell=True)
 
 
 def main():
@@ -48,8 +48,13 @@ def main():
 
     with open(test_file) as f:
         test_dict = parse_tests(f)
+        processes = {}
         for k in test_dict:
-            rc = test_project(k, test_dict[k], coverage=coverage)
+            processes[k] = test_project(k, test_dict[k], coverage=coverage)
+
+        for k in processes:
+            processes[k].wait()
+            rc = processes[k].returncode
             error_count += rc
             with open("results/%s.returncode" % k, 'w') as rcf:
                 rcf.write(str(rc))
