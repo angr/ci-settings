@@ -46,18 +46,16 @@ def compare_lint():
 
     os.chdir(repo_dir)
     cur_branch = subprocess.check_output("git rev-parse --abbrev-ref HEAD".split()).decode().strip()
+    if cur_branch == "master":
+        compare_ref = subprocess.check_output("git show-ref HEAD^".split()).decode().split()[0]
+    else:
+        compare_ref = subprocess.check_output("git merge-base master %s".format(cur_branch).split()).decode()
 
     # get the files to lint
-    if cur_branch == "master":
-        changed_files = [
-            o.split()[-1] for o in
-            subprocess.check_output("git diff --name-status HEAD^".split()).decode().split("\n")[:-1]
-        ]
-    else:
-        changed_files = [
-            o.split()[-1] for o in
-            subprocess.check_output("git diff --name-status origin/master".split()).decode().split("\n")[:-1]
-        ]
+    changed_files = [
+        o.split()[-1] for o in
+        subprocess.check_output("git diff --name-status %s".format(compare_ref).split()).decode().split("\n")[:-1]
+    ]
     tolint = [ f for f in changed_files if f.endswith(".py") ]
     print("Changed files: %s" % (tolint,))
 
@@ -67,11 +65,11 @@ def compare_lint():
         return True
 
     new_results = lint_files(tolint)
-    subprocess.check_call("git checkout -q origin/master".split())
+    subprocess.check_call("git checkout -q %s".format(compare_ref).split())
     try:
         old_results = lint_files(tolint)
     finally:
-        subprocess.check_call("git checkout -q HEAD^".split())
+        subprocess.check_call("git checkout -q %s".format(cur_branch).split())
 
     print("")
     print("###")
