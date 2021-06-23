@@ -31,8 +31,32 @@ load-plugins=
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
 
-disable=bad-indentation,line-too-long,invalid-name,missing-docstring,too-many-instance-attributes,no-space-after-comma,fixme,star-args,too-many-arguments,multiple-statements,too-few-public-methods,no-space-after-operator,too-many-locals,too-many-statements,too-many-branches,too-many-return-statements,global-statement,too-many-public-methods,old-style-class,protected-access,abstract-class-not-used,too-many-lines,deprecated-module,bad-builtin,deprecated-lambda,mixed-indentation,locally-disabled,bad-continuation,too-many-ancestors,duplicate-code,wrong-import-position,multiple-imports,ungrouped-imports,wrong-import-order,redefined-variable-type,unidiomatic-typecheck,too-many-nested-blocks,locally-enabled,len-as-condition,no-else-return,superfluous-parens
-#bad-continuation,
+disable=
+    abstract-class-not-used,
+    abstract-method,
+    fixme,
+    invalid-name,
+    len-as-condition,
+    locally-disabled,
+    locally-enabled,
+    missing-function-docstring,
+    missing-module-docstring,
+    no-else-return,
+    protected-access,
+    star-args,
+    too-few-public-methods,
+    too-many-ancestors,
+    too-many-arguments,
+    too-many-branches,
+    too-many-instance-attributes,
+    too-many-lines,
+    too-many-locals,
+    too-many-nested-blocks,
+    too-many-public-methods,
+    too-many-return-statements,
+    too-many-statements,
+    unidiomatic-typecheck,
+
 
 [REPORTS]
 
@@ -71,7 +95,7 @@ ignored-classes=SQLObject,nose.tools,nose.tools.trivial,sympy
 # expressions are accepted.
 generated-members=REQUEST,acl_users,aq_parent
 
-ignored-modules=sh,PySide2,PySide2.QtWidgets,PySide2.QtGui,PySide2.QtCore,PySide2.QtTest
+ignored-modules=sh,PySide2,PySide2.QtTest,PySide2.QtCore,PySide2.QtWidgets,PySide2.QtGui
 
 [FORMAT]
 
