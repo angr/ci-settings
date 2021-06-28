@@ -7,7 +7,6 @@ import subprocess
 
 logging.basicConfig()
 l = logging.getLogger("lint")
-#l.setLevel(logging.DEBUG)
 
 def lint_file(filename):
     l.debug("Linting file %s", filename)
@@ -73,19 +72,15 @@ def compare_lint():
     finally:
         subprocess.check_call("git checkout -q HEAD^".split())
 
-    print("")
-    print("###")
-    print("### LINT REPORT FOR %s" % repo_name)
-    print("###")
-    print("")
+    print("##[group]Lint report for %s" % repo_name)
 
     regressions = [ ]
     for v in new_results:
         new_errors, new_score = new_results[v]
         if v not in old_results:
             if new_score != 10.00:
-                print("LINT FAILURE: new file %s lints at %.2f/10.00. Errors:" % (v, new_score))
-                print("... " + "\n... ".join(new_errors))
+                print("##[error]LINT FAILURE: new file %s lints at %.2f/10.00. Errors:" % (v, new_score))
+                print("##[error]... " + "\n... ".join(new_errors))
                 regressions.append((v, None, new_score))
             else:
                 print("LINT SUCCESS: new file %s is a perfect 10.00!" % v)
@@ -100,11 +95,7 @@ def compare_lint():
             else:
                 print("LINT SUCCESS: %s has remained at %.2f " % (v, new_score))
 
-    print("")
-    print("###")
-    print("### END LINT REPORT FOR %s" % repo_name)
-    print("###")
-    print("")
+    print("##[endgroup]")
 
     return len(regressions) == 0
 
