@@ -87,8 +87,8 @@ def compare_lint():
         else:
             _, old_score = old_results[v]
             if new_score < old_score:
-                print("LINT FAILURE: %s regressed to %.2f/%.2f" % (v, new_score, old_score))
-                print("... " + "\n... ".join(new_errors))
+                print("##[error]LINT FAILURE: %s regressed to %.2f/%.2f" % (v, new_score, old_score))
+                print("##[error]... " + "\n... ".join(new_errors))
                 regressions.append((v, old_score, new_score))
             elif new_score > old_score:
                 print("LINT SUCCESS: %s has improved to %.2f (from %.2f)! " % (v, new_score, old_score))
