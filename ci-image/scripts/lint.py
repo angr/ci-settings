@@ -47,7 +47,7 @@ def compare_lint():
     os.chdir(repo_dir)
     cur_branch = subprocess.check_output("git rev-parse --abbrev-ref HEAD".split()).decode().strip()
     if cur_branch == "master":
-        compare_ref = subprocess.check_output("git show-ref HEAD^".split()).decode().split()[0]
+        compare_ref = 'HEAD^'
     else:
         compare_ref = subprocess.check_output("git merge-base origin/master {}".format(cur_branch).split()).decode()
 
