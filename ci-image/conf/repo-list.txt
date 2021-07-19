@@ -23,7 +23,8 @@ angr/archr
 !angr/binaries
 
 # applications
-angr/angr-management -> angr
+angr/binsync
+angr/angr-management -> angr, binsync
 angr/fidget -> angr
 angr/angrop -> angr
 angr/tracer -> angr
