@@ -46,7 +46,6 @@ jobs:
     inputs:
       testRunner: "JUnit"
       testResultsFiles: "build/results/*.tests.xml"
-      mergeTestResults: true
 
   - task: PublishCodeCoverageResults@1
     condition: eq(${{ parameters.nightly }}, 'true')
