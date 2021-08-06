@@ -90,72 +90,70 @@ def sync_reqs_pr(sources, repo_name, pull_number):
     repo = g.get_repo(repo_name, lazy=True)
     pull = repo.get_pull(pull_number)                       # API: get pull, 1 per build
 
-    # Check if the pull request has a body
-    if pull.body is None:
-        print("Pull request %s has no body - aborting" % pull.number)
-        return
-
     # mapping from repo name to a partial Target object
     result_pulls = {}
 
-    # grab the appropriate source object and update it for the current PR
-    for source in sources:
-        if repo_name == '%s/%s' % (source.owner, source.repo):
-            result_pulls[source.repo] = source._replace(
-                branch='refs/pull/%d/%s' % (pull_number, 'merge' if pull.mergeable else 'head'))
-            break
-    else:
-        raise ValueError("repo_name %s doesn't match any source spec" % repo_name)
+    # Check if the pull request has a body
+    if pull.body is not None:
 
-    for word in pull.body.replace('(', ' ').replace(')', ' ').split():
-        if '#' in word:
-            target_repo_name, target_pull_name = word.strip(',;').split('#', 1)
-        elif "github.com" in word and "pull/" in word:
-            t = word.strip(',;').split("/")[-4:]
-            if len(t) != 4:
-                continue
-            owner, name, p, target_pull_name = t
-            target_repo_name = '%s/%s' % (owner, name)
-            if p != 'pull':
-                continue
-        else:
-            continue
-
-        # some sanity checks
-        # pull request number must be... a number
-        if not target_pull_name.isdigit():
-            continue
-
-        # pull request must be to one of the repos we're testing
+        # grab the appropriate source object and update it for the current PR
         for source in sources:
-            if target_repo_name == '%s/%s' % (source.owner, source.repo):
+            if repo_name == '%s/%s' % (source.owner, source.repo):
+                result_pulls[source.repo] = source._replace(
+                    branch='refs/pull/%d/%s' % (pull_number, 'merge' if pull.mergeable else 'head'))
                 break
         else:
-            continue
+            raise ValueError("repo_name %s doesn't match any source spec" % repo_name)
 
-        # must actually be a pull request!
-        target_pull_number = int(target_pull_name)
-        target_repo = g.get_repo(target_repo_name, lazy=True)
-        try:
-            target_pull = target_repo.get_pull(target_pull_number)  # API: get pull, 1 per link
-        except GithubException:
-            continue
+        for word in pull.body.replace('(', ' ').replace(')', ' ').split():
+            if '#' in word:
+                target_repo_name, target_pull_name = word.strip(',;').split('#', 1)
+            elif "github.com" in word and "pull/" in word:
+                t = word.strip(',;').split("/")[-4:]
+                if len(t) != 4:
+                    continue
+                owner, name, p, target_pull_name = t
+                target_repo_name = '%s/%s' % (owner, name)
+                if p != 'pull':
+                    continue
+            else:
+                continue
 
-        # must not have seen this repo before...?
-        # pylint: disable=undefined-loop-variable
-        if source.repo in result_pulls:
-            print("Warning: multiple references to pull requests of %s" % source.repo)
-            continue
+            # some sanity checks
+            # pull request number must be... a number
+            if not target_pull_name.isdigit():
+                continue
 
-        # pull request shouldn't be merged/closed
-        if target_pull.state != "open":
-            print("Warning: PR %s#%d is not open, skipping" % (target_repo_name, target_pull_number))
-            continue
+            # pull request must be to one of the repos we're testing
+            for source in sources:
+                if target_repo_name == '%s/%s' % (source.owner, source.repo):
+                    break
+            else:
+                continue
 
-        result_pulls[source.repo] = source._replace(
-            branch='refs/pull/%d/%s' %
-                   (target_pull_number,
-                    'merge' if target_pull.mergeable else 'head'))
+            # must actually be a pull request!
+            target_pull_number = int(target_pull_name)
+            target_repo = g.get_repo(target_repo_name, lazy=True)
+            try:
+                target_pull = target_repo.get_pull(target_pull_number)  # API: get pull, 1 per link
+            except GithubException:
+                continue
+
+            # must not have seen this repo before...?
+            # pylint: disable=undefined-loop-variable
+            if source.repo in result_pulls:
+                print("Warning: multiple references to pull requests of %s" % source.repo)
+                continue
+
+            # pull request shouldn't be merged/closed
+            if target_pull.state != "open":
+                print("Warning: PR %s#%d is not open, skipping" % (target_repo_name, target_pull_number))
+                continue
+
+            result_pulls[source.repo] = source._replace(
+                branch='refs/pull/%d/%s' %
+                    (target_pull_number,
+                        'merge' if target_pull.mergeable else 'head'))
 
     for source in sources:
         if source.repo in result_pulls:
