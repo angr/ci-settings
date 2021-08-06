@@ -90,6 +90,11 @@ def sync_reqs_pr(sources, repo_name, pull_number):
     repo = g.get_repo(repo_name, lazy=True)
     pull = repo.get_pull(pull_number)                       # API: get pull, 1 per build
 
+    # Check if the pull request has a body
+    if pull.body is None:
+        print("Pull request %s has no body - aborting" % pull.number)
+        return
+
     # mapping from repo name to a partial Target object
     result_pulls = {}
 
