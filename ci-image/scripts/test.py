@@ -1,25 +1,34 @@
 #!/usr/bin/env python3
 
-import collections
 import os
+import pathlib
 import shutil
 import subprocess
 import sys
 
 
-def parse_tests(f):
-    res = collections.defaultdict(list)
-    for l in f.readlines():
-        split = l.strip().split()
-        res[split[0]].append(split[1])
-    return res
+def parse_tests(path):
+    with open(path) as f:
+        res = []
+        for l in f.readlines():
+            split = l.strip().split()
+            split[0] += "_tests"
+            res.append(".".join(split))
+        return res
 
 
-def test_project(project, tests, coverage=False):
-    coverage_flags = "--with-coverage --coverage ./src/{}".format(project)
+def test_all_projects(tests):
+    # Create directories
+    if os.path.exists("src/tests"):
+        os.remove("src/tests")
+    os.makedirs("src/tests")
+    # Link tests
+    for project in os.listdir("src"):
+        if os.path.exists("src/{}/tests".format(project)):
+            shutil.copytree("src/%s/tests" % project, "src/tests/%s_tests" % project)
+            pathlib.Path("src/tests/%s_tests/__init__.py" % project).touch()
 
-    command = "nose2 -v -s ./src/{}/tests -c /root/config/nose2.cfg --log-level 100 {} {}".format(
-        project, coverage_flags if coverage else '', ' '.join(tests))
+    command = "nose2 -v -s ./src/tests -c /root/config/nose2.cfg --log-level 100 {}".format(' '.join(tests))
 
     print("Running nose2 command:\n{}".format(command), flush=True)
     return subprocess.run(command, shell=True).returncode
@@ -27,15 +36,12 @@ def test_project(project, tests, coverage=False):
 
 def main():
     test_file = None
-    coverage = False
 
     args = iter(sys.argv[1:])
 
     for arg in args:
         if arg in ('--tests'):
             test_file = next(args)
-        elif arg in ('--coverage',):
-            coverage = True
         else:
             raise ValueError("Bad argument: %s" % arg)
 
@@ -44,24 +50,13 @@ def main():
 
     os.makedirs('results')
 
-    error_count = 0
+    tests = parse_tests(test_file)
+    rc = test_all_projects(tests)
 
-    with open(test_file) as f:
-        test_dict = parse_tests(f)
-        for k in test_dict:
-            rc = test_project(k, test_dict[k], coverage=coverage)
-            error_count += rc
-            with open("results/%s.returncode" % k, 'w') as rcf:
-                rcf.write(str(rc))
-                rcf.close()
+    if os.path.exists('/tmp/tests.xml'):
+        shutil.move('/tmp/tests.xml', "results/tests.xml")
 
-            if os.path.exists('/tmp/tests.xml'):
-                shutil.move('/tmp/tests.xml', "results/%s.tests.xml" % k)
-
-            if os.path.exists("coverage.xml"):
-                shutil.move("coverage.xml", "results/%s.coverage.xml" % k)
-
-    sys.exit(error_count)
+    sys.exit(rc)
 
 
 if __name__ == '__main__':
