@@ -10,7 +10,11 @@ failing for your pull request.
 To perform a build manually:
 
 ```sh
-docker run -it --rm angr/ci:2
+docker run -it \
+    --cap-add=SYS_PTRACE \
+    --security-opt seccomp:unconfined \
+    -v /var/run/docker.sock:/var/run/docker.sock \  # for archr
+    angr/ci:2
 ```
 
 And the, in the container:
