@@ -22,3 +22,5 @@ sqlalchemy
 flaky
 pypcode
 qtrace
+pytest
+pytest-xdist[psutil]

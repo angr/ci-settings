@@ -15,13 +15,8 @@ def parse_tests(f):
     return res
 
 
-def test_project(project, tests, coverage=False):
-    coverage_flags = "--with-coverage --coverage ./src/{}".format(project)
-
-    command = "nose2 -v -s ./src/{}/tests -c /root/config/nose2.cfg --log-level 100 {} {}".format(
-        project, coverage_flags if coverage else '', ' '.join(tests))
-
-    print("Running nose2 command:\n{}".format(command), flush=True)
+def test_all_projects():
+    command = "pytest -n auto --junitxml /tmp/tests.xml ./src"
     return subprocess.run(command, shell=True).returncode
 
 
@@ -46,20 +41,14 @@ def main():
 
     error_count = 0
 
-    with open(test_file) as f:
-        test_dict = parse_tests(f)
-        for k in test_dict:
-            rc = test_project(k, test_dict[k], coverage=coverage)
-            error_count += rc
-            with open("results/%s.returncode" % k, 'w') as rcf:
-                rcf.write(str(rc))
-                rcf.close()
+    rc = test_all_projects()
+    error_count += rc
 
-            if os.path.exists('/tmp/tests.xml'):
-                shutil.move('/tmp/tests.xml', "results/%s.tests.xml" % k)
-
-            if os.path.exists("coverage.xml"):
-                shutil.move("coverage.xml", "results/%s.coverage.xml" % k)
+    if os.path.exists('/tmp/tests.xml'):
+        shutil.move('/tmp/tests.xml', "results/%s.tests.xml" % k)
+    with open("results/all.returncode", 'w') as rcf:
+        rcf.write(str(rc))
+        rcf.close()
 
     sys.exit(error_count)
 
