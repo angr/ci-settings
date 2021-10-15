@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import collections
-from concurrent.futures import ThreadPoolExecutor, as_completed, CancelledError
+from concurrent.futures import ProcessPoolExecutor, as_completed, CancelledError
 import multiprocessing
 import os
-import subprocess
+import shlex
 import sys
+
+import nose2
 
 
 # Reads tests file and returns a dict of project names to lists of tests
@@ -24,7 +26,9 @@ def run_single_test(project: str, test: str, coverage: bool = False):
         project, os.path.join("results", project, test), coverage_flags, test)
 
     print("Running nose2 command:\n{}".format(command), flush=True)
-    return subprocess.run(command, shell=True).returncode
+    runner = nose2.discover(exit=False, argv=shlex.split(command))
+
+    return runner.result.wasSuccessful()
 
 
 def main():
@@ -51,7 +55,7 @@ def main():
     with open(test_file) as f:
         test_dict = parse_tests(f)
 
-    with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
+    with ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
         futures = []
         for project, tests in test_dict.items():
             os.makedirs(os.path.join("results", project))
