@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 import collections
-from concurrent.futures import ProcessPoolExecutor, as_completed, CancelledError
-import multiprocessing
+from concurrent.futures import as_completed, CancelledError
 import os
 import shlex
 import sys
 
+from loky import get_reusable_executor
 import nose2
 
 
@@ -28,7 +28,7 @@ def run_single_test(project: str, test: str, coverage: bool = False):
     print("Running nose2 command:\n{}".format(command), flush=True)
     runner = nose2.discover(exit=False, argv=shlex.split(command))
 
-    return runner.result.wasSuccessful()
+    return True if runner.result.wasSuccessful() else False
 
 
 def main():
@@ -55,7 +55,7 @@ def main():
     with open(test_file) as f:
         test_dict = parse_tests(f)
 
-    with ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
+    with get_reusable_executor() as executor:
         futures = []
         for project, tests in test_dict.items():
             os.makedirs(os.path.join("results", project))
@@ -67,9 +67,13 @@ def main():
             completions += 1
             print("Completed: {}/{}, Errors: {}".format(completions, len(futures), error_count))
             try:
-                error_count += future.result()
+                if not future.result():
+                    error_count += 1
             except CancelledError:
                 error_count += 1
+            except Exception as e:
+                error_count += 1
+                print(e)
 
             if completions >= len(futures):
                 break
