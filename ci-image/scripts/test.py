@@ -58,11 +58,17 @@ def main():
             for test in tests:
                 futures.append(executor.submit(run_single_test, project, test, coverage))
 
+        completions = 0
         for future in as_completed(futures):
+            completions += 1
+            print("Completed: {}/{}, Errors: {}".format(completions, len(futures), error_count))
             try:
                 error_count += future.result()
             except CancelledError:
                 error_count += 1
+
+            if completions >= len(futures):
+                break
 
     sys.exit(error_count)
 
