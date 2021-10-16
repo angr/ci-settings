@@ -12,6 +12,7 @@ RUN apt-get install -y libc6-armhf-cross libc6-arm64-cross libc6-mips-cross libc
 RUN apt-get install -y gdb gdbserver gdb-multiarch openjdk-8-jdk-headless docker.io libgl1
 RUN apt-get install -y binutils-mips-linux-gnu binutils-mipsel-linux-gnu binutils-arm-linux-gnueabi
 RUN apt-get install -y strace
+RUN apt-get install -y fontconfig
 RUN pip3 install "virtualenv<20" pygithub
 
 # This command is used to fix problems with libc6-cross packages
@@ -26,7 +27,7 @@ RUN mkdir /usr/mips-linux-gnu/etc /usr/mips64-linux-gnuabi64/etc /usr/powerpc-li
 # Disable pwntools curses
 ENV PWNLIB_NOTERM=1
 # Minimal QT platform for angr-management
-ENV QT_QPA_PLATFORM=minimal
+ENV QT_QPA_PLATFORM=minimal:enable_fonts
 
 RUN umask 0; git clone https://github.com/angr/wheels.git
 ADD scripts ./scripts
