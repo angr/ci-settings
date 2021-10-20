@@ -13,6 +13,6 @@ export BUILD_REPOSITORY_URI=angr/angr
 export BUILD_SOURCEBRANCH=refs/heads/master
 
 export WORKER=0
-export NUM_WORKERS=10
+export NUM_WORKERS=1
 
 set +x
