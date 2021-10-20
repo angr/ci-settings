@@ -107,14 +107,16 @@ def main():
 
     with get_reusable_executor() as executor:
         futures = []
+        futures_meta = {}
         for project, tests in test_dict.items():
             os.makedirs(os.path.join("results", project), exist_ok=True)
             for test in tests:
                 fut = executor.submit(run_single_test, project, test, coverage)
-                futures.append((project, test, fut))
+                futures.append(fut)
+                futures_meta[fut] = (project, test)
 
         completions = 0
-        for (project, test, future) in as_completed(futures):
+        for future in as_completed(futures):
             completions += 1
             print("Completed: {}/{}, Errors: {}".format(completions, len(futures), error_count), flush=True)
             try:
@@ -125,6 +127,7 @@ def main():
             except Exception as e:
                 error_count += 1
                 print(e)
+            project, test = futures_meta[future]
             print("stdout for", project, test, "\n", future.result()[1], flush=True)
             print("stderr for", project, test, "\n", future.result()[2], flush=True)
 
