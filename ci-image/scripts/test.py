@@ -7,6 +7,7 @@ import os
 import shlex
 import sys
 import threading
+import traceback
 
 from loky import get_reusable_executor
 import nose2
@@ -74,6 +75,15 @@ def run_single_test(project: str, test: str, coverage: bool = False):
             with open(os.path.join("results", project, test + ".stderr"), "wb") as f:
                 f.write(stderr.getvalue())
 
+        # Remove test modules from import cache to avoid conflicts accross repos
+        if "common" in sys.modules:
+            sys.modules.pop("common")
+        module_bits = test.split(".")[:-1]
+        for i in range(len(module_bits))[1:]:
+            possible_module = ".".join(module_bits[:i])
+            if possible_module in sys.modules:
+                sys.modules.pop(possible_module)
+
         return (
             True if runner.result.wasSuccessful() else False,
             stdout.getvalue().decode(),
@@ -122,17 +132,17 @@ def main():
             try:
                 if not future.result()[0]:
                     error_count += 1
+                project, test = futures_meta[future]
+                print("stdout for", project, test, "\n", future.result()[1], flush=True)
+                print("stderr for", project, test, "\n", future.result()[2], flush=True)
             except CancelledError:
                 error_count += 1
             except Exception as e:
                 error_count += 1
-                print(e)
-            project, test = futures_meta[future]
-            print("stdout for", project, test, "\n", future.result()[1], flush=True)
-            print("stderr for", project, test, "\n", future.result()[2], flush=True)
-
-            if completions >= len(futures):
-                break
+                traceback.print_tb(e.__traceback__)
+            finally:
+                if completions >= len(futures):
+                    break
 
     sys.exit(error_count)
 
