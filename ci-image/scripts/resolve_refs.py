@@ -93,17 +93,17 @@ def sync_reqs_pr(sources, repo_name, pull_number):
     # mapping from repo name to a partial Target object
     result_pulls = {}
 
+    # grab the appropriate source object and update it for the current PR
+    for source in sources:
+        if repo_name == '%s/%s' % (source.owner, source.repo):
+            result_pulls[source.repo] = source._replace(
+                branch='refs/pull/%d/%s' % (pull_number, 'merge' if pull.mergeable else 'head'))
+            break
+    else:
+        raise ValueError("repo_name %s doesn't match any source spec" % repo_name)
+
     # Check if the pull request has a body
     if pull.body is not None:
-
-        # grab the appropriate source object and update it for the current PR
-        for source in sources:
-            if repo_name == '%s/%s' % (source.owner, source.repo):
-                result_pulls[source.repo] = source._replace(
-                    branch='refs/pull/%d/%s' % (pull_number, 'merge' if pull.mergeable else 'head'))
-                break
-        else:
-            raise ValueError("repo_name %s doesn't match any source spec" % repo_name)
 
         for word in pull.body.replace('(', ' ').replace(')', ' ').split():
             if '#' in word:
