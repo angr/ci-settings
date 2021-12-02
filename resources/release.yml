@@ -12,7 +12,9 @@ parameters:
 - name: dry_run
   type: boolean
   default: false
-
+variables:
+- name: release_version
+  value: UNSET
 
 stages:
 - stage: create
