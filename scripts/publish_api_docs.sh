@@ -10,7 +10,7 @@ cp -r apidocs angr.github.io/api-doc
 # Push to website
 git -C angr.github.io commit api-doc \
     --author "angr release bot <angr-dev@asu.edu>" \
-    --message "update api-docs for version $angr_doc_version"
+    --message "update api-docs for version $RELEASE_VERSION"
 
 if [ "$DRY_RUN" == "false" ]; then
     git -C angr.github.io push origin master

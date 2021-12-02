@@ -32,3 +32,6 @@ for i in $(ls $CHECKOUT_DIR); do
 
     popd
 done
+
+# Set pipeline version variable
+echo "##vso[task.setvariable variable=release_version;]$VERSION"
