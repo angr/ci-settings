@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+echo "I'm definitely the new version"
+
 source "$(dirname "$0")/vars.sh"
 
 for i in $(ls $CHECKOUT_DIR); do
