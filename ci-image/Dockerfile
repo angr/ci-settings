@@ -13,6 +13,7 @@ RUN apt-get install -y gdb gdbserver gdb-multiarch openjdk-8-jdk-headless docker
 RUN apt-get install -y binutils-mips-linux-gnu binutils-mipsel-linux-gnu binutils-arm-linux-gnueabi
 RUN apt-get install -y strace
 RUN apt-get install -y fontconfig
+RUN apt-get install -y gcc-multilib g++-multilib
 RUN pip3 install "virtualenv<20" pygithub
 
 # This command is used to fix problems with libc6-cross packages
