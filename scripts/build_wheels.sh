@@ -2,7 +2,7 @@ set -ex
 
 source $(dirname $0)/vars.sh
 
-# Apple doesn't incluide realpath
+# Apple doesn't include realpath
 function realpath() {
     [[ "$1" = /* ]] && echo "$1" || echo "$PWD/${1#./}"
 }
