@@ -8,7 +8,7 @@ venv_path="$3"
 
 "$python" -m venv "$venv_path"
 source "$venv_path/bin/activate" &> /dev/null || source "$venv_path/Scripts/activate"
-python -m pip install --upgrade pip wheel
+python -m pip install --upgrade pip build
 
 # Filter out linux-only packages on non-linux
 install_list=""

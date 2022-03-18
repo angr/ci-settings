@@ -24,7 +24,7 @@ steps:
     inputs:
       versionSpec: 3.8
 
-  - bash: pip install -U pip build
+  - bash: pip install --user --upgrade pip build
     displayName: Upgrade pip and build
 
 - ${{ if parameters.git }}:
