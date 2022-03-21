@@ -1,13 +1,13 @@
 name: $(BuildID)
 trigger: none
 pr: none
-schedules:
-- cron: "0 17 * * 2"
-  displayName: Weekly Tuesday release
-  branches:
-    include:
-    - master
-  always: true
+# schedules:
+# - cron: "0 17 * * 2"
+#   displayName: Weekly Tuesday release
+#   branches:
+#     include:
+#     - master
+#   always: true
 parameters:
 - name: dry_run
   type: boolean
