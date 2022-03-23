@@ -5,6 +5,8 @@ SCRIPTS=$BASEDIR/scripts
 CONF=$BASEDIR/conf
 WHEELS=$BASEDIR/wheels
 
+git config --global url.https://github.com/.insteadOf git@github.com:
+
 cd $WHEELS
 git fetch
 git reset --hard $BUILD_SOURCEBRANCH || true
