@@ -33,4 +33,5 @@ ENV QT_QPA_PLATFORM=minimal:enable_fonts
 RUN umask 0; git clone https://github.com/angr/wheels.git
 ADD scripts ./scripts
 ADD conf ./conf
+ADD conf/gitconfig /root/.gitconfig
 ENTRYPOINT ["/root/scripts/entrypoint.sh"]
