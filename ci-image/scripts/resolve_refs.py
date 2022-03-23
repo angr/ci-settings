@@ -46,6 +46,7 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
                                     'cd %s && '
                                     'git fetch origin %s && '
                                     'git checkout FETCH_HEAD && '
+                                    'git submodule update --init --recursive && '
                                     'cd ..\n' %
                             (target.owner, target.repo, target.repo, target.branch))
                 else:
