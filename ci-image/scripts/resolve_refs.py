@@ -42,14 +42,14 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
             for target in targets:
                 # clone the target repo first
                 if target.branch.startswith('refs/'):
-                    fp_script.write('git clone https://github.com/%s/%s.git && '
+                    fp_script.write('git clone --recursive https://github.com/%s/%s.git && '
                                     'cd %s && '
                                     'git fetch origin %s && '
                                     'git checkout FETCH_HEAD && '
                                     'cd ..\n' %
                             (target.owner, target.repo, target.repo, target.branch))
                 else:
-                    fp_script.write('git clone -b %s https://github.com/%s/%s.git\n' %
+                    fp_script.write('git clone --recursive -b %s https://github.com/%s/%s.git\n' %
                             (target.branch, target.owner, target.repo))
 
                 # if it is a python package, write it into requirements.txt
