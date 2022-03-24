@@ -5,7 +5,6 @@
 
 # main angr suite
 angr/archinfo
-!angr/vex
 angr/pyvex -> archinfo
 angr/claripy
 angr/cle -> archinfo, pyvex, cle
