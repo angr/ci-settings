@@ -1,17 +1,21 @@
+#!/bin/bash
+# Update gh-pages branch on the angr-doc repository for
+# API doc publishing at https://api.angr.io via GitHub Pages
 set -ex
 
-# Clone website repo
-git clone git@github.com:angr/angr.github.io.git angr.github.io
+git clone -b gh-pages git@github.com:angr/angr-doc.git
+pushd angr-doc
 
-# Replace api-doc with new version
-rm -rf angr.github.io/api-doc
-cp -r apidocs angr.github.io/api-doc
+git rm -rf *
+cp -r ../apidocs/* .
 
-# Push to website
-git -C angr.github.io commit api-doc \
-    --author "angr release bot <angr-dev@asu.edu>" \
-    --message "update api-docs for version $angr_doc_version"
+echo "api.angr.io" > CNAME
+
+git add .
+git commit --allow-empty \
+           --author "angr release bot <angr-dev@asu.edu>" \
+           --message "Update api-docs for version $angr_doc_version"
 
 if [ "$DRY_RUN" == "false" ]; then
-    git -C angr.github.io push origin master
+    git push -f origin gh-pages:gh-pages
 fi
