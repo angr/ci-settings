@@ -10,6 +10,7 @@ git rm -rf *
 cp -r ../apidocs/* .
 
 echo "api.angr.io" > CNAME
+touch .nojekyll
 
 git add .
 git commit --allow-empty \
