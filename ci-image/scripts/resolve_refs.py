@@ -54,7 +54,7 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
                             (target.branch, target.owner, target.repo))
 
                 # if it is a python package, write it into requirements.txt
-                # FIXME: why use package_name to indicate whether it is a python package?
+                # target.package_name is None if package is not a python package
                 if target.package_name is not None:
                     basename = target.package_name.replace("_", "-")
                     path = os.path.abspath(os.path.join(out_dir, "src", basename))
