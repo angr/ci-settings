@@ -1,24 +1,28 @@
 #!/bin/bash
 set -ex
 
-source "$(dirname "$0")/vars.sh"
+pip install packaging
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $SCRIPT_DIR/vars.sh
 
 for i in $(ls $CHECKOUT_DIR); do
     pushd "$CHECKOUT_DIR/$i"
 
-    if [[ -e VERSION ]]; then
-        sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" VERSION
+    if [ -f "$i/VERSION" ]; then
+        python $SCRIPT_DIR/versiontool.py undev <<< "$i/VERSION" > "$i/VERSION"
         VERSION=$(cat VERSION)
-    elif [ -e setup.py ]; then
-        # Replace version in setup.py
-        sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" setup.py
-        # Replace version in __init__.py
-        sed -i -e "s/\"gitrolling\"/$VERSION_ID/g" ./*/__init__.py
 
-        VERSION=$(sed -n -e "s/.*version='\(.\+\)'.*/\1/p" setup.py)
-    elif [ "$i" == "angr-doc" ]; then
-        sed -i -e "s/\\.gitrolling/.$VERSION_ID/g" api-doc/source/conf.py
-        VERSION=$(sed -n -e "s/.*version = u'\(.\+\)'.*/\1/p" api-doc/source/conf.py)
+    elif [ -e pyproject.toml ]; then
+        # Replace version in __init__.py
+        project_name=$(sed 's/-//g' <<< "$i")
+        init_file=$project_name/__init__.py
+        old_version=$(cat $init_file | grep '__version__' | head -n 1 | cut -d'"' -f2)
+        VERSION=$(python $SCRIPT_DIR/versiontool.py undev "$old_version")
+        sed -i "s/$old_version/$VERSION/g" $init_file
+        sed -i "s/$old_version/$VERSION/g" pyproject.toml
+        sed -i "s/$old_version/$VERSION/g" setup.cfg
+
     else
         popd
         continue

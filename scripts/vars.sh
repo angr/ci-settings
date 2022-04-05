@@ -1,12 +1,23 @@
 VERSION_ID="$BUILD_BUILDID"
-REPOS="binaries vex angr-doc archinfo pyvex cle claripy ailment angr angr-management angrop"
+REPOS="binaries angr-doc archinfo pyvex cle claripy ailment angr angr-management angrop"
 REPOS_LINUX_ONLY="archr"
 CHECKOUT_DIR=repos
 DOC_REQUIREMENTS="sphinx sphinx_rtd_theme"
+NATIVE_PACKAGES="pyvex angr"
 
 function is_linux_only() {
     for p in $REPOS_LINUX_ONLY; do
         if [[ $1 == *$p* ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function is_native_package() {
+    package=$1
+    for p in $NATIVE_PACKAGES; do
+        if [[ "$package" == "$p" ]]; then
             return 0
         fi
     done

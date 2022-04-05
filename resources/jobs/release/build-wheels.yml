@@ -1,7 +1,7 @@
 parameters:
 - name: pools
   type: object
-  default: [ "ubuntu-20.04", "windows-2019", "macos-10.15" ]
+  default: [ "ubuntu-20.04", "windows-2022", "macos-11" ]
 
 jobs:
 - ${{ each pool in parameters.pools }}:
@@ -17,9 +17,14 @@ jobs:
       ${{ if contains(pool, 'ubuntu') }}:
         parameters:
           python: /opt/python/cp36-cp36m/bin/python
-    - template: setup-venv-from-artifact.yml
 
-    - bash: scripts/build_wheels.sh $(python) sdist angr_venv
+    - task: DownloadPipelineArtifact@2
+      displayName: Download artifact ${{ parameters.artifact }}
+      inputs:
+        artifactName: sdist
+        targetPath: sdist
+
+    - bash: scripts/build_wheels.sh $(python) sdist
       displayName: Build wheels
 
     - task: PublishPipelineArtifact@1
