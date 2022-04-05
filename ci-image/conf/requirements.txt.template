@@ -4,12 +4,15 @@ flaky
 pylint
 nose_skinny_report>=0.0.5
 
-# angr doc stuff
-sphinx
+# Requirements to build angr doc
+sphinx==2.3.1
 sphinx_rtd_theme
 myst-parser
 
-# Because we frequently need upstream fixes
+# Lots of angr doc tests use monkeyhex
+monkeyhex
+
+# We frequently need upstream pyelftools fixes
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 
 # Some old tests still depend on nose
@@ -21,3 +24,4 @@ pyxbe
 sqlalchemy
 pypcode
 qtrace
+cvc4-solver
