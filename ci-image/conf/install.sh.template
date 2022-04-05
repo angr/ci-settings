@@ -11,6 +11,9 @@ python3 -mvirtualenv --python=`which python3` ./virtualenv
 source ./virtualenv/bin/activate
 pip install -U 'pip>=21.0.1'
 
+# Install pyvex and angr build dependencies
+pip install cffi unicorn==1.0.2rc4
+
 pip install --requirement ./requirements.txt --no-cache --src ./src --find-links file://$WHEELS --no-build-isolation
 pip freeze > freeze.txt
 
