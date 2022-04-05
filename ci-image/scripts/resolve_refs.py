@@ -58,7 +58,7 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
                 if target.package_name is not None:
                     basename = target.package_name.replace("_", "-")
                     path = os.path.abspath(os.path.join(out_dir, "src", basename))
-                    fp_reqs.write('-e file:%s\n' % path)
+                    fp_reqs.write('file:%s\n' % path)
 
             fp_script.write('WHEELS=' + wheels_dir + '\n')
             fp_script.write('CONF=' + conf_dir + '\n')
