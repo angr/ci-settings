@@ -24,6 +24,9 @@ steps:
     inputs:
       versionSpec: 3.8
 
+- bash: pip install packaging
+  displayName: Install packaging
+
 - ${{ if parameters.git }}:
   - bash: scripts/setup_git.sh
     displayName: Set up git
