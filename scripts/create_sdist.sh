@@ -6,9 +6,6 @@ mkdir sdist
 
 for i in $(ls $CHECKOUT_DIR); do
     if [ -e "$CHECKOUT_DIR/$i/setup.py" ]; then
-        pushd "$CHECKOUT_DIR/$i"
-        python setup.py sdist
-        mv dist/* ../../sdist
-        popd
+        python -m build --sdist --outdir=../../sdist $CHECKOUT_DIR/$i
     fi
 done
