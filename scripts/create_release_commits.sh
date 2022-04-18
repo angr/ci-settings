@@ -18,6 +18,7 @@ for i in $(ls $CHECKOUT_DIR); do
         old_version=$(cat $init_file | grep '__version__' | head -n 1 | cut -d'"' -f2)
         VERSION=$(python $SCRIPT_DIR/versiontool.py undev "$old_version")
         sed -i "s/$old_version/$VERSION/g" $init_file
+        sed -i "s/$old_version/$VERSION/g" pyproject.toml
 
     else
         popd
