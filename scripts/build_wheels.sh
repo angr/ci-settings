@@ -24,6 +24,7 @@ for f in $(ls "$sdist_path"); do
     fi
 done
 
+export PIP_FIND_LINKS="$sdist_path"
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep Name | cut -d' ' -f2)
     # Only add platform tag for linux when dist is pyvex or angr
