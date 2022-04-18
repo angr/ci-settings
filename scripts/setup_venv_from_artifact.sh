@@ -21,4 +21,6 @@ else
         fi
     done
 fi
+
+export PIP_FIND_LINKS="$dist_path"
 python -m pip install $install_list
