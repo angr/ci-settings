@@ -23,3 +23,9 @@ jobs:
     displayName: Publish release commits
     env:
       DRY_RUN: ${{ lower(parameters.dry_run) }}
+
+  - bash: scripts/bump_versions.sh
+    displayName: Bump versions on master
+    env:
+      DRY_RUN: ${{ lower(parameters.dry_run) }}
+      GH_TOKEN: $(GH_TOKEN)

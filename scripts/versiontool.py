@@ -14,6 +14,10 @@ def bumpdev(version):
     new_version = Version(".".join(version_tuple) + ".dev0")
     return new_version.public
 
+def bumpmicro(version):
+    split = version.base_version.split(".")
+    split[2] = str(int(split[2]) + 1)
+    return ".".join(split)
 
 def main():
     parser = argparse.ArgumentParser(description='Version Tool')
@@ -25,6 +29,9 @@ def main():
     bumpdev_p = sp.add_parser("bumpdev", help="Bump version to next dev version")
     bumpdev_p.add_argument("version", help="Version to bump to next dev version")
 
+    bumpmicro_p = sp.add_parser("bumpmicro", help="Bump version to next micro version")
+    bumpmicro_p.add_argument("version", help="Version to bump to next micro version")
+
     args = parser.parse_args()
 
     try:
@@ -35,8 +42,10 @@ def main():
 
     if args.command == "undev":
         print(undev(version))
-    if args.command == "bumpdev":
+    elif args.command == "bumpdev":
         print(bumpdev(version))
+    elif args.command == "bumpmicro":
+        print(bumpmicro(version))
 
 
 if __name__ == "__main__":
