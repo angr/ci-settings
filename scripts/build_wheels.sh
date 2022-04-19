@@ -9,9 +9,6 @@ function realpath() {
 
 python="$1"
 sdist_path="$(realpath "$2")"
-venv_path="$(realpath "$3")"
-
-source "$venv_path/bin/activate" &> /dev/null || source "$venv_path/Scripts/activate"
 
 pip install build
 

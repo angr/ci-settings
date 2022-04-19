@@ -17,7 +17,12 @@ jobs:
       ${{ if contains(pool, 'ubuntu') }}:
         parameters:
           python: /opt/python/cp36-cp36m/bin/python
-    - template: setup-venv-from-artifact.yml
+
+    - task: DownloadPipelineArtifact@2
+      displayName: Download artifact ${{ parameters.artifact }}
+      inputs:
+        artifactName: ${{ parameters.artifact }}
+        targetPath: ${{ parameters.artifact }}
 
     - bash: scripts/build_wheels.sh $(python) sdist angr_venv
       displayName: Build wheels
