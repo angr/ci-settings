@@ -4,6 +4,8 @@ source $(dirname $0)/vars.sh
 
 mkdir sdist
 
+python -m pip install build
+
 export PIP_FIND_LINKS="sdist"
 for i in $REPOS; do
     if [ -e "$CHECKOUT_DIR/$i/pyproject.toml" ]; then
