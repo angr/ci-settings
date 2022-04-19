@@ -4,7 +4,7 @@ parameters:
   default: true
 - name: artifacts
   type: object
-  default: [ "sdist", "wheels-windows-2019", "wheels-macos-10.15", "wheels-ubuntu-20.04" ]
+  default: [ "sdist", "wheels-windows-2022", "wheels-macos-11", "wheels-ubuntu-20.04" ]
 
 jobs:
 - job:
