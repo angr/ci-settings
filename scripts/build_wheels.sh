@@ -12,6 +12,11 @@ sdist_path="$(realpath "$2")"
 
 $python -m pip install build
 
+platform="$($python -c "import distutils; print(distutils.util.get_platform())" | sed s'/-/_/g')"
+if [ "$(uname)" = "Linux" ]; then
+    platform="$(sed 's/linux/manylinux2010/' <<< "$platform")"
+fi
+
 wheels=$(realpath wheels)
 mkdir -p "$wheels" wheels_build
 pushd wheels_build
@@ -23,13 +28,12 @@ for f in $(ls "$sdist_path"); do
     fi
 done
 
+
 export PIP_FIND_LINKS="$sdist_path"
 for dist in $(ls); do
-    package=$(cat $dist/PKG-INFO | grep Name | cut -d' ' -f2)
-    # Only add platform tag for linux when dist is pyvex or angr
-    if [ "$(uname)" == "Linux" ] && is_native_package "$package"; then
-        platform_tag_arg="--platform=manylinux2010_x86_64"
-        $python -m build --wheel --outdir "$wheels" -C$platform_tag_arg $dist
+    package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]+$' | head -n 1 | cut -d' ' -f2)
+    if is_native_package "$package"; then
+        $python -m build --wheel --outdir "$wheels" -C--plat-name $platform_tag_arg $dist
     else
         $python -m build --wheel --outdir "$wheels" $dist
     fi
