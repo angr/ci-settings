@@ -21,10 +21,10 @@ jobs:
     - task: DownloadPipelineArtifact@2
       displayName: Download artifact ${{ parameters.artifact }}
       inputs:
-        artifactName: ${{ parameters.artifact }}
-        targetPath: ${{ parameters.artifact }}
+        artifactName: sdist
+        targetPath: sdist
 
-    - bash: scripts/build_wheels.sh $(python) sdist angr_venv
+    - bash: scripts/build_wheels.sh $(python) sdist
       displayName: Build wheels
 
     - task: PublishPipelineArtifact@1
