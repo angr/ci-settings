@@ -28,7 +28,7 @@ export PIP_FIND_LINKS="$sdist_path"
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep Name | cut -d' ' -f2)
     # Only add platform tag for linux when dist is pyvex or angr
-    if [[ "$(uname)" == "Linux" && is_native_package $package ]]; then
+    if [ "$(uname)" == "Linux" ] && is_native_package "$package"; then
         platform_tag_arg="--platform=manylinux2010_x86_64"
         $python -m build --wheel --outdir "$wheels" -C$platform_tag_arg $dist
     else
