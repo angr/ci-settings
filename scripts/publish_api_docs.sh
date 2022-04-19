@@ -12,6 +12,8 @@ cp -r ../apidocs/* .
 echo "api.angr.io" > CNAME
 touch .nojekyll
 
+angr_doc_version=$(cat VERSION)
+
 git add .
 git commit --allow-empty \
            --author "angr release bot <angr-dev@asu.edu>" \

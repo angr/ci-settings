@@ -14,3 +14,4 @@ done
 
 # Build docs
 make -C repos/angr-doc/api-doc html
+cp repos/angr-doc/VERSION angr-doc/api-doc/build/html/
