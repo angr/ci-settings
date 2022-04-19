@@ -24,7 +24,7 @@ steps:
     inputs:
       versionSpec: 3.8
 
-- bash: $PYTHON -m pip install packaging build
+- bash: $python -m pip install packaging build
   displayName: Install build tools
 
 - ${{ if parameters.git }}:
