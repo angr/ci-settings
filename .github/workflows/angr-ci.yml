@@ -2,16 +2,34 @@ name: angr CI
 
 on:
   workflow_call:
+    inputs:
+      nightly:
+        description: "Enable nightly-only tests"
+        default: false
+        type: boolean
+        required: false
+      container_image:
+        description: "Container image to use"
+        default: "angr/ci:2"
+        type: string
+        required: false
+      afl:
+        description: "Set AFL parameters during test stage"
+        default: false
+        type: boolean
+        required: false
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-20.04
     container:
-      image: angr/ci:2
+      image: ${{ inputs.container_image }}
     steps:
     - run: /root/scripts/azure-build.sh
       name: Build CI artifact
+      env:
+        NIGHTLY: ${{ inputs.nightly }}
     - uses: actions/upload-artifact@v3
       with:
         name: build_archive
@@ -21,7 +39,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-20.04
     container:
-      image: angr/ci:2
+      image: ${{ inputs.container_image }}
     needs: build
     steps:
     - uses: actions/download-artifact@v3
@@ -30,19 +48,27 @@ jobs:
     - run: /root/scripts/azure-lint.sh
       name: Run linter
 
-
   test:
     name: Test
     runs-on: ubuntu-20.04
     container:
-      image: angr/ci:2
-      options: --cap-add=SYS_PTRACE --security-opt seccomp:unconfined
+      image: ${{ inputs.container_image }}
+      options: |
+        -v /var/run/docker.sock:/var/run/docker.sock
+        -v /proc:/hostproc
+        --cap-add=SYS_PTRACE
+        --security-opt seccomp:unconfined
     needs: build
     strategy:
       fail-fast: false
       matrix:
         worker: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
+    - run: |
+        echo 1 | sudo tee /hostproc/sys/kernel/sched_child_runs_first
+        echo core | sudo tee /hostproc/sys/kernel/core_pattern
+      name: Set AFL parameters
+      if: ${{ inputs.afl }}
     - uses: actions/download-artifact@v3
       with:
         name: build_archive
