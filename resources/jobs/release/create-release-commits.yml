@@ -37,3 +37,8 @@ jobs:
     inputs:
       artifactName: sdist
       targetPath: sdist
+
+  - script: pip install twine
+
+  - script: twine check sdist/*
+    displayName: Check artifacts are valid for PyPI

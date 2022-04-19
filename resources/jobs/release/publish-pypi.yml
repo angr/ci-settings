@@ -34,9 +34,6 @@ jobs:
   - script: ls upload
     displayName: List files to be uploaded
 
-  - script: twine check upload/*
-    displayName: Check artifacts are valid for PyPI
-
   - script: twine upload --non-interactive upload/*
     condition: eq(${{ parameters.dry_run }}, false)
     displayName: Upload to pypi

@@ -32,3 +32,8 @@ jobs:
       inputs:
         artifactName: wheels-${{ pool }}
         targetPath: wheels
+
+    - script: pip install twine
+
+    - script: twine check wheels/*
+      displayName: Check artifacts are valid for PyPI
