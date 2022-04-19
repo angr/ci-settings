@@ -4,6 +4,8 @@ set -ex
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $SCRIPT_DIR/vars.sh
 
+pip install packaging
+
 for i in $(ls $CHECKOUT_DIR); do
     pushd "$CHECKOUT_DIR/$i"
 
