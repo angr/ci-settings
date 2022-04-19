@@ -10,7 +10,7 @@ function realpath() {
 python="$1"
 sdist_path="$(realpath "$2")"
 
-pip install build
+$python -m pip install build
 
 wheels=$(realpath wheels)
 mkdir -p "$wheels" wheels_build
@@ -29,9 +29,9 @@ for dist in $(ls); do
     # Only add platform tag for linux when dist is pyvex or angr
     if [ "$(uname)" == "Linux" ] && is_native_package "$package"; then
         platform_tag_arg="--platform=manylinux2010_x86_64"
-        python -m build --wheel --outdir "$wheels" -C$platform_tag_arg $dist
+        $python -m build --wheel --outdir "$wheels" -C$platform_tag_arg $dist
     else
-        python -m build --wheel --outdir "$wheels" $dist
+        $python -m build --wheel --outdir "$wheels" $dist
     fi
 done
 
