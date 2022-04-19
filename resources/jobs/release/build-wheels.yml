@@ -33,7 +33,7 @@ jobs:
         artifactName: wheels-${{ pool }}
         targetPath: wheels
 
-    - script: pip install twine
+    - script: $(python) -m pip install twine
 
-    - script: twine check wheels/*
+    - script: $(python) -m twine check wheels/*
       displayName: Check artifacts are valid for PyPI
