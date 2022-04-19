@@ -27,7 +27,6 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: build_archive
-        path: ./build.tar.gz
     - run: /root/scripts/azure-lint.sh
       name: Run linter
 
@@ -46,7 +45,6 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: build_archive
-        path: ./build.tar.gz
     - run: /root/scripts/azure-test.sh
       name: Run tests
       env:
