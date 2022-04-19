@@ -24,7 +24,7 @@ jobs:
       image: angr/ci:2
     needs: build
     steps:
-    - uses: actions/upload-artifact@v3
+    - uses: actions/download-artifact@v3
       with:
         name: build_archive
         path: ./build.tar.gz
@@ -42,7 +42,7 @@ jobs:
       matrix:
         worker: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
-    - uses: actions/upload-artifact@v3
+    - uses: actions/download-artifact@v3
       with:
         name: build_archive
         path: ./build.tar.gz
