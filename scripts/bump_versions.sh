@@ -9,7 +9,11 @@ pip install packaging
 for i in $(ls $CHECKOUT_DIR); do
     pushd "$CHECKOUT_DIR/$i"
 
-    if [ -f "$i/VERSION" ]; then
+    if [ -f "VERSION" ]; then
+        python $SCRIPT_DIR/versiontool.py undev <<< "VERSION" > "VERSION"
+        VERSION=$(cat VERSION)
+
+    elif [ -f "$i/VERSION" ]; then
         python $SCRIPT_DIR/versiontool.py bumpmicro <<< "$i/VERSION" > "$i/VERSION"
         VERSION=$(cat VERSION)
 
