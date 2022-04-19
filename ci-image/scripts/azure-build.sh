@@ -5,6 +5,11 @@ SCRIPTS=$BASEDIR/scripts
 CONF=$BASEDIR/conf
 WHEELS=$BASEDIR/wheels
 
+if [ ! -z "$GITHUB_REPOSITORY" ]; then
+    export BUILD_REPOSITORY_URI=$GITHUB_REPOSITORY
+    export BUILD_SOURCEBRANCH=$GITHUB_REF
+fi
+
 git config --global url.https://github.com/.insteadOf git@github.com:
 
 cd $WHEELS
