@@ -15,9 +15,11 @@ for i in $(ls $CHECKOUT_DIR); do
         # Replace version in __init__.py
         project_name=$(sed -n 's/-//g' <<< "$i")
         init_file=$project_name/__init__.py
-        old_version =$(cat $init_file | grep '__version__' | cut -d'"' -f2)
+        old_version=$(cat $init_file | grep '__version__' | cut -d'"' -f2)
         VERSION=$(python $SCRIPT_DIR/versiontool.py bumpmicro "$old_version")
         sed -i "s/$old_version/$VERSION/g" $init_file
+        sed -i "s/$old_version/$VERSION/g" pyproject.toml
+        sed -i "s/$old_version/$VERSION/g" setup.cfg
 
     else
         popd
