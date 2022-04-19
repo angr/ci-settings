@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-20.04
     container:
       image: angr/ci:2
+      options: --cap-add=SYS_PTRACE --security-opt seccomp:unconfined
     needs: build
     strategy:
       fail-fast: false
