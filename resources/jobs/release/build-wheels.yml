@@ -17,7 +17,7 @@ jobs:
         artifactName: sdist
         targetPath: sdist
 
-    - bash: scripts/build_wheels.sh $(python) sdist
+    - bash: scripts/build_wheels.sh sdist
       displayName: Build wheels
 
     - task: PublishPipelineArtifact@1
@@ -26,7 +26,7 @@ jobs:
         artifactName: wheels-${{ pool }}
         targetPath: wheels
 
-    - script: $(python) -m pip install twine
+    - script: python -m pip install twine
 
-    - script: $(python) -m twine check wheels/*
+    - script: python -m twine check wheels/*
       displayName: Check artifacts are valid for PyPI
