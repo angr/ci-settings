@@ -12,7 +12,7 @@ sdist_path="$(realpath "$2")"
 
 $python -m pip install build
 
-platform="$($python -c "import distutils; print(distutils.util.get_platform())" | sed s'/-/_/g')"
+platform="$($python -c "import distutils.util; print(distutils.util.get_platform())" | sed s'/-/_/g')"
 if [ "$(uname)" = "Linux" ]; then
     platform="$(sed 's/linux/manylinux2010/' <<< "$platform")"
 fi
