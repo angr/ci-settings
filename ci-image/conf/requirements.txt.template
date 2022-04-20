@@ -25,3 +25,4 @@ sqlalchemy
 pypcode
 qtrace
 cvc4-solver
+shellphish-afl
