@@ -17,11 +17,6 @@ elif [ "$(uname)" == "Darwin" ]; then
     pip install delocate
 fi
 
-platform="$($python -c "import distutils.util; print(distutils.util.get_platform())" | sed s'/-/_/g')"
-if [ "$(uname)" = "Linux" ]; then
-    platform="$(sed 's/linux/manylinux2010/' <<< "$platform")"
-fi
-
 wheels=$(realpath wheels)
 mkdir -p "$wheels" wheels_build
 pushd wheels_build
