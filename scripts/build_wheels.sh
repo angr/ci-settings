@@ -11,6 +11,11 @@ python="$1"
 sdist_path="$(realpath "$2")"
 
 $python -m pip install build cibuildwheel==2.3.1
+if [ "$(uname)" == "Linux" ]; then
+    pip install auditwheel
+elif [ "$(uname)" == "Darwin" ]; then
+    pip install delocate
+fi
 
 platform="$($python -c "import distutils.util; print(distutils.util.get_platform())" | sed s'/-/_/g')"
 if [ "$(uname)" = "Linux" ]; then
