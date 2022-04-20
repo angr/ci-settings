@@ -28,12 +28,11 @@ for f in $(ls "$sdist_path"); do
     fi
 done
 
-
 export PIP_FIND_LINKS="$sdist_path"
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
     if is_native_package "$package"; then
-        $python -m build --wheel --outdir "$wheels" -C--plat-name $platform_tag_arg $dist
+        $python -m build --wheel --outdir "$wheels" -C--plat-name $platform $dist
     else
         $python -m build --wheel --outdir "$wheels" $dist
     fi
