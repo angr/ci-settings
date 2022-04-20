@@ -29,7 +29,7 @@ for f in $(ls "$sdist_path"); do
 done
 
 export PIP_FIND_LINKS="$sdist_path"
-export CIBW_ENVIRONMENT_LINUX="/host$PIP_FIND_LINKS"
+export CIBW_ENVIRONMENT_LINUX="PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 export CIBW_ARCHS=native
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
