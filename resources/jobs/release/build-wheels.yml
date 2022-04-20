@@ -9,15 +9,8 @@ jobs:
     displayName: Build wheels on ${{ pool }}
     pool:
       vmImage: ${{ pool }}
-    ${{ if contains(pool, 'ubuntu') }}:
-      container:
-        image: quay.io/pypa/manylinux2010_x86_64
     steps:
     - template: setup-host.yml
-      ${{ if contains(pool, 'ubuntu') }}:
-        parameters:
-          python: /opt/python/cp36-cp36m/bin/python
-
     - task: DownloadPipelineArtifact@2
       displayName: Download artifact ${{ parameters.artifact }}
       inputs:

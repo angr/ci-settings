@@ -10,7 +10,7 @@ function realpath() {
 python="$1"
 sdist_path="$(realpath "$2")"
 
-$python -m pip install build
+$python -m pip install build cibuildwheel==2.3.1
 
 platform="$($python -c "import distutils.util; print(distutils.util.get_platform())" | sed s'/-/_/g')"
 if [ "$(uname)" = "Linux" ]; then
@@ -29,11 +29,16 @@ for f in $(ls "$sdist_path"); do
 done
 
 export PIP_FIND_LINKS="$sdist_path"
+export CIBW_ENVIRONMENT_LINUX="/host/$PIP_FIND_LINKS"
+export CIBW_ARCHS=native
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
     if is_native_package "$package"; then
-        $python -m build --wheel --outdir "$wheels" -C--plat-name $platform $dist
-    else
+        $python -m cibuildwheel \
+            --skip-tests \
+            --output-dir "$wheels" \
+            $dist
+    elif [ "$(uname)" == "Linux" ]; then
         $python -m build --wheel --outdir "$wheels" $dist
     fi
 done
