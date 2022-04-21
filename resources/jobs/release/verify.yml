@@ -30,7 +30,7 @@ jobs:
         source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
         export PIP_FIND_LINKS="wheels-${{ pool }} wheels-Ubuntu-20.04"
         pip install wheels-${{ pool }}/*.whl
-      displatName: Test wheel install
+      displayName: Test wheel install
 
     - bash: |
         source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
