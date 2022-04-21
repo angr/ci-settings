@@ -73,4 +73,25 @@ jobs:
       env:
         WORKER: ${{ matrix.worker }}
         NUM_WORKERS: 10
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Test Results ${{ matrix.worker }}
+        path: build/results/*.tests.xml
+
+  publish-test-results:
+    name: "Publish Unit Tests Results"
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: "artifacts/**/*.xml"
 
