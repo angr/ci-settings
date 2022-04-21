@@ -74,6 +74,7 @@ jobs:
         WORKER: ${{ matrix.worker }}
         NUM_WORKERS: 10
     - uses: actions/upload-artifact@v3
+      if: always()
       with:
         name: Test Results ${{ matrix.worker }}
         path: build/results/*.tests.xml
