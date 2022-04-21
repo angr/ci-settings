@@ -31,7 +31,7 @@ done
 export PIP_FIND_LINKS="$sdist_path"
 export CIBW_ENVIRONMENT_LINUX="PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 export CIBW_ARCHS=native
-export CIBW_PROJECT_REQUIRES_PYTHON='==3.6'
+export CIBW_BUILD="cp36-cp36m-*"
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
     if is_native_package "$package"; then
