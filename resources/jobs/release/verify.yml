@@ -11,9 +11,26 @@ jobs:
       vmImage: ${{ pool }}
     steps:
     - template: setup-host.yml
-    - template: setup-venv-from-artifact.yml
-      parameters:
-        artifact: wheels-${{ pool }}
+
+    - task: DownloadPipelineArtifact@2
+      displayName: Download artifact ${{ parameters.artifact }}
+      inputs:
+        artifactName: wheels-${{ pool }}
+        targetPath: wheels-${{ pool }}
+
+    - task: DownloadPipelineArtifact@2
+      displayName: Download artifact ${{ parameters.artifact }}
+      condition: not(eq(pool, "Ubuntu-20.04"))
+      inputs:
+        artifactName: wheels-Ubuntu-20.04
+        targetPath: wheels-Ubuntu-20.04
+
+    - bash: |
+        python -m venv angr_venv
+        source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
+        export PIP_FIND_LINKS="wheels-${{ pool }} wheels-Ubuntu-20.04"
+        pip install wheels-${{ pool }}/*.whl
+      displatName: Test wheel install
 
     - bash: |
         source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
