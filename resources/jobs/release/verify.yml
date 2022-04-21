@@ -20,7 +20,7 @@ jobs:
 
     - task: DownloadPipelineArtifact@2
       displayName: Download artifact ${{ parameters.artifact }}
-      condition: not(eq("${{ parameters.pool }}", "Ubuntu-20.04"))
+      condition: not(eq('${{ parameters.pool }}', 'Ubuntu-20.04'))
       inputs:
         artifactName: wheels-Ubuntu-20.04
         targetPath: wheels-Ubuntu-20.04
