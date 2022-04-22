@@ -15,7 +15,7 @@ def bumpdev(version):
     return new_version.public
 
 def bumpmicro(version):
-    split = version.base_version.split(".")
+    split = version.public.split(".")
     split[2] = str(int(split[2]) + 1)
     return ".".join(split)
 
