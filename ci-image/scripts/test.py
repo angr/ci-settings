@@ -18,7 +18,7 @@ def parse_tests(f):
 def test_project(project, tests, coverage=False):
     coverage_flags = "--with-coverage --coverage ./src/{}".format(project)
 
-    command = "nose2 -v -s ./src/{}/tests -c /root/config/nose2.cfg --log-level 100 {} {}".format(
+    command = "nose2 -v -s ./src/{}/tests -c /root/conf/nose2.cfg --log-level 100 {} {}".format(
         project, coverage_flags if coverage else '', ' '.join(tests))
 
     print("Running nose2 command:\n{}".format(command), flush=True)
