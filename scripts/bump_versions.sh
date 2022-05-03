@@ -45,11 +45,11 @@ for i in $(ls $CHECKOUT_DIR); do
     if [ "$DRY_RUN" == "false" ]; then
         git push
         push_successful=$?
-        if [ $push_successful -neq 0 ]; then
+        if [ $push_successful -ne 0 ]; then
             git pull --rebase
             git push
             push_2_successful=$?
-            if [ $push_2_successful -neq 0 ]; then
+            if [ $push_2_successful -ne 0 ]; then
                 git checkout -b bump/$VERSION
                 git push origin bump/$VERSION
                 gh pr create \
