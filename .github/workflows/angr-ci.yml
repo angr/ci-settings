@@ -96,3 +96,13 @@ jobs:
         with:
           files: "artifacts/**/*.xml"
 
+      - name: Send result email
+        if: inputs.nightly
+        run: |
+          BUILD_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -s --user "api:${{ secrets.MAILGUN_API_TOKEN }}" \
+            https://api.mailgun.net/v3/mail.rev.fish/messages \
+            -F from="angr Nightly CI <angr-nightly-ci@mail.rev.fish>" \
+            -F to=angr-dev@asu.edu \
+            -F subject="$GITHUB_REPOSITORY nightly CI failed" \
+            -F text="Link to failed run: $BUILD_URL"
