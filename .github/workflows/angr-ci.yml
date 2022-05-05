@@ -98,9 +98,11 @@ jobs:
 
       - name: Send result email
         if: inputs.nightly && failure()
+        env:
+          MAILGUN_API_TOKEN: ${{ secrets.MAILGUN_API_TOKEN }}
         run: |
           BUILD_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          curl -s --user "api:${{ secrets.MAILGUN_API_TOKEN }}" \
+          curl -s --user "api:$MAILGUN_API_TOKEN" \
             https://api.mailgun.net/v3/mail.rev.fish/messages \
             -F from="angr Nightly CI <angr-nightly-ci@mail.rev.fish>" \
             -F to=angr-dev@asu.edu \
