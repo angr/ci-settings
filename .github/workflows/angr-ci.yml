@@ -97,7 +97,7 @@ jobs:
           files: "artifacts/**/*.xml"
 
       - name: Send result email
-        if: inputs.nightly && failure()
+        if: inputs.nightly && needs.test.result == 'failure'
         env:
           MAILGUN_API_TOKEN: ${{ secrets.MAILGUN_API_TOKEN }}
         run: |
