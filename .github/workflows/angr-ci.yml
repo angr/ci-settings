@@ -97,7 +97,7 @@ jobs:
           files: "artifacts/**/*.xml"
 
       - name: Send result email
-        if: inputs.nightly
+        if: inputs.nightly && failure()
         run: |
           BUILD_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           curl -s --user "api:${{ secrets.MAILGUN_API_TOKEN }}" \
