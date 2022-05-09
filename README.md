@@ -5,6 +5,17 @@ won't need to touch this, and instead should use our regular images. This is
 mostly useful if you are either hacking on CI, or super confused why tests are
 failing for your pull request.
 
+## CI options
+angr CI supports directives to customize the CI run.
+When making a PR, nightly tests can be enabled by adding the following line to the PR body:
+```
+ci: include-nightly
+```
+Additionally, other PRs can be used in place of default branches by simply linking the PR, for example
+```
+sync: angr/angr#<id>
+```
+
 ## Manual instructions
 
 To perform a build manually:
@@ -17,14 +28,14 @@ docker run -it \
     angr/ci:2
 ```
 
-And the, in the container:
+And then, in the container:
 
 ```sh
 # This script will put you in the same directory as Azure would. It also sets
-# all the necessary enviroment variables.
+# all the necessary environment variables.
 source /root/scripts/manual_defaults.sh
 
-# OPTIONAL: If you need to customize enviroment variables, these are the
+# OPTIONAL: If you need to customize environment variables, these are the
 # important ones, along with their default values.
 
 # Change these to the relevant repo and branch
