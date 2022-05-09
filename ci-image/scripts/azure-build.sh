@@ -25,8 +25,10 @@ $SCRIPTS/resolve_refs.py $CONF $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRAN
 ./install.sh
 
 source virtualenv/bin/activate
-if [ "$1" == "nightly" ] || [ "$NIGHTLY" == "true" ] || ["CI_DIRECTIVES" == *"include-nightly"*]; then
+if [ "$1" == "nightly" ] || [ "$NIGHTLY" == "true" ]; then
     $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src --skip-dependents > tests.txt
+elif ["CI_DIRECTIVES" == *"include-nightly"*]; then
+    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
 else
     $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src --eval-attribute 'speed != "slow"' > tests.txt
 fi
