@@ -54,15 +54,15 @@ class TestParseDirectives(unittest.TestCase):
 
 
 def main():
-    github = Github(os.getenv(["GITHUB_TOKEN"], None))
-    repo = github.get_repo(os.getenv(["BUILD_REPOSITORY_URI"]), lazy=True)
+    github = Github(os.getenv("GITHUB_TOKEN"))
+    repo = github.get_repo(os.getenv("BUILD_REPOSITORY_URI"), lazy=True)
     ref = os.getenv("BUILD_SOURCEBRANCH")
     if "refs/pull/" not in ref:
         # This is not a pull request
         return
 
-    pull_number = int(ref.split("/")[-1])
-    pull_request = repo.get_pull(pull_number, lazy=True)
+    pull_number = int(ref.split("/")[2])
+    pull_request = repo.get_pull(pull_number)
     body = pull_request.body
     if body is None:
         # No body, so no directives
