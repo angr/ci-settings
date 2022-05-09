@@ -12,7 +12,7 @@ fi
 
 git config --global url.https://github.com/.insteadOf git@github.com:
 
-export CI_DIRECTIVES=$($SCRIPTS/read-directives.py)
+export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
 cd $WHEELS
 git fetch
