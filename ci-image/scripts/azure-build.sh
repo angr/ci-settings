@@ -14,14 +14,9 @@ git config --global url.https://github.com/.insteadOf git@github.com:
 
 export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
-cd $WHEELS
-git fetch
-git reset --hard $BUILD_SOURCEBRANCH || true
-cd -
-
 mkdir build
 cd build
-$SCRIPTS/resolve_refs.py $CONF $WHEELS . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
+$SCRIPTS/resolve_refs.py $CONF . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
 ./install.sh
 
 source virtualenv/bin/activate
