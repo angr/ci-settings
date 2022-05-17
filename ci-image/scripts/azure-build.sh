@@ -15,6 +15,8 @@ git config --global url.https://github.com/.insteadOf git@github.com:
 export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
 mkdir build
+mkdir build/wheels
+export PIP_FIND_LINKS=$(realpath build/wheels)
 cd build
 $SCRIPTS/resolve_refs.py $CONF . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
 ./install.sh

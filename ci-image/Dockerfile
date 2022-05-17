@@ -15,7 +15,8 @@ RUN apt-get install -y binutils-mips-linux-gnu binutils-mipsel-linux-gnu binutil
 RUN apt-get install -y strace
 RUN apt-get install -y fontconfig
 RUN apt-get install -y gcc-multilib g++-multilib
-RUN pip3 install "virtualenv<20" pygithub
+RUN apt-get install -y python3-venv
+RUN pip3 install "virtualenv<20" pygithub build
 
 # This command is used to fix problems with libc6-cross packages
 # this is only a temporary solution and should be fixed in the ubuntu packages in the future

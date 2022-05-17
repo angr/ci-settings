@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
-import sys
 import os
+import shlex
+import subprocess
+import sys
+
 from github import Github, GithubException
 
 sys.path.append(os.path.dirname(os.path.basename(__file__)))
@@ -53,14 +56,13 @@ def main(conf_dir, out_dir, target_repo, ref):
                     fp_script.write('git clone --recursive -b %s https://github.com/%s/%s.git\n' %
                             (target.branch, target.owner, target.repo))
 
-                # if it is a python package, write it into requirements.txt
-                # target.package_name is None if package is not a python package
+                # if it is a python package, build a wheel and add it to the install.sh
                 if target.package_name is not None:
                     basename = target.package_name.replace("_", "-")
                     path = os.path.abspath(os.path.join(out_dir, "src", basename))
-                    fp_reqs.write('-e file:%s\n' % path)
+                    fp_script.write("python3 -m build --wheel --outdir %s %s\n" % (os.getenv("PIP_FIND_LINKS"), path))
+                    fp_reqs.write('%s\n' % basename)
 
-            fp_script.write('WHEELS=' + wheels_dir + '\n')
             fp_script.write('CONF=' + conf_dir + '\n')
 
             fp_script.write(script_tail)
