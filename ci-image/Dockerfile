@@ -25,6 +25,9 @@ RUN mkdir /usr/mips-linux-gnu/etc /usr/mips64-linux-gnuabi64/etc /usr/powerpc-li
     && ln -s /dev/null /usr/mips64-linux-gnuabi64/etc/ld.so.cache \
     && ln -s /dev/null /usr/powerpc-linux-gnu/etc/ld.so.cache \
     && ln -s /dev/null /usr/powerpc64-linux-gnu/etc/ld.so.cache
+    
+# fix missing libreadline.so.7
+RUN ln -s /lib/x86_64-linux-gnu/libreadline.so /lib/x86_64-linux-gnu/libreadline.so.7
 
 # Disable pwntools curses
 ENV PWNLIB_NOTERM=1
