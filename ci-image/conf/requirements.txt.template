@@ -15,9 +15,6 @@ monkeyhex
 # We frequently need upstream pyelftools fixes
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 
-# Some old tests still depend on nose
-nose
-
 # CI doesn't support installing optional dependencies yet
 minidump
 pyxbe
