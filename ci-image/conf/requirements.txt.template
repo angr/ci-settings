@@ -1,7 +1,7 @@
 # CI infrastructure
 nose2
 flaky
-pylint
+pylint>=2.14.0
 nose_skinny_report>=0.0.5
 
 # Requirements to build angr doc
