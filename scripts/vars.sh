@@ -1,5 +1,5 @@
 VERSION_ID="$BUILD_BUILDID"
-REPOS="binaries angr-doc archinfo pyvex cle claripy ailment angr angr-management angrop"
+REPOS="binaries angr-doc archinfo pyvex cle claripy ailment angr angr-management"
 REPOS_LINUX_ONLY="archr"
 CHECKOUT_DIR=repos
 DOC_REQUIREMENTS="sphinx sphinx_rtd_theme"
