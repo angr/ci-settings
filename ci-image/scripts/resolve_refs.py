@@ -12,7 +12,7 @@ join = os.path.join
 # API requests are rate limited... so we try to be thrifty.  API requests are commented.
 
 
-def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
+def main(conf_dir, out_dir, target_repo, ref):
     sources = load_config(join(conf_dir, 'repo-list.txt'))
 
     if target_repo.endswith('.git'):
@@ -60,7 +60,6 @@ def main(conf_dir, wheels_dir, out_dir, target_repo, ref):
                     path = os.path.abspath(os.path.join(out_dir, "src", basename))
                     fp_reqs.write('-e file:%s\n' % path)
 
-            fp_script.write('WHEELS=' + wheels_dir + '\n')
             fp_script.write('CONF=' + conf_dir + '\n')
 
             fp_script.write(script_tail)
@@ -165,7 +164,7 @@ def sync_reqs_pr(sources, repo_name, pull_number):
 
 if __name__ == '__main__':
     try:
-        sys.exit(main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]))
+        sys.exit(main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
     except IndexError:
-        print('usage: resolve-refs.py conf_dir wheels_dir out_dir target_repo ref')
+        print('usage: resolve-refs.py conf_dir out_dir target_repo ref')
         print('ref is either refs/heads/<branch> or refs/pull/<pr>')
