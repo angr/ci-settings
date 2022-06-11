@@ -22,7 +22,7 @@ angr/archr
 !angr/binaries
 
 # applications
-angr/angr-management -> angr, binsync
+angr/angr-management -> angr
 angr/angrop -> angr
 angr/phuzzer
 angr/rex -> angr, archr, angrop
@@ -30,7 +30,6 @@ angr/patcherex -> angr
 angr/heaphopper -> angr
 shellphish/driller -> angr
 
-angr/binsync
 angr/tracer -> angr
 mechaphish/compilerex
 mechaphish/povsim
