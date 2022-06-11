@@ -33,3 +33,4 @@ shellphish/driller -> angr
 angr/tracer -> angr
 mechaphish/compilerex
 mechaphish/povsim
+mechaphish/colorguard
