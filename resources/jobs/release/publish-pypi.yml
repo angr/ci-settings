@@ -13,9 +13,9 @@ jobs:
     vmImage: ubuntu-20.04
   steps:
   - task: UsePythonVersion@0
-    displayName: Use python 3.6
+    displayName: Use python 3.8
     inputs:
-      versionSpec: 3.6
+      versionSpec: 3.8
 
   - script: pip install twine
 

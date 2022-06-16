@@ -27,6 +27,7 @@ jobs:
         targetPath: wheels
 
     - script: python -m pip install twine
+      displayName: Install twine
 
     - script: python -m twine check wheels/*
       displayName: Check artifacts are valid for PyPI
