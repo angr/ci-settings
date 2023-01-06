@@ -33,7 +33,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: build_archive
-        path: ./build.tar.gz
+        path: ./build.tar.zst
 
   lint:
     name: Lint

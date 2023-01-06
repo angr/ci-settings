@@ -9,7 +9,7 @@ if [ ! -z "$GITHUB_REPOSITORY" ]; then
     export BUILD_SOURCEBRANCH=$GITHUB_REF
 fi
 
-tar -xf build.tar.gz
+tar -I zstd -xf build.tar.zst
 cd build
 
 source virtualenv/bin/activate
