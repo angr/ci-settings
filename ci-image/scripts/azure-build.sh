@@ -30,7 +30,29 @@ fi
 cd ..
 
 # remove some unneeded files to reduce bloat
-rm -rf build/src/angr/.eggs build/src/vex/priv/*.o build/src/vex/libvex.a build/src/pyvex/pyvex_c/*.o build/src/pyvex/.eggs build/virtualenv/lib/python3.6/lib/site-packages/unicorn/lib/libunicorn.a build/virtualenv/lib/python3.6/lib/site-packages/babel/locale-data build/virtualenv/lib/python3.6/bin/z3 build/src/binaries/.git **/__pycache__
+find build \( \
+	-type d -and \( \
+		\( -name .git -and -not -wholename "*/$(echo $BUILD_REPOSITORY_URI | cut -d"/" -f2)/.git" \) \
+		-or -name __pycache__ \
+		-or -name "*.egg-info" \
+		-or \( -wholename "*/sphinx/locale/*" -and -not -name LC_MESSAGES \) \
+		-or \( -wholename "build/virtualenv/*" -and -name tests \) \
+		-or -wholename "*/angr/build" \
+		-or -wholename "*/pyvex/build" \
+	\) \
+	-or -type f -and \( \
+		-wholename build/virtualenv -and \( \
+			-name *.exe \
+			-or -name *.dylib \
+			-or -name libunicorn.a \
+			-or -name libcapstone.a \
+			-or -wholename "*/babel/locale-data" \
+			-or -wholename "*/bin/z3" \
+		\) \
+		-or -wholename build/src/pyvex/*.a \
+		-or -wholename build/src/pyvex/*.o \
+	\) \
+\) -exec rm -rf {} +
 
 # export
 tar -I zstd -cf build.tar.zst build/src build/virtualenv build/tests.txt
