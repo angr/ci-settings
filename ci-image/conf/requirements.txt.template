@@ -4,12 +4,6 @@ flaky
 pylint>=2.14.0
 nose_skinny_report>=0.0.5
 
-# Requirements to build angr doc
-jinja2==3.0.3
-sphinx==2.3.1
-sphinx_rtd_theme
-myst-parser
-
 # Lots of angr doc tests use monkeyhex
 monkeyhex
 
