@@ -24,7 +24,6 @@ stages:
   displayName: Build docs and wheels
   jobs:
   - template: jobs/release/build-wheels.yml
-  - template: jobs/release/build-api-docs.yml
   dependsOn:
   - create
 
@@ -39,9 +38,6 @@ stages:
   displayName: Publish release
   jobs:
   - template: jobs/release/publish-release-commits.yml
-    parameters:
-      dry_run: ${{ parameters.dry_run }}
-  - template: jobs/release/publish-api-docs.yml
     parameters:
       dry_run: ${{ parameters.dry_run }}
   - template: jobs/release/publish-pypi.yml

@@ -7,9 +7,6 @@ binaries:
 vex:
 - None
 
-angr-doc:
-- VERSION
-
 archinfo:
 - archinfo/__init__.py#6
 
