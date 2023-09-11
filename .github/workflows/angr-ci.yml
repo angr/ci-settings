@@ -86,16 +86,6 @@ jobs:
     if: always()
 
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          path: artifacts
-
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          files: "artifacts/**/*.xml"
-
       - name: Send result email
         if: inputs.nightly && needs.test.result == 'failure'
         env:
