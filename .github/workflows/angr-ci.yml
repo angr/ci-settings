@@ -30,10 +30,11 @@ jobs:
       name: Build CI artifact
       env:
         NIGHTLY: ${{ inputs.nightly }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: build_archive
         path: ./build.tar.zst
+        compression-level: 0
 
   lint:
     name: Lint
