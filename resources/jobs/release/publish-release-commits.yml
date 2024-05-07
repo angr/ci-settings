@@ -7,7 +7,7 @@ jobs:
 - job:
   displayName: Publish release commits
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - template: setup-host.yml
     parameters:

@@ -4,18 +4,18 @@ parameters:
   default: true
 - name: artifacts
   type: object
-  default: [ "sdist", "wheels-windows-2022", "wheels-macos-11", "wheels-ubuntu-20.04" ]
+  default: [ "sdist", "wheels-windows-2022", "wheels-macos-11", "wheels-ubuntu-22.04" ]
 
 jobs:
 - job:
   displayName: Publish artifacts to PyPI
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-22.04
   steps:
   - task: UsePythonVersion@0
-    displayName: Use python 3.8
+    displayName: Use python 3.10
     inputs:
-      versionSpec: 3.8
+      versionSpec: "3.10"
 
   - script: pip install twine
 

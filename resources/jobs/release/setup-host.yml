@@ -20,9 +20,9 @@ steps:
 
 - ${{ if eq(parameters.python, 'python') }}:
   - task: UsePythonVersion@0
-    displayName: Use python 3.8
+    displayName: Use python 3.10
     inputs:
-      versionSpec: 3.8
+      versionSpec: "3.10"
 
 - ${{ if parameters.git }}:
   - bash: scripts/setup_git.sh
