@@ -1,7 +1,7 @@
 parameters:
 - name: pools
   type: object
-  default: [ "ubuntu-20.04", "windows-2022", "macos-11" ]
+  default: [ "ubuntu-22.04", "windows-2022", "macos-11" ]
 
 jobs:
 - ${{ each pool in parameters.pools }}:
@@ -20,15 +20,15 @@ jobs:
 
     - task: DownloadPipelineArtifact@2
       displayName: Download artifact wheels-${{ pool }}
-      condition: not(eq('${{ pool }}', 'ubuntu-20.04'))
+      condition: not(eq('${{ pool }}', 'ubuntu-22.04'))
       inputs:
-        artifactName: wheels-ubuntu-20.04
-        targetPath: wheels-ubuntu-20.04
+        artifactName: wheels-ubuntu-22.04
+        targetPath: wheels-ubuntu-22.04
 
     - bash: |
         python -m venv angr_venv
         source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
-        export PIP_FIND_LINKS="wheels-${{ pool }} wheels-ubuntu-20.04"
+        export PIP_FIND_LINKS="wheels-${{ pool }} wheels-ubuntu-22.04"
         pip install wheels-${{ pool }}/*.whl
       displayName: Test wheel install
 
