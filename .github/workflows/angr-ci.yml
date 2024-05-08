@@ -10,7 +10,7 @@ on:
         required: false
       container_image:
         description: "Container image to use"
-        default: "angr/ci:2"
+        default: "angr/ci:3"
         type: string
         required: false
       afl:
@@ -26,7 +26,7 @@ jobs:
     container:
       image: ${{ inputs.container_image }}
     steps:
-    - run: /root/scripts/azure-build.sh
+    - run: /root/scripts/ga-build.sh
       name: Build CI artifact
       env:
         NIGHTLY: ${{ inputs.nightly }}
@@ -46,7 +46,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: build_archive
-    - run: /root/scripts/azure-lint.sh
+    - run: /root/scripts/ga-lint.sh
       name: Run linter
 
   test:
@@ -69,7 +69,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: build_archive
-    - run: /root/scripts/azure-test.sh
+    - run: /root/scripts/ga-test.sh
       name: Run tests
       env:
         WORKER: ${{ matrix.worker }}
