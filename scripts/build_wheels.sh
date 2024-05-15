@@ -9,7 +9,7 @@ function realpath() {
 
 sdist_path="$(realpath "$1")"
 
-python -m pip install build cibuildwheel==2.11.2
+python -m pip install build cibuildwheel==2.18.0
 if [ "$(uname)" == "Linux" ]; then
     pip install auditwheel
 elif [ "$(uname)" == "Darwin" ]; then
@@ -29,7 +29,7 @@ done
 
 export PIP_FIND_LINKS="$sdist_path"
 export CIBW_ENVIRONMENT_LINUX="PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
-export CIBW_BUILD="cp38-manylinux_x86_64 cp38-win_amd64 cp38-macosx_x86_64"
+export CIBW_BUILD="cp310-manylinux_x86_64 cp310-win_amd64 cp310-macosx_x86_64"
 export CIBW_REPAIR_WHEEL_COMMAND=""
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
