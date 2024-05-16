@@ -1,0 +1,167 @@
+name: angr Release
+
+on:
+  schedule:
+    - cron: "0 17 * * 2"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run"
+        default: true
+        type: boolean
+        required: false
+
+jobs:
+  create:
+    name: Create release
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Checkout repos
+        run: release-scripts/checkout_repos.sh
+      - name: Create release commits
+        run: release-scripts/create_release_commits.sh
+      - name: Publish release.yml
+        uses: actions/upload-artifact@v4
+        with:
+          name: release.yml
+          path: release.yml
+      - name: Create sdists
+        run: release-scripts/create_sdist.sh
+      - name: Publish sdist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: sdist
+      - name: Check artifacts are valid for PyPI
+        run: |
+          pip install twine
+          twine check sdist/*
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-12]
+    needs: create
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        if: startsWith(matrix.os, 'ubuntu')
+      - name: Download sdists
+        uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: sdist
+      - name: Build wheels
+        run: release-scripts/build_wheels.sh sdist
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheels
+      - name: Check artifacts are valid for PyPI
+        run: |
+          pip install twine
+          twine check sdist/*
+
+  verify:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-12, macos-14]
+    needs: build
+
+    steps:
+      - name: Download wheels artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheels-${{ matrix.os }}
+
+      - name: Download ubuntu wheels artifact
+        if: matrix.os != 'ubuntu-22.04'
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-ubuntu-22.04
+          path: wheels-ubuntu-22.04
+
+      - name: Test wheel install
+        run: |
+          python -m venv angr_venv
+          source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
+          export PIP_FIND_LINKS="wheels-${{ matrix.os }} wheels-ubuntu-22.04"
+          pip install wheels-${{ matrix.os }}/*.whl
+
+      - name: Test angr import
+        run: |
+          source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
+          python -c "import angr; print('angr imports!')"
+
+  publish:
+    runs-on: ubuntu-22.04
+    needs: verify
+    permissions:
+      id-token: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Git release commits
+    - name: Download repos artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: repos
+        path: repos
+
+    - name: Publish release commits
+      run: release-scripts/publish_release_commits.sh
+      env:
+        DRY_RUN: ${{ github.event.inputs.dry_run }}
+
+    - name: Bump versions on master
+      run: release-scripts/bump_versions.sh
+      env:
+        DRY_RUN: ${{ github.event.inputs.dry_run }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    # PyPI artifacts
+    - name: Create upload directory
+      run: mkdir dist
+
+    - name: Download sdist artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: sdist
+        path: dist/sdist
+    - name: Download Ubuntu wheels artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels-ubuntu-22.04
+        path: dist/wheels-ubuntu-22.04
+    - name: Download Windows wheels artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels-windows-2022
+        path: dist/wheels-windows-2022
+    - name: Download macOS wheels artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels-macos-12
+        path: dist/wheels-macos-12
+
+    - name: Collect all packages to upload
+      run: find dist \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} upload/ \;
+
+    - name: Publish distribution to PyPI
+      if: github.event_name == 'schedule' || github.event.inputs.dry_run == false
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        verbose: true

@@ -54,7 +54,7 @@ for i in $(ls $CHECKOUT_DIR); do
                 git push origin bump/$VERSION
                 gh pr create \
                     --project angr/$CHECKOUT_DIR \
-                    --assignees "@twizmwazin" \
+                    --assignees "twizmwazin" \
                     --title "Bump version to $VERSION" \
                     --body "Release pipeline failed to automatically push commit" \
                     --head "bump/$VERSION" \
