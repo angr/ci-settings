@@ -15,6 +15,10 @@ on:
         type: boolean
         required: false
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   create:
     name: Create release
@@ -42,6 +46,7 @@ jobs:
         with:
           name: sdist
           path: sdist
+          if-no-files-found: error
       - name: Check artifacts are valid for PyPI
         run: |
           pip install twine
@@ -76,6 +81,7 @@ jobs:
         with:
           name: wheels-${{ matrix.os }}
           path: wheels
+          if-no-files-found: error
       - name: Check artifacts are valid for PyPI
         run: |
           pip install twine
