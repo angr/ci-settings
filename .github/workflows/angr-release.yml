@@ -58,12 +58,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
+        if: startsWith(matrix.os, 'ubuntu')
         uses: docker/setup-qemu-action@v3
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-        if: startsWith(matrix.os, 'ubuntu')
       - name: Download sdists
         uses: actions/download-artifact@v4
         with:
