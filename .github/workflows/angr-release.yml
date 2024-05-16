@@ -1,6 +1,10 @@
 name: angr Release
 
 on:
+  pull_request:
+    paths:
+      - .github/workflows/angr-release.yml
+      - release-scripts/*
   schedule:
     - cron: "0 17 * * 2"
   workflow_dispatch:
