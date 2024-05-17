@@ -138,7 +138,7 @@ jobs:
           python -m venv angr_venv
           source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
           export PIP_FIND_LINKS="wheels wheels-ubuntu"
-          if [ $(uname) == "Darwin" ]; then
+          if [ $(uname) == "Darwin" || $(uname) == "Linux" ]; then
             pip install wheels/angr*$(arch).whl
           else
             pip install wheels/angr*.whl
