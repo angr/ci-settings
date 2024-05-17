@@ -107,7 +107,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: wheels-ubuntu-22.04
-          path: wheels-ubuntu
+          path: wheels
 
       - name: Download wheels artifact
         if: startsWith(matrix.os, 'windows')
