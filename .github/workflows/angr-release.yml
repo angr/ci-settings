@@ -130,6 +130,9 @@ jobs:
           name: wheels-ubuntu-22.04
           path: wheels-ubuntu
 
+      - name: Find
+        run: find .
+
       - name: Test wheel install
         run: |
           python -m venv angr_venv
