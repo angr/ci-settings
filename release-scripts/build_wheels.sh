@@ -36,6 +36,9 @@ export CIBW_BUILD="
     cp310-macosx_x86_64
     cp310-macosx_arm64
     "
+export CIBW_ARCHS_WINDOWS="AMD64"
+export CIBW_ARCHS_MACOS="x86_64 arm64 universal2"
+export CIBW_ARCHS_LINUX="x86_64 aarch64"
 export CIBW_REPAIR_WHEEL_COMMAND=""
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
