@@ -34,11 +34,6 @@ jobs:
         run: release-scripts/checkout_repos.sh
       - name: Create release commits
         run: release-scripts/create_release_commits.sh
-      - name: Publish release.yml
-        uses: actions/upload-artifact@v4
-        with:
-          name: release.yml
-          path: release.yml
       - name: Create sdists
         run: release-scripts/create_sdist.sh
       - name: Publish sdist artifacts
