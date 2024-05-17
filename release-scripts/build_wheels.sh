@@ -35,6 +35,7 @@ export CIBW_BUILD="
     cp310-win_amd64
     cp310-macosx_x86_64
     cp310-macosx_arm64
+    cp310-macosx_universal2
     "
 export CIBW_ARCHS_WINDOWS="AMD64"
 export CIBW_ARCHS_MACOS="x86_64 arm64 universal2"
