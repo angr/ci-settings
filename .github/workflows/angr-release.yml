@@ -75,7 +75,7 @@ jobs:
           name: sdist
           path: sdist
       - name: Build wheels
-        if: ! startsWith(matrix.os, 'windows')
+        if: startsWith(matrix.os, 'windows') == true
         run: release-scripts/build_wheels.sh sdist
       - name: Build wheels
         if: startsWith(matrix.os, 'windows')
