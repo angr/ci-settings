@@ -36,6 +36,12 @@ jobs:
         run: release-scripts/create_release_commits.sh
       - name: Create sdists
         run: release-scripts/create_sdist.sh
+      - name: Publish repo artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repos
+          path: repos
+          if-no-files-found: error
       - name: Publish sdist artifacts
         uses: actions/upload-artifact@v4
         with:
