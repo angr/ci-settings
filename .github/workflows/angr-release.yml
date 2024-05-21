@@ -51,7 +51,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
+        os: [ubuntu-22.04, windows-2022, macos-12, macos-14]
     needs: create
 
     steps:
@@ -103,24 +103,9 @@ jobs:
           python-version: '3.10'
 
       - name: Download wheels artifact
-        if: startsWith(matrix.os, 'ubuntu')
         uses: actions/download-artifact@v4
         with:
-          name: wheels-ubuntu-22.04
-          path: wheels
-
-      - name: Download wheels artifact
-        if: startsWith(matrix.os, 'windows')
-        uses: actions/download-artifact@v4
-        with:
-          name: wheels-windows-2022
-          path: wheels
-
-      - name: Download wheels artifact
-        if: startsWith(matrix.os, 'macos')
-        uses: actions/download-artifact@v4
-        with:
-          name: wheels-macos-12
+          name: wheels-${{ matrix.os }}
           path: wheels
 
       - name: Download ubuntu wheels artifact
@@ -197,11 +182,16 @@ jobs:
       with:
         name: wheels-windows-2022
         path: dist/wheels-windows-2022
-    - name: Download macOS wheels artifact
+    - name: Download macOS x86_64 wheels artifact
       uses: actions/download-artifact@v4
       with:
         name: wheels-macos-12
         path: dist/wheels-macos-12
+    - name: Download macOS arm64 wheels artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels-macos-14
+        path: dist/wheels-macos-14
 
     - name: Collect all packages to upload
       run: find dist \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} upload/ \;
