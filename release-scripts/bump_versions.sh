@@ -8,7 +8,7 @@ pip install packaging
 
 export CHECKOUT_DIR=$(mktemp -d)
 for r in $REPOS $REPOS_LINUX_ONLY; do
-    git clone git@github.com:angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
+    git clone https://github.com/angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
 done
 
 for i in $(ls $CHECKOUT_DIR); do
