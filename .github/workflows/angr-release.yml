@@ -124,7 +124,7 @@ jobs:
           source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
           export PIP_FIND_LINKS="wheels wheels-ubuntu"
           if [[ $(uname) == "Darwin" || $(uname) == "Linux" ]]; then
-            pip install wheels/angr*$(arch | sed s/i386/x86_64/g).whl
+            pip install --no-binary capstone wheels/angr*$(arch | sed s/i386/x86_64/g).whl
           else
             pip install wheels/angr*.whl
           fi
