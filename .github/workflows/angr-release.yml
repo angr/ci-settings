@@ -69,7 +69,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
       - name: Download sdists
         uses: actions/download-artifact@v4
         with:
@@ -81,8 +81,8 @@ jobs:
       - name: Build wheels
         if: startsWith(matrix.os, 'windows')
         run: |
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-            bash release-scripts/build_wheels.sh sdist
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          bash release-scripts/build_wheels.sh sdist
         shell: cmd
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v4
@@ -106,7 +106,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Download wheels artifact
         uses: actions/download-artifact@v4
@@ -147,68 +147,68 @@ jobs:
       id-token: write
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Configure git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-    # Git release commits
-    - name: Download repos artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: repos
-        path: repos
+      # Git release commits
+      - name: Download repos artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: repos
+          path: repos
 
-    - name: Publish release commits
-      run: release-scripts/publish_release_commits.sh
-      env:
-        DRY_RUN: ${{ github.event_name == 'schedule' || github.event.inputs.dry_run == false }}
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Publish release commits
+        run: release-scripts/publish_release_commits.sh
+        env:
+          DRY_RUN: ${{ github.event_name == 'schedule' || github.event.inputs.dry_run == false }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-    - name: Bump versions on master
-      run: release-scripts/bump_versions.sh
-      env:
-        DRY_RUN: ${{ github.event_name == 'schedule' || github.event.inputs.dry_run == false }}
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Bump versions on master
+        run: release-scripts/bump_versions.sh
+        env:
+          DRY_RUN: ${{ github.event_name == 'schedule' || github.event.inputs.dry_run == false }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-    # PyPI artifacts
-    - name: Create artifacts and dist directories
-      run: mkdir artifacts dist
+      # PyPI artifacts
+      - name: Create artifacts and dist directories
+        run: mkdir artifacts dist
 
-    - name: Download sdist artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: sdist
-        path: artifacts/sdist
-    - name: Download Ubuntu wheels artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: wheels-ubuntu-22.04
-        path: artifacts/wheels-ubuntu-22.04
-    - name: Download Windows wheels artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: wheels-windows-2022
-        path: artifacts/wheels-windows-2022
-    - name: Download macOS x86_64 wheels artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: wheels-macos-12
-        path: artifacts/wheels-macos-12
-    - name: Download macOS arm64 wheels artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: wheels-macos-14
-        path: artifacts/wheels-macos-14
+      - name: Download sdist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: artifacts/sdist
+      - name: Download Ubuntu wheels artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-ubuntu-22.04
+          path: artifacts/wheels-ubuntu-22.04
+      - name: Download Windows wheels artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-windows-2022
+          path: artifacts/wheels-windows-2022
+      - name: Download macOS x86_64 wheels artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-12
+          path: artifacts/wheels-macos-12
+      - name: Download macOS arm64 wheels artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-macos-14
+          path: artifacts/wheels-macos-14
 
-    - name: Collect all packages to upload
-      run: find artifacts \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} dist/ \;
+      - name: Collect all packages to upload
+        run: find artifacts \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} dist/ \;
 
-    - name: Publish distribution to PyPI
-      if: github.event_name == 'schedule' || github.event.inputs.dry_run == false
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        verbose: true
+      - name: Publish distribution to PyPI
+        if: github.event_name == 'schedule' || github.event.inputs.dry_run == false
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
