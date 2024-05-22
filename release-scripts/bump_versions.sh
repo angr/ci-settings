@@ -8,7 +8,7 @@ pip install packaging
 
 export CHECKOUT_DIR=$(mktemp -d)
 for r in $REPOS $REPOS_LINUX_ONLY; do
-    git clone git@github.com:angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
+    git clone https://github.com/angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
 done
 
 for i in $(ls $CHECKOUT_DIR); do
@@ -54,7 +54,7 @@ for i in $(ls $CHECKOUT_DIR); do
                 git push origin bump/$VERSION
                 gh pr create \
                     --project angr/$CHECKOUT_DIR \
-                    --assignees "@twizmwazin" \
+                    --assignees "twizmwazin" \
                     --title "Bump version to $VERSION" \
                     --body "Release pipeline failed to automatically push commit" \
                     --head "bump/$VERSION" \
