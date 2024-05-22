@@ -207,14 +207,8 @@ jobs:
       - name: Collect all packages to upload
         run: find artifacts \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} dist/ \;
 
-      - name: Echo conditions
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Dry run parameter: ${{ github.event.inputs.dry_run }}"
-          echo "Dry run: ${{ github.event_name == 'schedule' || github.event.inputs.dry_run == false }}"
-
       - name: Publish distribution to PyPI
-        if: github.event_name == 'schedule' || github.event.inputs.dry_run == false
+        if: (github.event_name == 'schedule' || github.event.inputs.dry_run == false) != true
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
