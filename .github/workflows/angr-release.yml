@@ -175,37 +175,37 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     # PyPI artifacts
-    - name: Create upload directory
-      run: mkdir dist
+    - name: Create artifacts and dist directories
+      run: mkdir artifacts dist
 
     - name: Download sdist artifact
       uses: actions/download-artifact@v4
       with:
         name: sdist
-        path: dist/sdist
+        path: artifacts/sdist
     - name: Download Ubuntu wheels artifact
       uses: actions/download-artifact@v4
       with:
         name: wheels-ubuntu-22.04
-        path: dist/wheels-ubuntu-22.04
+        path: artifacts/wheels-ubuntu-22.04
     - name: Download Windows wheels artifact
       uses: actions/download-artifact@v4
       with:
         name: wheels-windows-2022
-        path: dist/wheels-windows-2022
+        path: artifacts/wheels-windows-2022
     - name: Download macOS x86_64 wheels artifact
       uses: actions/download-artifact@v4
       with:
         name: wheels-macos-12
-        path: dist/wheels-macos-12
+        path: artifacts/wheels-macos-12
     - name: Download macOS arm64 wheels artifact
       uses: actions/download-artifact@v4
       with:
         name: wheels-macos-14
-        path: dist/wheels-macos-14
+        path: artifacts/wheels-macos-14
 
     - name: Collect all packages to upload
-      run: find dist \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} upload/ \;
+      run: find artifacts \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} dist/ \;
 
     - name: Publish distribution to PyPI
       if: github.event_name == 'schedule' || github.event.inputs.dry_run == false
