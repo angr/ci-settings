@@ -17,6 +17,7 @@ RUN apt-get install -y fontconfig
 RUN apt-get install -y gcc-multilib g++-multilib
 RUN apt-get install -y libxkbcommon-dev libegl-dev
 RUN apt-get install -y zstd
+RUN apt-get install -y ninja-build ccache flatbuffers-compiler libflatbuffers-dev
 RUN pip3 install "virtualenv<20" pygithub
 
 # fix missing libreadline.so.7
