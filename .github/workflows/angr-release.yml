@@ -165,13 +165,13 @@ jobs:
       - name: Publish release commits
         run: release-scripts/publish_release_commits.sh
         env:
-          DRY_RUN: ${{ github.event_name != 'schedule' || github.event.inputs.dry_run == true }}
+          DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run == false }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Bump versions on master
         run: release-scripts/bump_versions.sh
         env:
-          DRY_RUN: ${{ github.event_name != 'schedule' || github.event.inputs.dry_run == true }}
+          DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run == false }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # PyPI artifacts
@@ -208,7 +208,7 @@ jobs:
         run: find artifacts \( -name "*.tar.gz" -o -name "*.whl" \) -exec mv {} dist/ \;
 
       - name: Publish distribution to PyPI
-        if: github.event_name == 'schedule' || github.event.inputs.dry_run == false
+        if: github.event_name == 'schedule' || github.event.inputs.dry_run == 'false'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
