@@ -30,6 +30,14 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Add release key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${RELEASE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+        env:
+          RELEASE_SSH_KEY: ${{ secrets.RELEASE_KEY }}
       - name: Checkout repos
         run: release-scripts/checkout_repos.sh
       - name: Create release commits
