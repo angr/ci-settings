@@ -8,7 +8,7 @@ pip install packaging
 
 export CHECKOUT_DIR=$(mktemp -d)
 for r in $REPOS $REPOS_LINUX_ONLY; do
-    git clone https://github.com/angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
+    git clone git@github.com:angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
 done
 
 for i in $(ls $CHECKOUT_DIR); do
@@ -43,7 +43,6 @@ for i in $(ls $CHECKOUT_DIR); do
 
     # Push
     if [ "$DRY_RUN" == "false" ]; then
-        git remote set-url origin $(git remote get-url origin | sed "s#https://#https://$GIT_USERNAME:$GIT_PASSWORD@#")
         git push
         push_successful=$?
         if [ $push_successful -ne 0 ]; then
