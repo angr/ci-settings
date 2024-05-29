@@ -43,6 +43,7 @@ for i in $(ls $CHECKOUT_DIR); do
 
     # Push
     if [ "$DRY_RUN" == "false" ]; then
+        git remote set-url origin $(git remote get-url origin | sed "s#https://#https://$GIT_USERNAME:$GIT_PASSWORD@#")
         git push
         push_successful=$?
         if [ $push_successful -ne 0 ]; then

@@ -166,13 +166,15 @@ jobs:
         run: release-scripts/publish_release_commits.sh
         env:
           DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run == false }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GIT_USERNAME: ${{ secrets.RELEASE_USER }}
+          GIT_PASSWORD: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Bump versions on master
         run: release-scripts/bump_versions.sh
         env:
           DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run == false }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GIT_USERNAME: ${{ secrets.RELEASE_USER }}
+          GIT_PASSWORD: ${{ secrets.RELEASE_TOKEN }}
 
       # PyPI artifacts
       - name: Create artifacts and dist directories
