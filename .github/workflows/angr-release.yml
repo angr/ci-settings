@@ -37,7 +37,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
         env:
-          RELEASE_SSH_KEY: ${{ secrets.RELEASE_KEY }}
+          RELEASE_KEY: ${{ secrets.RELEASE_KEY }}
       - name: Checkout repos
         run: release-scripts/checkout_repos.sh
       - name: Create release commits
@@ -170,7 +170,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
         env:
-          RELEASE_SSH_KEY: ${{ secrets.RELEASE_KEY }}
+          RELEASE_KEY: ${{ secrets.RELEASE_KEY }}
 
       # Git release commits
       - name: Download repos artifact
