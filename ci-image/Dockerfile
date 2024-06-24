@@ -16,7 +16,9 @@ RUN apt-get install -y strace
 RUN apt-get install -y fontconfig
 RUN apt-get install -y gcc-multilib g++-multilib
 RUN apt-get install -y libxkbcommon-dev libegl-dev
-RUN apt-get install -y zstd
+RUN apt-get install -y zstd curl
+RUN bash -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal -y"
+ENV PATH=/root/.cargo/bin:$PATH
 RUN pip3 install "virtualenv<20" pygithub
 
 # fix missing libreadline.so.7

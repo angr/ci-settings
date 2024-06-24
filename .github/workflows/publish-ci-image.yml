@@ -3,6 +3,7 @@ name: Publish angr ci docker image
 on:
   push:
     branches: ["master"]
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -21,3 +22,4 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_API_KEY }}
       - name: Push ci image
         run: docker push angr/ci:3
+        if: github.event_name != 'pull_request'
