@@ -28,6 +28,8 @@ RUN ln -s /lib/x86_64-linux-gnu/libreadline.so /lib/x86_64-linux-gnu/libreadline
 ENV PWNLIB_NOTERM=1
 # Minimal QT platform for angr-management
 ENV QT_QPA_PLATFORM=minimal:enable_fonts
+# Set rust toolchain
+ENV RUST_TOOLCHAIN=stable-x86_64-unknown-linux-gnu
 
 ADD scripts ./scripts
 ADD conf ./conf
