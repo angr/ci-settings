@@ -20,3 +20,4 @@ cvc4-solver
 shellphish-afl
 binsync
 binharness~=0.1.1
+pyxdia~=0.0
