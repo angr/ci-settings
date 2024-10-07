@@ -25,7 +25,7 @@ for i in $(ls $CHECKOUT_DIR); do
         VERSION=$(python $SCRIPT_DIR/versiontool.py undev "$old_version")
         sed -i "s/$old_version/$VERSION/g" $init_file
         sed -i "s/$old_version/$VERSION/g" pyproject.toml
-        sed -i "s/$old_version/$VERSION/g" setup.cfg
+        [ test -f setup.cfg ] && sed -i "s/$old_version/$VERSION/g" setup.cfg
 
     else
         popd
