@@ -30,7 +30,7 @@ for i in $(ls $CHECKOUT_DIR); do
         VERSION=$(python $SCRIPT_DIR/versiontool.py bumpmicro "$old_version")
         sed -i "s/$old_version/$VERSION/g" $init_file
         sed -i "s/$old_version/$VERSION/g" pyproject.toml
-        [ test -f setup.cfg ] && sed -i "s/$old_version/$VERSION/g" setup.cfg
+        [ -f setup.cfg ] && sed -i "s/$old_version/$VERSION/g" setup.cfg
 
     else
         popd
