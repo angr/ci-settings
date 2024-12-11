@@ -108,7 +108,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12, macos-14]
+        os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
     needs: build
 
     steps:
@@ -212,8 +212,8 @@ jobs:
       - name: Download macOS x86_64 wheels artifact
         uses: actions/download-artifact@v4
         with:
-          name: wheels-macos-12
-          path: artifacts/wheels-macos-12
+          name: wheels-macos-13
+          path: artifacts/wheels-macos-13
       - name: Download macOS arm64 wheels artifact
         uses: actions/download-artifact@v4
         with:
