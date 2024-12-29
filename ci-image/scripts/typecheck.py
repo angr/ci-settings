@@ -53,19 +53,22 @@ def typecheck_diff(rev1, rev2):
 
     for filename in filenames:
         filename = os.path.realpath(filename)
-        if filename not in report1 or filename not in report2:
+        if filename not in report2:
             continue
-        e1 = report1[filename]
+        if filename in report1:
+            base_score = report1[filename].score
+        else:
+            base_score = 0
         e2 = report2[filename]
-        if e2.score > e1.score:
+        if e2.score > base_score:
             status += 1
-            print(f"### {filename} badness increased from {e1.score} to {e2.score}. Please fix:")
+            print(f"### {filename} badness increased from {base_score} to {e2.score}. Please fix:")
             for line, char, severity, text in sorted(e2.diagnostics):
                 print(f"{filename}:{line}:{char}: [{severity}] {text}")
-        elif e2.score < e1.score:
-            print(f"### {filename} badness decreased from {e1.score} to {e2.score}. Nice!")
+        elif e2.score < base_score:
+            print(f"### {filename} badness decreased from {base_score} to {e2.score}. Nice!")
         else:
-            print(f"### {filename} badness remained at {e1.score}. Nice!")
+            print(f"### {filename} badness remained at {base_score}. Nice!")
 
     if status > 0:
         print(f"\n{status} files regressed. Fix them!")
