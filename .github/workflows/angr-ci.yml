@@ -49,6 +49,19 @@ jobs:
     - run: /root/scripts/ga-lint.sh
       name: Run linter
 
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-22.04
+    container:
+      image: ${{ inputs.container_image }}
+    needs: build
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: build_archive
+    - run: /root/scripts/ga-typecheck.sh
+      name: Run type checker
+
   test:
     name: Test
     runs-on: ubuntu-22.04
