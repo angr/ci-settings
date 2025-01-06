@@ -16,7 +16,6 @@ pyxbe
 sqlalchemy
 pypcode~=3.0
 qtrace
-cvc4-solver
 shellphish-afl
 binsync
 binharness~=0.1.1
