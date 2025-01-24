@@ -40,10 +40,14 @@ def typecheck_files(filenames):
 
     return my_report
 
+def filter_py(names):
+    return [name for name in names if name.endswith('.py') or name.endswith('.pyi')]
+
 def typecheck_diff(rev1, rev2):
     print(f"Comparing {rev1} --> {rev2}")
     print()
     filenames = subprocess.check_output(["git", "diff", "--name-only", f"{rev1}...{rev2}"], text=True).splitlines()
+    filenames = filter_py(filenames)
     subprocess.check_call(["git", "checkout", rev1], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     report1 = typecheck_files(filenames)
     subprocess.check_call(["git", "checkout", rev2], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
