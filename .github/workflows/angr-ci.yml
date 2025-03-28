@@ -35,7 +35,7 @@ jobs:
       name: Build CI artifact
       env:
         NIGHTLY: ${{ inputs.nightly }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: build_archive
         path: ./build.tar.zst
@@ -48,7 +48,7 @@ jobs:
       image: ${{ inputs.container_image }}
     needs: build
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-lint.sh
@@ -61,7 +61,7 @@ jobs:
       image: ${{ inputs.container_image }}
     needs: build
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-typecheck.sh
@@ -84,7 +84,7 @@ jobs:
         echo core | tee /hostproc/sys/kernel/core_pattern
       name: Set AFL parameters
       if: ${{ inputs.afl }}
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-test.sh
@@ -93,7 +93,7 @@ jobs:
         WORKER: ${{ matrix.worker }}
         NUM_WORKERS: 10
         INCLUDE_SELF: ${{ inputs.include_self }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       if: always()
       with:
         name: Test Results ${{ matrix.worker }}

@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Configure git
         run: |
           git config --global user.name "github-actions[bot]"
@@ -45,14 +45,14 @@ jobs:
       - name: Create sdists
         run: release-scripts/create_sdist.sh
       - name: Publish repo artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: repos
           path: repos
           if-no-files-found: error
           include-hidden-files: true
       - name: Publish sdist artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: sdist
           path: sdist
@@ -71,16 +71,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Set up QEMU
         if: startsWith(matrix.os, 'ubuntu')
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
         with:
           python-version: "3.10"
       - name: Download sdists
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: sdist
           path: sdist
@@ -94,7 +94,7 @@ jobs:
           bash release-scripts/build_wheels.sh sdist
         shell: cmd
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: wheels-${{ matrix.os }}
           path: wheels
@@ -113,19 +113,19 @@ jobs:
 
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
         with:
           python-version: "3.10"
 
       - name: Download wheels artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: wheels-${{ matrix.os }}
           path: wheels
 
       - name: Download ubuntu wheels artifact
         if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos')
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: wheels-ubuntu-22.04
           path: wheels-ubuntu
@@ -157,7 +157,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Configure git
         run: |
@@ -175,7 +175,7 @@ jobs:
 
       # Git release commits
       - name: Download repos artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: repos
           path: repos
@@ -195,27 +195,27 @@ jobs:
         run: mkdir artifacts dist
 
       - name: Download sdist artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: sdist
           path: artifacts/sdist
       - name: Download Ubuntu wheels artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: wheels-ubuntu-22.04
           path: artifacts/wheels-ubuntu-22.04
       - name: Download Windows wheels artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: wheels-windows-2022
           path: artifacts/wheels-windows-2022
       - name: Download macOS x86_64 wheels artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: wheels-macos-13
           path: artifacts/wheels-macos-13
       - name: Download macOS arm64 wheels artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: wheels-macos-14
           path: artifacts/wheels-macos-14
@@ -225,6 +225,6 @@ jobs:
 
       - name: Publish distribution to PyPI
         if: github.event_name == 'schedule' || github.event.inputs.dry_run == 'false'
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
         with:
           verbose: true
