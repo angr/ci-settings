@@ -18,6 +18,11 @@ on:
         default: false
         type: boolean
         required: false
+      include_self:
+        description: "Include self in the test stage"
+        default: true
+        type: boolean
+        required: false
 
 jobs:
   build:
@@ -87,6 +92,7 @@ jobs:
       env:
         WORKER: ${{ matrix.worker }}
         NUM_WORKERS: 10
+        INCLUDE_SELF: ${{ inputs.include_self }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:
