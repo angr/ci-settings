@@ -19,6 +19,8 @@ angr/archr
 
 # test binaries
 !angr/binaries
+!angr/dec-test-corpus
+!angr/dec-snapshots
 
 # applications
 angr/angr-management -> angr

@@ -99,11 +99,40 @@ jobs:
         name: Test Results ${{ matrix.worker }}
         path: build/results/*.tests.xml
 
+  corpus-test:
+    name: Decompiler Snapshot Testing
+    runs-on: ubuntu-22.04
+    container:
+      image: ${{ inputs.container_image }}
+    needs: build
+    strategy:
+      matrix:
+        worker: [0]  # could be expanded when we increase the workload
+    steps:
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+      with:
+        name: build_archive
+    - run: /root/scripts/ga-corpustest.sh
+      name: Run tests
+      env:
+        WORKER: ${{ matrix.worker }}
+        NUM_WORKERS: 1
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      if: always()
+      with:
+        name: corpus_diffs
+        path: build/results/*.diff
+
   publish-test-results:
     name: "Publish Unit Tests Results"
-    needs: test
+    needs:
+    - build
+    - test
+    - corpus-test
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Send result email
@@ -118,3 +147,26 @@ jobs:
             -F to=angr-dev@asu.edu \
             -F subject="$GITHUB_REPOSITORY nightly CI failed" \
             -F text="Link to failed run: $BUILD_URL"
+
+      - name: Download build archive
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        with:
+          name: build_archive
+      - name: Download corpus diffs
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        with:
+          name: corpus_diffs
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Push corpus diffs
+        env:
+          GH_TOKEN: ${{ secrets.SNAPSHOTS_PAT }}
+          SNAPSHOT_BRANCH: ${{ needs.build.outputs.snapshot_branch }}
+        run: /root/scripts/ga-corpustest-push.sh
+      - uses: jupier/powerful-pr-comment@v0.0.5
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          sticky: true
+          body: 'Corpus decompilation diffs can be found at https://github.com/angr/dec-snapshots/compare/master...${{ steps.build.outputs.snapshot_branch }}'
