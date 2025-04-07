@@ -15,8 +15,9 @@ git config --global url.https://github.com/.insteadOf git@github.com:
 export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
 mkdir build
-cd build
+pushd build
 $SCRIPTS/resolve_refs.py $CONF . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
+echo "snapshot_branch=$(cat ./snapshot_branch.txt)" >> "$GITHUB_OUTPUT"
 ./install.sh
 
 source virtualenv/bin/activate
@@ -27,12 +28,20 @@ elif [[ "$CI_DIRECTIVES" =~ "include-nightly" ]]; then
 else
     $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src --eval-attribute 'speed != "slow"' > tests.txt
 fi
-cd ..
+
+# discover corpus tests
+IFS=';' CORPUS_TEST_PATHS_LIST=( ${CORPUS_TEST_PATHS-decompiler_corpus} )
+(cd ./src/binaries && find "${CORPUS_TEST_PATHS_LIST[@]}" -xtype f | sort -u) >corpus-tests.txt
+
+popd
 
 # remove some unneeded files to reduce bloat
 find build \( \
 	-type d -and \( \
-		\( -name .git -and -not -wholename "*/$(echo $BUILD_REPOSITORY_URI | cut -d"/" -f2)/.git" \) \
+		\( -name .git -and -not \( \
+		    -wholename "*/$(echo $BUILD_REPOSITORY_URI | cut -d"/" -f2)/.git" \
+		    -or -wholename "*/dec-snapshots/.git" \
+		\) \) \
 		-or -name __pycache__ \
 		-or -name "*.egg-info" \
 		-or \( -wholename "*/sphinx/locale/*" -and -not -name LC_MESSAGES \) \
@@ -55,4 +64,4 @@ find build \( \
 \) -exec rm -rf {} +
 
 # export
-tar -I zstd -cf build.tar.zst build/src build/virtualenv build/tests.txt
+tar -I zstd -cf build.tar.zst build/src build/virtualenv build/tests.txt build/corpus-tests.txt

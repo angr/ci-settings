@@ -33,6 +33,7 @@ jobs:
     steps:
     - run: /root/scripts/ga-build.sh
       name: Build CI artifact
+      id: main
       env:
         NIGHTLY: ${{ inputs.nightly }}
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -40,6 +41,8 @@ jobs:
         name: build_archive
         path: ./build.tar.zst
         compression-level: 0
+    outputs:
+      snapshot_branch: ${{ steps.main.outputs.snapshot_branch }}
 
   lint:
     name: Lint
@@ -99,9 +102,36 @@ jobs:
         name: Test Results ${{ matrix.worker }}
         path: build/results/*.tests.xml
 
+  corpus-test:
+    name: Decompiler Snapshot Testing
+    runs-on: ubuntu-22.04
+    container:
+      image: ${{ inputs.container_image }}
+    needs: build
+    strategy:
+      matrix:
+        worker: [0]  # could be expanded when we increase the workload
+    steps:
+    - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+      with:
+        name: build_archive
+    - run: /root/scripts/ga-corpustest.sh
+      name: Run tests
+      env:
+        WORKER: ${{ matrix.worker }}
+        NUM_WORKERS: 1
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      if: always()
+      with:
+        name: corpus_diffs
+        path: build/results/*.diff
+
   publish-test-results:
     name: "Publish Unit Tests Results"
-    needs: test
+    needs:
+    - build
+    - test
+    - corpus-test
     runs-on: ubuntu-latest
     if: always()
 
@@ -118,3 +148,20 @@ jobs:
             -F to=angr-dev@asu.edu \
             -F subject="$GITHUB_REPOSITORY nightly CI failed" \
             -F text="Link to failed run: $BUILD_URL"
+
+      - name: Trigger corpus upload
+        if: needs.build.result == 'success' && needs.corpus-test.result == 'success'
+        uses: benc-uk/workflow-dispatch@v1.2.4
+        with:
+          workflow: "angr-corpus-upload.yml"
+          repo: angr/snapshots-deputy
+          token: ${{ vars.SNAPSHOTS_DISPATCH_TOKEN }}
+          ref: main
+          inputs: |
+            {
+              "run_id": "${{ github.run_id }}",
+              "source_repository": "${{ github.event.repository.name }}",
+              "source_commit": "${{ github.sha }}",
+              "target_branch": "${{ needs.build.outputs.snapshot_branch }}",
+              "pull_request": "${{ github.event.number }}"
+            }

@@ -22,8 +22,10 @@ def main(conf_dir, out_dir, target_repo, ref):
 
     if ref.startswith('refs/pull/'):
         targets = sync_reqs_pr(sources, target_repo, int(ref.split('/')[2]))
+        snapshot_branch = "%s_%s" % (target_repo, int(ref.split('/')[2]))
     elif ref.startswith('refs/heads/'):
         targets = sync_reqs_branch(sources, ref.split('/', 2)[-1])
+        snapshot_branch = ref.split('/', 2)[-1]
     else:
         print("I don't know how to process ref %s - must start with 'refs/pull/' or 'refs/heads/'" % ref)
         return 1
@@ -41,7 +43,10 @@ def main(conf_dir, out_dir, target_repo, ref):
 
             for target in targets:
                 # clone the target repo first
-                if target.branch.startswith('refs/'):
+                if target.repo == "dec-snapshots":
+                    fp_script.write('git clone https://github.com/%s/%s.git --depth 1 --branch master\n' %
+                            (target.owner, target.repo))
+                elif target.branch.startswith('refs/'):
                     fp_script.write('git clone --recursive https://github.com/%s/%s.git && '
                                     'cd %s && '
                                     'git fetch origin %s && '
@@ -63,6 +68,9 @@ def main(conf_dir, out_dir, target_repo, ref):
             fp_script.write('CONF=' + conf_dir + '\n')
 
             fp_script.write(script_tail)
+
+    with open(join(out_dir, 'snapshot_branch.txt'), 'w') as fp:
+        fp.write(snapshot_branch)
 
     os.chmod(join(out_dir, 'install.sh'), 0o755)
     return 0
