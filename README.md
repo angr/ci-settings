@@ -1,6 +1,6 @@
 # ci-settings
 
-This is our repo containing the docker image used for our azure CI. Most people
+This is our repo containing the docker image used for our CI. Most people
 won't need to touch this, and instead should use our regular images. This is
 mostly useful if you are either hacking on CI, or super confused why tests are
 failing for your pull request.
@@ -45,18 +45,18 @@ export BUILD_SOURCEBRANCH=refs/heads/master
 
 # We slice up our test execution among workers, 10 currently. You can play with
 # these # numbers to run only a subset of the tests. You can change these
-# between running the azure-test.sh script, without rebuilding.
+# between running the ga-test.sh script, without rebuilding.
 export WORKER=0
 export NUM_WORKERS=10
 
 # And finally, to run the individual steps:
 
 # Build step
-/root/scripts/azure-build.sh
+/root/scripts/ga-build.sh
 # Lint step
-/root/scripts/azure-lint.sh
+/root/scripts/ga-lint.sh
 # Test step
-/root/scripts/azure-test.sh
+/root/scripts/ga-test.sh
 ```
 
 After building, there will be a `build` directory you can `cd` into that has
