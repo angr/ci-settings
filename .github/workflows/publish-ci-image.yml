@@ -17,6 +17,7 @@ jobs:
         run: |
           docker build -t angr/ci:3 ci-image
       - name: Login to docker hub
+        if: github.event_name != 'pull_request'
         run: echo $DOCKER_PASSWORD | docker login -u angrbot --password-stdin
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_API_KEY }}
