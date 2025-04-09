@@ -7,7 +7,7 @@ tar -I zstd -xf build.tar.zst
 cd build
 
 source virtualenv/bin/activate
-pip install pyright
+uv pip install pyright
 
 cd src/${GITHUB_REPOSITORY##*/}
 HEAD_REV="$(git rev-parse HEAD)"
