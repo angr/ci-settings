@@ -4,6 +4,14 @@ flaky
 pylint>=2.14.0
 nose_skinny_report>=0.0.5
 
+wheel
+setuptools
+setuptools-rust
+maturin
+cffi
+ninja
+unicorn==2.0.1.post1
+
 # Lots of angr doc tests use monkeyhex
 monkeyhex
 

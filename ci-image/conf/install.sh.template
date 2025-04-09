@@ -8,19 +8,35 @@ cd ..
 
 cp $CONF/nose2.cfg .
 
-python3 -mvirtualenv --python=`which python3` ./virtualenv
+pip install uv
+
+uv venv ./virtualenv
 source ./virtualenv/bin/activate
-pip install -U 'pip==21.3.1' 'setuptools<64' 'wheel==0.45.1' setuptools-rust maturin
 
-pip install --requirement ./requirements.txt --no-cache --src ./src --no-build-isolation
-pip freeze > freeze.txt
+uv pip install --no-cache --requirement ./requirements.txt
 
-if ! [ "$(cat freeze.txt | grep '^-e git\+' | wc -l)" == "$(cat $CONF/repo-list.txt | egrep -v '^($|#|!)' | wc -l)" ]; then
-    echo "There is some sort of dependency issue - the number of repositories installed in editable mode is different from the number of repositories in the configuration"
-    echo
-    cat freeze.txt | sort
-    exit 1
-fi
-
-deactivate
-python3 -mvirtualenv --relocatable ./virtualenv
+PKGS="
+    archinfo
+    pyvex
+    claripy
+    cle
+    ailment
+    angr
+    angr-platforms
+    pysoot
+    tracer
+    archr
+    angr-management
+    angrop
+    phuzzer
+    povsim
+    compilerex
+    patcherex
+    heaphopper
+    driller
+    rex
+    colorguard
+    "
+for pkg in $PKGS; do
+    uv pip install --no-build-isolation --no-sources ./src/$pkg
+done
