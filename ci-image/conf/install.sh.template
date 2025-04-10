@@ -8,8 +8,6 @@ cd ..
 
 cp $CONF/nose2.cfg .
 
-pip install uv
-
 uv venv ./virtualenv
 source ./virtualenv/bin/activate
 

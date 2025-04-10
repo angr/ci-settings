@@ -14,6 +14,8 @@ git config --global url.https://github.com/.insteadOf git@github.com:
 
 export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
+pip install uv
+
 mkdir build
 cd build
 $SCRIPTS/resolve_refs.py $CONF . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
