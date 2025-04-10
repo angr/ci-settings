@@ -36,5 +36,5 @@ PKGS="
     colorguard
     "
 for pkg in $PKGS; do
-    uv pip install --no-build-isolation --no-sources ./src/$pkg
+    uv pip install --no-build-isolation --no-sources -e ./src/$pkg
 done
