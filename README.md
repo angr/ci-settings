@@ -40,8 +40,8 @@ source /root/scripts/manual_defaults.sh
 
 # Change these to the relevant repo and branch
 # Your pull request will be refs/pull/{id}
-export BUILD_REPOSITORY_URI=angr/angr
-export BUILD_SOURCEBRANCH=refs/heads/master
+export GITHUB_REPOSITORY=angr/angr
+export GITHUB_REF=refs/heads/master
 
 # We slice up our test execution among workers, 10 currently. You can play with
 # these # numbers to run only a subset of the tests. You can change these
