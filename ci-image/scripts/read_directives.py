@@ -55,8 +55,8 @@ class TestParseDirectives(unittest.TestCase):
 
 def main():
     github = Github(os.getenv("GITHUB_TOKEN"))
-    repo = github.get_repo(os.getenv("BUILD_REPOSITORY_URI"), lazy=True)
-    ref = os.getenv("BUILD_SOURCEBRANCH")
+    repo = github.get_repo(os.getenv("GITHUB_REPOSITORY"), lazy=True)
+    ref = os.getenv("GITHUB_REF")
     if "refs/pull/" not in ref:
         # This is not a pull request
         return

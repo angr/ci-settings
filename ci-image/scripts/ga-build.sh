@@ -5,10 +5,6 @@ SCRIPTS=$BASEDIR/scripts
 CONF=$BASEDIR/conf
 WHEELS=$BASEDIR/wheels
 
-if [ ! -z "$GITHUB_REPOSITORY" ]; then
-    export BUILD_REPOSITORY_URI=$GITHUB_REPOSITORY
-    export BUILD_SOURCEBRANCH=$GITHUB_REF
-fi
 
 git config --global url.https://github.com/.insteadOf git@github.com:
 
@@ -16,17 +12,17 @@ export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
 mkdir build
 pushd build
-$SCRIPTS/resolve_refs.py $CONF . $BUILD_REPOSITORY_URI $BUILD_SOURCEBRANCH
+$SCRIPTS/resolve_refs.py $CONF . $GITHUB_REPOSITORY $GITHUB_REF
 echo "snapshot_branch=$(cat ./snapshot_branch.txt)" >> "$GITHUB_OUTPUT"
 ./install.sh
 
 source virtualenv/bin/activate
 if [ "$1" == "nightly" ] || [ "$NIGHTLY" == "true" ]; then
-    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src --skip-dependents > tests.txt
+    $SCRIPTS/discover_tests.py --repo $GITHUB_REPOSITORY --config $CONF --src ./src --skip-dependents > tests.txt
 elif [[ "$CI_DIRECTIVES" =~ "include-nightly" ]]; then
-    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src > tests.txt
+    $SCRIPTS/discover_tests.py --repo $GITHUB_REPOSITORY --config $CONF --src ./src > tests.txt
 else
-    $SCRIPTS/discover_tests.py --repo $BUILD_REPOSITORY_URI --config $CONF --src ./src --eval-attribute 'speed != "slow"' > tests.txt
+    $SCRIPTS/discover_tests.py --repo $GITHUB_REPOSITORY --config $CONF --src ./src --eval-attribute 'speed != "slow"' > tests.txt
 fi
 
 # discover corpus tests
@@ -39,7 +35,7 @@ popd
 find build \( \
 	-type d -and \( \
 		\( -name .git -and -not \( \
-		    -wholename "*/$(echo $BUILD_REPOSITORY_URI | cut -d"/" -f2)/.git" \
+		    -wholename "*/$(echo $GITHUB_REPOSITORY | cut -d"/" -f2)/.git" \
 		    -or -wholename "*/dec-snapshots/.git" \
 		\) \) \
 		-or -name __pycache__ \

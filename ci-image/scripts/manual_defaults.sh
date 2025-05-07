@@ -9,8 +9,8 @@ WORKDIR=/__w/1/s
 mkdir -p $WORKDIR
 cd $WORKDIR
 
-export BUILD_REPOSITORY_URI=angr/angr
-export BUILD_SOURCEBRANCH=refs/heads/master
+export GITHUB_REPOSITORY=angr/angr
+export GITHUB_REF=refs/heads/master
 
 export WORKER=0
 export NUM_WORKERS=10
