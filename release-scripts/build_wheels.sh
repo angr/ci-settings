@@ -9,7 +9,7 @@ function realpath() {
 
 sdist_path="$(realpath "$1")"
 
-python -m pip install build cibuildwheel==2.18.0
+python -m pip install build cibuildwheel==2.23.3
 if [ "$(uname)" == "Linux" ]; then
     pip install auditwheel
 elif [ "$(uname)" == "Darwin" ]; then
@@ -27,8 +27,9 @@ for f in $(ls "$sdist_path"); do
     fi
 done
 
+export CIBW_BEFORE_ALL_LINUX="curl -sSf https://sh.rustup.rs | sh -s -- -y"
 export PIP_FIND_LINKS="$sdist_path"
-export CIBW_ENVIRONMENT_LINUX="PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
+export CIBW_ENVIRONMENT_LINUX="PATH=$HOME/.cargo/bin:$PATH PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 export CIBW_BUILD="
     cp310-manylinux_x86_64
     cp310-manylinux_aarch64
