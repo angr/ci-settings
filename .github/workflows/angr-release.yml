@@ -67,6 +67,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
+      fail-fast: false
     needs: create
 
     steps:
@@ -109,6 +110,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
+      fail-fast: false
     needs: build
 
     steps:
