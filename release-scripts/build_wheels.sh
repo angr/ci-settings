@@ -28,9 +28,9 @@ for f in $(ls "$sdist_path"); do
 done
 
 export CIBW_BEFORE_ALL_LINUX="curl -sSf https://sh.rustup.rs | sh -s -- -y"
-export CIBW_BEFORE_ALL_WINDOWS="rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc"
+export CIBW_BEFORE_ALL_WINDOWS="rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\Program Files\\Git\\usr\\bin\\link.exe\""
 export PIP_FIND_LINKS="$sdist_path"
-export CIBW_ENVIRONMENT_LINUX="PATH=$PATH:$HOME/.cargo/bin PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
+export CIBW_ENVIRONMENT_LINUX="PATH=\$PATH:\$HOME/.cargo/bin PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 export CIBW_BUILD="
     cp310-manylinux_x86_64
     cp310-manylinux_aarch64
