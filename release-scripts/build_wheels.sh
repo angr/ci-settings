@@ -27,7 +27,6 @@ for f in $(ls "$sdist_path"); do
     fi
 done
 
-export DIST_EXTRA_CONFIG="$(dirname $0)/abi3.cfg"
 export CIBW_BEFORE_ALL_LINUX="curl -sSf https://sh.rustup.rs | sh -s -- -y"
 export CIBW_BEFORE_ALL_WINDOWS="rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\Program Files\\Git\\usr\\bin\\link.exe\""
 export PIP_FIND_LINKS="$sdist_path"
