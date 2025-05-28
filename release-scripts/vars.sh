@@ -1,5 +1,5 @@
 VERSION_ID="$BUILD_BUILDID"
-REPOS="binaries archinfo pyvex cle claripy ailment angr angr-management"
+REPOS="binaries archinfo pyvex cle claripy angr angr-management"
 REPOS_LINUX_ONLY="archr"
 CHECKOUT_DIR=repos
 NATIVE_PACKAGES="pyvex angr"
