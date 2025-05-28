@@ -1,5 +1,4 @@
 The following repos currently use angr CI:
-- ailment
 - angr
 - angr-doc
 - angr-management
