@@ -12,10 +12,6 @@ monkeyhex
 # We frequently need upstream pyelftools fixes
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 
-# Build requirements
-pybind11>=2.13.6,<3
-unicorn==2.0.1.post1
-
 # CI doesn't support installing optional dependencies yet
 minidump
 pyxbe
@@ -27,3 +23,4 @@ binsync
 binharness~=0.1.1
 pyxdia~=0.0
 types-pefile
+unicorn==2.0.1.post1
