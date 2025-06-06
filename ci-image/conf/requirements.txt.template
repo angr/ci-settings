@@ -13,9 +13,8 @@ monkeyhex
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 
 # Build requirements
-pyvind11>=2.13.6,<3
+pybind11>=2.13.6,<3
 unicorn==2.0.1.post1
-
 
 # CI doesn't support installing optional dependencies yet
 minidump
