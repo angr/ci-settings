@@ -150,7 +150,7 @@ jobs:
             -F text="Link to failed run: $BUILD_URL"
 
       - name: Trigger corpus upload
-        if: needs.build.result == 'success' && needs.corpus-test.result == 'success'
+        if: needs.build.result == 'success' && needs.corpus-test.result == 'success' && vars.SNAPSHOTS_DISPATCH_TOKEN != ''
         uses: benc-uk/workflow-dispatch@v1.2.4
         with:
           workflow: "angr-corpus-upload.yml"
