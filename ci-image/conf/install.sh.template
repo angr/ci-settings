@@ -10,7 +10,7 @@ cp $CONF/nose2.cfg .
 
 python3 -mvirtualenv --python=`which python3` ./virtualenv
 source ./virtualenv/bin/activate
-pip install -U 'pip==21.3.1' 'setuptools<64' 'wheel==0.45.1' setuptools-rust maturin 'pybind11>=2.13.6,<3'
+pip install -U 'pip==21.3.1' 'setuptools<64' 'wheel==0.45.1' setuptools-rust maturin 'pybind11>=2.13.6,<3' 'scikit_build_core>=0.11.4'
 
 pip install --requirement ./requirements.txt --no-cache --src ./src --no-build-isolation
 pip freeze > freeze.txt
