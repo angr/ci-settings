@@ -1,10 +1,10 @@
 # CI infrastructure
-nose2
-flaky
-pylint>=2.14.0
-nose_skinny_report>=0.0.5
 pytest
 pytest-insta
+pytest-xdist
+pytest-split
+flaky
+pylint>=2.14.0
 
 # Lots of angr doc tests use monkeyhex
 monkeyhex

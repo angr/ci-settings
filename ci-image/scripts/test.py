@@ -1,62 +1,62 @@
 #!/usr/bin/env python3
 
-import collections
 import os
-import shutil
 import subprocess
 import sys
 
+from repos import Target, load_config
 
-def parse_tests(f):
-    res = collections.defaultdict(list)
-    for l in f.readlines():
-        split = l.strip().split()
-        res[split[0]].append(split[1])
-    return res
+NUM_WORKERS = os.environ.get("NUM_WORKERS", 1)
+WORKER = int(os.environ.get("WORKER", 0)) + 1  # Adjust WORKER to be 1-indexed for pytest-split
 
 
-def test_project(project, tests):
+def test_project(project: str) -> int:
     command = (
-        "nose2 -v -s ./src/{}/tests -c /root/conf/nose2.cfg --log-level 100 {}".format(
-            project, " ".join(tests)
-        )
+        f"pytest -v --log-level=DEBUG -nauto "
+        f"--splits {NUM_WORKERS} --group {WORKER} "
+        f"--rootdir=./src/{project}/tests ./src/{project}/tests"
     )
 
-    print("Running nose2 command:\n{}".format(command), flush=True)
+    print(f"Running test command:\n{command}", flush=True)
     return subprocess.run(command, shell=True).returncode
 
 
+def build_reverse_deps(targets: list[Target]) -> dict[str, set[str]]:
+    reverse_deps: dict[str, set[str]] = {}
+    for t in targets:
+        for dep in t.deps:
+            reverse_deps.setdefault(dep, set()).add(t.repo)
+    return reverse_deps
+
+
+def collect_all_dependents(repo: str, reverse_deps: dict[str, set[str]]) -> set[str]:
+    result: set[str] = set()
+    stack = [repo]
+    while stack:
+        current = stack.pop()
+        for dep in reverse_deps.get(current, []):
+            if dep not in result:
+                result.add(dep)
+                stack.append(dep)
+    return result
+
+
 def main():
-    test_file = None
+    repo = sys.argv[1]
+    include_self = sys.argv[2] == "true"
 
-    args = iter(sys.argv[1:])
+    targets: list[Target] = load_config("/root/conf/repo-list.txt")
 
-    for arg in args:
-        if arg in ("--tests"):
-            test_file = next(args)
-        else:
-            raise ValueError("Bad argument: %s" % arg)
+    reverse_deps = build_reverse_deps(targets)
+    repo_dependents = collect_all_dependents(repo, reverse_deps)
+    if include_self:
+        repo_dependents.add(repo)
 
-        if test_file is None:
-            raise ValueError("Missing --tests")
+    fail_count = 0
+    for repo in sorted(repo_dependents):
+        fail_count += test_project(repo)
 
-    os.makedirs("results")
-
-    error_count = 0
-
-    with open(test_file) as f:
-        test_dict = parse_tests(f)
-        for k in test_dict:
-            rc = test_project(k, test_dict[k])
-            error_count += rc
-            with open("results/%s.returncode" % k, "w") as rcf:
-                rcf.write(str(rc))
-                rcf.close()
-
-            if os.path.exists("/tmp/tests.xml"):
-                shutil.move("/tmp/tests.xml", "results/%s.tests.xml" % k)
-
-    sys.exit(error_count)
+    sys.exit(fail_count)
 
 
 if __name__ == "__main__":

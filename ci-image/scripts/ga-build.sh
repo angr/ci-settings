@@ -17,13 +17,6 @@ echo "snapshot_branch=$(cat ./snapshot_branch.txt)" >> "$GITHUB_OUTPUT"
 ./install.sh
 
 source virtualenv/bin/activate
-if [ "$1" == "nightly" ] || [ "$NIGHTLY" == "true" ]; then
-    $SCRIPTS/discover_tests.py --repo $GITHUB_REPOSITORY --config $CONF --src ./src --skip-dependents > tests.txt
-elif [[ "$CI_DIRECTIVES" =~ "include-nightly" ]]; then
-    $SCRIPTS/discover_tests.py --repo $GITHUB_REPOSITORY --config $CONF --src ./src > tests.txt
-else
-    $SCRIPTS/discover_tests.py --repo $GITHUB_REPOSITORY --config $CONF --src ./src --eval-attribute 'speed != "slow"' > tests.txt
-fi
 
 # discover corpus tests
 IFS=';' CORPUS_TEST_PATHS_LIST=( ${CORPUS_TEST_PATHS-decompiler_corpus} )
