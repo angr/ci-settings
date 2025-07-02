@@ -62,7 +62,7 @@ def main():
 
     fail_count = 0
     for repo in sorted(repo_dependents):
-        fail_count += int(test_project(repo))
+        fail_count += int(not test_project(repo))
 
     sys.exit(fail_count)
 
