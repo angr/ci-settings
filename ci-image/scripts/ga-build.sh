@@ -53,4 +53,4 @@ find build \( \
 \) -exec rm -rf {} +
 
 # export
-tar -I zstd -cf build.tar.zst build/src build/virtualenv build/tests.txt build/corpus-tests.txt
+tar -I zstd -cf build.tar.zst build/src build/virtualenv build/corpus-tests.txt
