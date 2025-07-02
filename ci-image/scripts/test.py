@@ -8,13 +8,16 @@ from repos import Target, load_config
 
 NUM_WORKERS = os.environ.get("NUM_WORKERS", 1)
 WORKER = int(os.environ.get("WORKER", 0)) + 1  # Adjust WORKER to be 1-indexed for pytest-split
-
+NIGHTLY = os.environ.get("NIGHTLY", "false").lower() == "true"
 
 def test_project(project: str) -> bool:
     command = (
         f"pytest -v -nauto --splits {NUM_WORKERS} --group {WORKER} "
         f"--rootdir=./src/{project}/tests ./src/{project}/tests"
     )
+
+    if not NIGHTLY:
+        command += ' -m "not slow"'
 
     print(f"Running test command:\n{command}", flush=True)
     rc = subprocess.run(command, shell=True).returncode
