@@ -10,15 +10,20 @@ NUM_WORKERS = os.environ.get("NUM_WORKERS", 1)
 WORKER = int(os.environ.get("WORKER", 0)) + 1  # Adjust WORKER to be 1-indexed for pytest-split
 
 
-def test_project(project: str) -> int:
+def test_project(project: str) -> bool:
     command = (
-        f"pytest -v --log-level=DEBUG -nauto "
-        f"--splits {NUM_WORKERS} --group {WORKER} "
+        f"pytest -v -nauto --splits {NUM_WORKERS} --group {WORKER} "
         f"--rootdir=./src/{project}/tests ./src/{project}/tests"
     )
 
     print(f"Running test command:\n{command}", flush=True)
-    return subprocess.run(command, shell=True).returncode
+    rc = subprocess.run(command, shell=True).returncode
+    if rc not in (0, 5):
+        print(f"Tests failed for {project} with return code {rc}", flush=True)
+        return False
+    else:
+        print(f"Tests passed for {project}", flush=True)
+        return True
 
 
 def build_reverse_deps(targets: list[Target]) -> dict[str, set[str]]:
@@ -54,7 +59,7 @@ def main():
 
     fail_count = 0
     for repo in sorted(repo_dependents):
-        fail_count += test_project(repo)
+        fail_count += int(test_project(repo))
 
     sys.exit(fail_count)
 

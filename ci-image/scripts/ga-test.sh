@@ -7,7 +7,6 @@ CONF=$BASEDIR/conf
 
 tar -I zstd -xf build.tar.zst
 cd build
-cp $CONF/nose2.cfg .
 
 # Get the repository name without the owner part
 REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
