@@ -6,9 +6,15 @@ import sys
 
 from repos import Target, load_config
 
+
+GITHUB_REPOSITORY = os.environ.get("GITHUB_REPOSITORY", "angr/angr")
+REPO = GITHUB_REPOSITORY.split("/")[-1]
 NUM_WORKERS = os.environ.get("NUM_WORKERS", 1)
-WORKER = int(os.environ.get("WORKER", 0)) + 1  # Adjust WORKER to be 1-indexed for pytest-split
+# Adjust WORKER to be 1-indexed for pytest-split
+WORKER = int(os.environ.get("WORKER", 0)) + 1
 NIGHTLY = os.environ.get("NIGHTLY", "false").lower() == "true"
+INCLUDE_SELF = os.environ.get("INCLUDE_SELF", "true").lower() == "true"
+
 
 def test_project(project: str) -> bool:
     command = (
@@ -50,15 +56,12 @@ def collect_all_dependents(repo: str, reverse_deps: dict[str, set[str]]) -> set[
 
 
 def main():
-    repo = sys.argv[1]
-    include_self = sys.argv[2] == "true"
-
     targets: list[Target] = load_config("/root/conf/repo-list.txt")
 
     reverse_deps = build_reverse_deps(targets)
-    repo_dependents = collect_all_dependents(repo, reverse_deps)
-    if include_self:
-        repo_dependents.add(repo)
+    repo_dependents = collect_all_dependents(REPO, reverse_deps)
+    if INCLUDE_SELF:
+        repo_dependents.add(REPO)
 
     fail_count = 0
     for repo in sorted(repo_dependents):
