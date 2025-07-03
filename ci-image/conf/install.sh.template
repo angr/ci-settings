@@ -16,7 +16,6 @@ PKGS="
     pyvex
     claripy
     cle
-    ailment
     angr
     angr-platforms
     pysoot
