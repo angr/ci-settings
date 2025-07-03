@@ -67,6 +67,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
+      fail-fast: false
     needs: create
 
     steps:
@@ -76,11 +77,11 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3
       - name: Setup Python
-        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.10"
       - name: Download sdists
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: sdist
           path: sdist
@@ -109,23 +110,25 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
+        python: ["3.10", "3.12"]
+      fail-fast: false
     needs: build
 
     steps:
       - name: Setup Python
-        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: "3.10"
+          python-version: ${{ matrix.python }}
 
       - name: Download wheels artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: wheels-${{ matrix.os }}
           path: wheels
 
       - name: Download ubuntu wheels artifact
         if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos')
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: wheels-ubuntu-22.04
           path: wheels-ubuntu
@@ -139,9 +142,9 @@ jobs:
           source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
           export PIP_FIND_LINKS="wheels wheels-ubuntu"
           if [[ $(uname) == "Darwin" || $(uname) == "Linux" ]]; then
-            pip install wheels/angr*$(arch | sed s/i386/x86_64/g).whl
+            pip install --only-binary=pyvex,angr wheels/angr*$(arch | sed s/i386/x86_64/g).whl
           else
-            pip install wheels/angr*.whl
+            pip install --only-binary=pyvex,angr wheels/angr*.whl
           fi
 
       - name: Test angr import
@@ -175,7 +178,7 @@ jobs:
 
       # Git release commits
       - name: Download repos artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: repos
           path: repos
@@ -183,39 +186,39 @@ jobs:
       - name: Publish release commits
         run: release-scripts/publish_release_commits.sh
         env:
-          DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run == false }}
+          DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run != 'false' }}
 
       - name: Bump versions on master
         run: release-scripts/bump_versions.sh
         env:
-          DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run == false }}
+          DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run != 'false' }}
 
       # PyPI artifacts
       - name: Create artifacts and dist directories
         run: mkdir artifacts dist
 
       - name: Download sdist artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: sdist
           path: artifacts/sdist
       - name: Download Ubuntu wheels artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: wheels-ubuntu-22.04
           path: artifacts/wheels-ubuntu-22.04
       - name: Download Windows wheels artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: wheels-windows-2022
           path: artifacts/wheels-windows-2022
       - name: Download macOS x86_64 wheels artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: wheels-macos-13
           path: artifacts/wheels-macos-13
       - name: Download macOS arm64 wheels artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: wheels-macos-14
           path: artifacts/wheels-macos-14

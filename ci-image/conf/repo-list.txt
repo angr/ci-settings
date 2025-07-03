@@ -8,8 +8,7 @@ angr/archinfo
 angr/pyvex -> archinfo
 angr/claripy
 angr/cle -> archinfo, pyvex, cle
-angr/ailment
-angr/angr -> archinfo, pyvex, claripy, cle, ailment, pysoot
+angr/angr -> archinfo, pyvex, claripy, cle, pysoot
 
 # docs and add-ons
 !angr/angr-examples -> angr
@@ -19,6 +18,7 @@ angr/archr
 
 # test binaries
 !angr/binaries
+!angr/dec-snapshots
 
 # applications
 angr/angr-management -> angr

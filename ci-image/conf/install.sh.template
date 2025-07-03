@@ -6,8 +6,6 @@ cd src
 #{TEMPLATE}
 cd ..
 
-cp $CONF/nose2.cfg .
-
 uv venv ./virtualenv
 source ./virtualenv/bin/activate
 

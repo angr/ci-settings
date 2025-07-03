@@ -41,7 +41,7 @@ def lint_files(tolint):
     return { f: lint_file(f) for f in tolint if os.path.isfile(f) }
 
 def compare_lint():
-    repo_dir = "{}/src/{}".format(os.getcwd(), os.getenv("BUILD_REPOSITORY_URI").split('/')[-1])
+    repo_dir = "{}/src/{}".format(os.getcwd(), os.getenv("GITHUB_REPOSITORY").split('/')[-1])
     repo_name = os.path.basename(repo_dir)
 
     os.chdir(repo_dir)

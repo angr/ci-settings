@@ -21,9 +21,6 @@ cle:
 claripy:
 - claripy/__init__.py#4
 
-ailment:
-- ailment/__init__.py#L1
-
 angr:
 - angr/__init__.py#L4
 - setup.cfg dependencies
