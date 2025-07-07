@@ -58,13 +58,17 @@ def collect_all_dependents(repo: str, reverse_deps: dict[str, set[str]]) -> set[
 def main():
     targets: list[Target] = load_config("/root/conf/repo-list.txt")
 
-    reverse_deps = build_reverse_deps(targets)
-    repo_dependents = collect_all_dependents(REPO, reverse_deps)
-    if INCLUDE_SELF:
-        repo_dependents.add(REPO)
+    if NIGHTLY:
+        repos_to_test = [REPO]
+    else:
+        reverse_deps = build_reverse_deps(targets)
+        repo_dependents = collect_all_dependents(REPO, reverse_deps)
+        if INCLUDE_SELF:
+            repo_dependents.add(REPO)
+        repos_to_test = sorted(repo_dependents)
 
     fail_count = 0
-    for repo in sorted(repo_dependents):
+    for repo in repos_to_test:
         fail_count += int(not test_project(repo))
 
     sys.exit(fail_count)
