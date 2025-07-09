@@ -40,8 +40,8 @@ export CIBW_BUILD="
     "
 export CIBW_ARCHS_WINDOWS="AMD64"
 export CIBW_ARCHS_LINUX="x86_64 aarch64"
-CIBW_REPAIR_WHEEL_COMMAND_LINUX="auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
-CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-wheel --require-archs {delocate_archs} --exclude libpyvex -w {dest_dir} -v {wheel}"
+export CIBW_REPAIR_WHEEL_COMMAND_LINUX="auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
+export CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-wheel --require-archs {delocate_archs} --exclude libpyvex -w {dest_dir} -v {wheel}"
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
     if is_native_package "$package"; then
