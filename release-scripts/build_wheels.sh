@@ -9,7 +9,7 @@ function realpath() {
 
 sdist_path="$(realpath "$1")"
 
-python -m pip install build cibuildwheel==2.23.3
+python -m pip install build cibuildwheel==3.0.1
 if [ "$(uname)" == "Linux" ]; then
     pip install auditwheel
 elif [ "$(uname)" == "Darwin" ]; then
