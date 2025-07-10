@@ -21,10 +21,7 @@ mkdir -p "$wheels" wheels_build
 pushd wheels_build
 
 for f in $(ls "$sdist_path"); do
-    # Filter out linux-specific on non-linux
-    if [ $(uname) == "Linux" ] || ! is_linux_only $f; then
-        tar -xf "$sdist_path/$f"
-    fi
+    tar -xf "$sdist_path/$f"
 done
 
 export CIBW_BEFORE_ALL_LINUX="curl -sSf https://sh.rustup.rs | sh -s -- -y"

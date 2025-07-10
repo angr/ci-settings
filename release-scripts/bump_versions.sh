@@ -7,7 +7,7 @@ source $SCRIPT_DIR/vars.sh
 pip install packaging
 
 export CHECKOUT_DIR=$(mktemp -d)
-for r in $REPOS $REPOS_LINUX_ONLY; do
+for r in $REPOS; do
     git clone git@github.com:angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
 done
 
