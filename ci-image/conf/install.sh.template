@@ -11,27 +11,23 @@ source ./virtualenv/bin/activate
 
 uv pip install --no-cache --requirement ./requirements.txt
 
-PKGS="
-    ./src/archinfo
-    ./src/pyvex
-    ./src/claripy
-    ./src/cle
-    ./src/angr
-    ./src/angr-platforms
-    -e ./src/pysoot --config-settings editable_mode=strict
-    ./src/tracer
-    ./src/archr
-    ./src/angr-management
-    ./src/angrop
-    ./src/phuzzer
-    ./src/povsim
-    -e ./src/compilerex --config-settings editable_mode=strict
-    ./src/patcherex
-    ./src/heaphopper
-    ./src/driller
-    ./src/rex
-    ./src/colorguard
-    "
-for pkg in $PKGS; do
-    uv pip install --no-build-isolation --no-sources $pkg
-done
+alias venv_install="uv pip install --no-sources"
+venv_install ./src/archinfo
+venv_install ./src/pyvex
+venv_install ./src/claripy
+venv_install ./src/cle
+venv_install --no-build-isolation ./src/angr
+venv_install ./src/angr-platforms
+venv_install -e ./src/pysoot --config-settings editable_mode=strict
+venv_install ./src/tracer
+venv_install ./src/archr
+venv_install ./src/angr-management
+venv_install ./src/angrop
+venv_install ./src/phuzzer
+venv_install ./src/povsim
+venv_install -e ./src/compilerex --config-settings editable_mode=strict
+venv_install ./src/patcherex
+venv_install ./src/heaphopper
+venv_install ./src/driller
+venv_install ./src/rex
+venv_install ./src/colorguard
