@@ -11,7 +11,10 @@ source ./virtualenv/bin/activate
 
 uv pip install --no-cache --requirement ./requirements.txt
 
-alias venv_install="uv pip install --no-sources"
+venv_install() {
+    uv pip install --no-sources "$@"
+}
+
 venv_install ./src/archinfo
 venv_install ./src/pyvex
 venv_install ./src/claripy
