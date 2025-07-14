@@ -21,14 +21,14 @@ venv_install ./src/claripy
 venv_install ./src/cle
 venv_install --no-build-isolation ./src/angr
 venv_install ./src/angr-platforms
-venv_install -e ./src/pysoot --config-settings editable_mode=strict
+venv_install -e ./src/pysoot --config-settings editable_mode=compat
 venv_install ./src/tracer
 venv_install ./src/archr
 venv_install ./src/angr-management
 venv_install ./src/angrop
 venv_install ./src/phuzzer
 venv_install ./src/povsim
-venv_install -e ./src/compilerex --config-settings editable_mode=strict
+venv_install -e ./src/compilerex --config-settings editable_mode=compat
 venv_install ./src/patcherex
 venv_install ./src/heaphopper
 venv_install ./src/driller
