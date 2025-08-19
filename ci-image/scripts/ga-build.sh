@@ -10,7 +10,7 @@ git config --global url.https://github.com/.insteadOf git@github.com:
 
 export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
-pip install uv
+pip install "uv==0.8.11"
 
 mkdir build
 pushd build
