@@ -32,7 +32,7 @@ def typecheck_files(filenames):
             my_report[filename].errors += 1
         elif severity == "warning":
             my_report[filename].warnings += 1
-        start = diagnostic["range"]["start"]
+        start = diagnostic.get("range", {"start": {"line": 1, "character": 1}})["start"]
         my_report[filename].diagnostics.append((start["line"], start["character"], severity, diagnostic["message"]))
 
     for report in my_report.values():
@@ -48,10 +48,10 @@ def typecheck_diff(rev1, rev2):
     print()
     filenames = subprocess.check_output(["git", "diff", "--name-only", f"{rev1}...{rev2}"], text=True).splitlines()
     filenames = filter_py(filenames)
-    subprocess.check_call(["git", "checkout", rev1], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    report1 = typecheck_files(filenames)
     subprocess.check_call(["git", "checkout", rev2], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     report2 = typecheck_files(filenames)
+    subprocess.check_call(["git", "checkout", rev1], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    report1 = typecheck_files(report2)
 
     status = 0
 
