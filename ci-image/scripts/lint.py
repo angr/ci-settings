@@ -56,7 +56,7 @@ def compare_lint():
         o.split()[-1] for o in
         subprocess.check_output("git diff --name-status {}".format(compare_ref).split()).decode().split("\n")[:-1]
     ]
-    tolint = [ f for f in changed_files if f.endswith(".py") ]
+    tolint = [ f for f in changed_files if f.endswith(".py") and os.path.exists(f)]
     print("Changed files: %s" % (tolint,))
 
     if len(tolint) > 150:
