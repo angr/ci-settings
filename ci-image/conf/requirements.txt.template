@@ -34,3 +34,4 @@ binharness~=0.1.1
 pyxdia~=0.0
 types-pefile
 unicorn==2.0.1.post1
+pwntools==4.14.1
