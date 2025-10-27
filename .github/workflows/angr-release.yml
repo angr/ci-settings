@@ -45,14 +45,14 @@ jobs:
       - name: Create sdists
         run: release-scripts/create_sdist.sh
       - name: Publish repo artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
           name: repos
           path: repos
           if-no-files-found: error
           include-hidden-files: true
       - name: Publish sdist artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
           name: sdist
           path: sdist
@@ -95,7 +95,7 @@ jobs:
           bash release-scripts/build_wheels.sh sdist
         shell: cmd
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
           name: wheels-${{ matrix.os }}
           path: wheels
