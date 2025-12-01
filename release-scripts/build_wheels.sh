@@ -34,7 +34,7 @@ export CIBW_BUILD="
     cp310-macosx_arm64
     "
 export CIBW_ARCHS_WINDOWS="AMD64"
-export CIBW_ARCHS_LINUX="x86_64 aarch64"
+export CIBW_ARCHS_LINUX="native"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX="auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
 export CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
 export MACOSX_DEPLOYMENT_TARGET="10.12"
