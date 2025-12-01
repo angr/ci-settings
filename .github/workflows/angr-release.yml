@@ -71,16 +71,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-15-intel, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15-intel, macos-15]
       fail-fast: false
     needs: create
 
     steps:
       - name: Checkout
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v4
-      - name: Set up QEMU
-        if: startsWith(matrix.os, 'ubuntu')
-        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
       - name: Setup Python
         uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v5
         with:
@@ -114,7 +111,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-15-intel, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15-intel, macos-15]
         python: ["3.10", "3.12"]
       fail-fast: false
     needs: build
@@ -131,8 +128,8 @@ jobs:
           name: wheels-${{ matrix.os }}
           path: wheels
 
-      - name: Download ubuntu wheels artifact
-        if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos')
+      - name: Download ubuntu x86_64 wheels artifact
+        if: ${{ matrix.os != 'ubuntu-22.04' }}
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
         with:
           name: wheels-ubuntu-22.04
@@ -212,6 +209,11 @@ jobs:
         with:
           name: wheels-ubuntu-22.04
           path: artifacts/wheels-ubuntu-22.04
+      - name: Download Ubuntu ARM wheels artifact
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        with:
+          name: wheels-ubuntu-24.04-arm
+          path: artifacts/wheels-ubuntu-24.04-arm
       - name: Download Windows wheels artifact
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
         with:

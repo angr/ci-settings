@@ -34,7 +34,7 @@ export CIBW_BUILD="
     cp310-macosx_arm64
     "
 export CIBW_ARCHS_WINDOWS="AMD64"
-export CIBW_ARCHS_LINUX="x86_64 aarch64"
+export CIBW_ARCHS_LINUX="native"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX="auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
 export CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
 export MACOSX_DEPLOYMENT_TARGET="10.12"
@@ -42,7 +42,7 @@ for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
     if [ "$package" = "pyvex" ] || [ "$package" = "angr" ]; then
         python -m cibuildwheel --output-dir "$wheels" $dist
-    elif [ "$(uname)" == "Linux" ]; then
+    elif [ "$(uname -sp)" == "Linux x86_64" ]; then
         python -m build --wheel --outdir "$wheels" $dist
     fi
 done
