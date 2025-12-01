@@ -120,19 +120,16 @@ jobs:
         run: |
           python -m pip install build cibuildwheel==3.0.1 "auditwheel; sys_platform == 'linux'" "delocate; sys_platform == 'darwin'"
 
-          # Use Python to get absolute path
-          sdist_path="$(python -c "import os; print(os.path.abspath('sdist'))")"
-          wheels="$(python -c "import os; print(os.path.abspath('wheels'))")"
-
-          mkdir -p "$wheels" wheels_build
+          mkdir -p wheels wheels_build
           pushd wheels_build
 
-          for f in $(ls "$sdist_path"); do
-            tar -xf "$sdist_path/$f"
+          for f in $(ls ../sdist); do
+            tar -xf "../sdist/$f"
           done
 
           # Set environment variables for cibuildwheel
-          export PIP_FIND_LINKS="$sdist_path"
+          # Use python to get the absolute path to ../sdist
+          export PIP_FIND_LINKS="$(python -c "import os; print(os.path.abspath('../sdist'))")"
           export CIBW_ENVIRONMENT_LINUX="PATH=\$PATH:\$HOME/.cargo/bin PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 
           # Use native packages to determine which packages need cibuildwheel
