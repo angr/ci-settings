@@ -77,9 +77,7 @@ jobs:
           path: sdist
           if-no-files-found: error
       - name: Check artifacts are valid for PyPI
-        run: |
-          pip install twine
-          twine check sdist/*
+        run: uvx twine check sdist/*
 
   build:
     runs-on: ${{ matrix.os }}
@@ -140,9 +138,7 @@ jobs:
           path: wheels
           if-no-files-found: error
       - name: Check artifacts are valid for PyPI
-        run: |
-          pip install twine
-          twine check sdist/*
+        run: uvx twine check wheels/*
 
   verify:
     runs-on: ${{ matrix.os }}
