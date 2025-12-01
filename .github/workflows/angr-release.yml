@@ -128,8 +128,8 @@ jobs:
           name: wheels-${{ matrix.os }}
           path: wheels
 
-      - name: Download ubuntu wheels artifact
-        if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos')
+      - name: Download ubuntu x86_64 wheels artifact
+        if: ${{ matrix.os != 'ubuntu-22.04' }}
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
         with:
           name: wheels-ubuntu-22.04
