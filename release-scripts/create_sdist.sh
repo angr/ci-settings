@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-source $(dirname $0)/vars.sh
-
 mkdir sdist
 
 python -m pip install build
