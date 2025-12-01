@@ -42,7 +42,7 @@ for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
     if [ "$package" = "pyvex" ] || [ "$package" = "angr" ]; then
         python -m cibuildwheel --output-dir "$wheels" $dist
-    elif [ "$(uname)" == "Linux" ]; then
+    elif [ "$(uname -sp)" == "Linux x86_64" ]; then
         python -m build --wheel --outdir "$wheels" $dist
     fi
 done
