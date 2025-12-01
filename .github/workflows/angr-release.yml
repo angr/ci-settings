@@ -87,15 +87,11 @@ jobs:
         with:
           name: sdist
           path: sdist
+      - name: Setup MSVC build environment
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
+        if: startsWith(runner.os, 'windows')
       - name: Build wheels
-        if: startsWith(matrix.os, 'windows') != true
         run: release-scripts/build_wheels.sh sdist
-      - name: Build wheels
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          bash release-scripts/build_wheels.sh sdist
-        shell: cmd
       - name: Upload wheel artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
