@@ -40,7 +40,7 @@ export CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-wheel --require-archs {delocate
 export MACOSX_DEPLOYMENT_TARGET="10.12"
 for dist in $(ls); do
     package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
-    if is_native_package "$package"; then
+    if [ "$package" = "pyvex" ] || [ "$package" = "angr" ]; then
         python -m cibuildwheel --output-dir "$wheels" $dist
     elif [ "$(uname)" == "Linux" ]; then
         python -m build --wheel --outdir "$wheels" $dist
