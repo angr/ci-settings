@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-source $(dirname $0)/vars.sh
-
 python="$1"
 dist_path="$2"
 venv_path="$3"

@@ -19,6 +19,11 @@ defaults:
   run:
     shell: bash
 
+env:
+  REPOS: "binaries archinfo pyvex cle claripy angr angr-management"
+  CHECKOUT_DIR: repos
+  NATIVE_PACKAGES: "pyvex angr"
+
 jobs:
   create:
     name: Create release

@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-source "$(dirname "$0")/vars.sh"
-
 for i in $(ls $CHECKOUT_DIR); do
     ref_to_push=$(git -C $CHECKOUT_DIR/$i describe --tags | head -n 1)
     if [ "$DRY_RUN" == "false" ]; then
