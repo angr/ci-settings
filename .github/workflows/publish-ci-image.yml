@@ -3,7 +3,13 @@ name: Publish angr ci docker image
 on:
   push:
     branches: ["master"]
+    paths:
+      - "ci-image/**"
+      - ".github/workflows/publish-ci-image.yml"
   pull_request:
+    paths:
+      - "ci-image/**"
+      - ".github/workflows/publish-ci-image.yml"
   workflow_dispatch:
 
 jobs:
