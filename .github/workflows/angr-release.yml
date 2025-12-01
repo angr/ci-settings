@@ -21,8 +21,9 @@ defaults:
 
 env:
   REPOS: "binaries archinfo pyvex cle claripy angr angr-management"
-  CHECKOUT_DIR: repos
+  PACKAGES: "archinfo pyvex cle claripy angr angr-management"
   NATIVE_PACKAGES: "pyvex angr"
+  CHECKOUT_DIR: repos
 
 jobs:
   create:
@@ -43,6 +44,8 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
         env:
           RELEASE_KEY: ${{ secrets.RELEASE_KEY }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
       - name: Checkout repos
         run: |
           mkdir -p "${{ env.CHECKOUT_DIR }}"
@@ -57,15 +60,8 @@ jobs:
         run: |
           mkdir sdist
 
-          python -m pip install build
-
-          export PIP_FIND_LINKS="sdist"
-          for i in ${{ env.REPOS }}; do
-            if [ -e "${{ env.CHECKOUT_DIR }}/$i/pyproject.toml" ]; then
-              python -m build --sdist --outdir=sdist ${{ env.CHECKOUT_DIR }}/$i
-            else
-              echo "Skipping $i"
-            fi
+          for i in ${{ env.PACKAGES }}; do
+            uv build --sdist --out-dir=sdist --find-links=sdist ${{ env.CHECKOUT_DIR }}/$i
           done
       - name: Publish repo artifacts
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
@@ -96,10 +92,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v4
-      - name: Setup Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v5
-        with:
-          python-version: "3.13"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
       - name: Download sdists
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
         with:
@@ -118,14 +112,8 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
           MACOSX_DEPLOYMENT_TARGET: "10.12"
         run: |
-          python -m pip install build cibuildwheel==3.0.1 "auditwheel; sys_platform == 'linux'" "delocate; sys_platform == 'darwin'"
-
           mkdir -p wheels wheels_build
           pushd wheels_build
-
-          for f in $(ls ../sdist); do
-            tar -xf "../sdist/$f"
-          done
 
           # Set environment variables for cibuildwheel
           # Use python to get the absolute path to ../sdist
@@ -134,14 +122,14 @@ jobs:
 
           wheels_dir="$(python -c "import os; print(os.path.abspath('../wheels'))")"
 
-          # Use native packages to determine which packages need cibuildwheel
-          for dist in $(ls); do
-            package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
-            if [[ "${{ env.NATIVE_PACKAGES }}" =~ "$package" ]]; then
-              python -m cibuildwheel --output-dir "$wheels_dir" $dist
-            elif [ "$(uname -sp)" == "Linux x86_64" ]; then
-              python -m build --wheel --outdir "$wheels_dir" $dist
-            fi
+          if [[ "$(uname -sp)" == "Linux x86_64" ]]; then
+            BUILD_LIST="$PACKAGES"
+          else
+            BUILD_LIST="$NATIVE_PACKAGES"
+          fi
+
+          for pkg in $BUILD_LIST; do
+            uvx cibuildwheel --output-dir "$wheels_dir" ../sdist/${pkg}-*
           done
 
           popd
