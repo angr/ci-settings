@@ -44,11 +44,66 @@ jobs:
         env:
           RELEASE_KEY: ${{ secrets.RELEASE_KEY }}
       - name: Checkout repos
-        run: release-scripts/checkout_repos.sh
+        run: |
+          mkdir -p "${{ env.CHECKOUT_DIR }}"
+          echo "!.git" > ${{ env.CHECKOUT_DIR }}/.artifactignore
+
+          for r in ${{ env.REPOS }}; do
+            git clone git@github.com:angr/$r.git ${{ env.CHECKOUT_DIR }}/$r --depth=1 --recursive
+          done
       - name: Create release commits
-        run: release-scripts/create_release_commits.sh
+        run: |
+          pip install packaging
+
+          SCRIPT_DIR="release-scripts"
+          for i in $(ls ${{ env.CHECKOUT_DIR }}); do
+            pushd "${{ env.CHECKOUT_DIR }}/$i"
+
+            if [ -f "VERSION" ]; then
+              python $SCRIPT_DIR/versiontool.py undev $(cat VERSION) > "VERSION"
+              VERSION=$(cat VERSION)
+
+            elif [ -f "$i/VERSION" ]; then
+              python $SCRIPT_DIR/versiontool.py undev $(cat $i/VERSION) > "$i/VERSION"
+              VERSION=$(cat VERSION)
+
+            elif [ -e pyproject.toml ]; then
+              # Replace version in __init__.py
+              project_name=$(sed 's/-//g' <<< "$i")
+              init_file=$project_name/__init__.py
+              old_version=$(cat $init_file | grep '__version__' | head -n 1 | cut -d'"' -f2)
+              VERSION=$(python $SCRIPT_DIR/versiontool.py undev "$old_version")
+              sed -i "s/$old_version/$VERSION/g" $init_file
+              sed -i "s/$old_version/$VERSION/g" pyproject.toml
+              [ -f setup.cfg ] && sed -i "s/$old_version/$VERSION/g" setup.cfg
+
+            else
+              popd
+              continue
+            fi
+
+            # Commit
+            git checkout -q -b "release/$VERSION"
+            git add --all
+            git commit -m "Update version to $VERSION [ci skip]"
+            git tag -a "v$VERSION" -m "release version $VERSION"
+
+            popd
+          done
       - name: Create sdists
-        run: release-scripts/create_sdist.sh
+        run: |
+          mkdir sdist
+
+          python -m pip install build
+
+          export PIP_FIND_LINKS="sdist"
+          for i in ${{ env.REPOS }}; do
+            if [ -e "${{ env.CHECKOUT_DIR }}/$i/pyproject.toml" ]; then
+              python -m build --sdist --outdir=sdist ${{ env.CHECKOUT_DIR }}/$i
+            else
+              echo "Skipping $i"
+            fi
+          done
       - name: Publish repo artifacts
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
@@ -91,7 +146,43 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
         if: startsWith(runner.os, 'windows')
       - name: Build wheels
-        run: release-scripts/build_wheels.sh sdist
+        env:
+          CIBW_BEFORE_ALL_LINUX: "curl -sSf https://sh.rustup.rs | sh -s -- -y"
+          CIBW_BEFORE_ALL_WINDOWS: "rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\link.exe\""
+          CIBW_BUILD: "cp310-manylinux_x86_64 cp310-manylinux_aarch64 cp310-win_amd64 cp310-macosx_x86_64 cp310-macosx_arm64"
+          CIBW_ARCHS: "native"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
+          MACOSX_DEPLOYMENT_TARGET: "10.12"
+        run: |
+          python -m pip install build cibuildwheel==3.0.1 "auditwheel; sys_platform == 'linux'" "delocate; sys_platform == 'darwin'"
+
+          # Use Python to get absolute path
+          sdist_path="$(python -c "import os; print(os.path.abspath('sdist'))")"
+          wheels="$(python -c "import os; print(os.path.abspath('wheels'))")"
+
+          mkdir -p "$wheels" wheels_build
+          pushd wheels_build
+
+          for f in $(ls "$sdist_path"); do
+            tar -xf "$sdist_path/$f"
+          done
+
+          # Set environment variables for cibuildwheel
+          export PIP_FIND_LINKS="$sdist_path"
+          export CIBW_ENVIRONMENT_LINUX="PATH=\$PATH:\$HOME/.cargo/bin PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
+
+          # Use native packages to determine which packages need cibuildwheel
+          for dist in $(ls); do
+            package=$(cat $dist/PKG-INFO | grep '^Name: [a-zA-Z0-9-]\+$' | head -n 1 | cut -d' ' -f2)
+            if [[ "${{ env.NATIVE_PACKAGES }}" =~ "$package" ]]; then
+              python -m cibuildwheel --output-dir "$wheels" $dist
+            elif [ "$(uname -sp)" == "Linux x86_64" ]; then
+              python -m build --wheel --outdir "$wheels" $dist
+            fi
+          done
+
+          popd
       - name: Upload wheel artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
@@ -182,7 +273,13 @@ jobs:
           path: repos
 
       - name: Publish release commits
-        run: release-scripts/publish_release_commits.sh
+        run: |
+          for i in $(ls ${{ env.CHECKOUT_DIR }}); do
+            ref_to_push=$(git -C ${{ env.CHECKOUT_DIR }}/$i describe --tags | head -n 1)
+            if [ "${{ env.DRY_RUN }}" == "false" ]; then
+              git -C ${{ env.CHECKOUT_DIR }}/$i push origin "$ref_to_push"
+            fi
+          done
         env:
           DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run != 'false' }}
 
