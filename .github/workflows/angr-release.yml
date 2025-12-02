@@ -101,7 +101,7 @@ jobs:
         if: startsWith(runner.os, 'windows')
       - name: Build wheels
         env:
-          CIBW_BEFORE_ALL_LINUX: "curl -sSf https://sh.rustup.rs | sh -s -- -y"
+          CIBW_BEFORE_ALL_LINUX: "rustup update stable && rustup default stable"
           CIBW_BEFORE_ALL_WINDOWS: "rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\Program Files\\Git\\usr\\bin\\link.exe\""
           CIBW_BUILD: "cp310-manylinux_x86_64 cp310-manylinux_aarch64 cp310-win_amd64 cp310-macosx_x86_64 cp310-macosx_arm64"
           CIBW_ARCHS: "native"
