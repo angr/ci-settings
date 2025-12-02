@@ -103,7 +103,7 @@ jobs:
         env:
           CIBW_BEFORE_ALL_LINUX: "curl -sSf https://sh.rustup.rs | sh -s -- -y"
           CIBW_BEFORE_ALL_WINDOWS: "rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\Program Files\\Git\\usr\\bin\\link.exe\""
-          CIBW_BUILD: "cp310-manylinux_x86_64 cp310-manylinux_aarch64 cp310-win_amd64 cp310-macosx_x86_64 cp310-macosx_arm64"
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
           CIBW_ARCHS: "native"
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
@@ -173,11 +173,7 @@ jobs:
           python -m venv angr_venv
           source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
           export PIP_FIND_LINKS="wheels wheels-ubuntu"
-          if [[ $(uname) == "Darwin" || $(uname) == "Linux" ]]; then
-            pip install --only-binary=pyvex,angr wheels/angr*$(arch | sed s/i386/x86_64/g).whl
-          else
-            pip install --only-binary=pyvex,angr wheels/angr*.whl
-          fi
+          pip install --only-binary=pyvex,angr angr
 
       - name: Test angr import
         run: |
