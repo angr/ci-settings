@@ -116,6 +116,11 @@ jobs:
           # Set environment variables for cibuildwheel
           # Use python to get the absolute path to ../sdist
           export UV_FIND_LINKS="$(python -c "import os; print(os.path.abspath('../sdist'))")"
+          # If we are on linux, the build is in docker and we need to adjust the path
+          if [[ "$(uname -sp)" == "Linux" ]]; then
+            export UV_FIND_LINKS="/host$UV_FIND_LINKS"
+          fi
+
           export CIBW_ENVIRONMENT_LINUX="PATH=\$PATH:\$HOME/.cargo/bin PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 
           wheels_dir="$(python -c "import os; print(os.path.abspath('../wheels'))")"
