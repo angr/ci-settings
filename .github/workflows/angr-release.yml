@@ -173,11 +173,7 @@ jobs:
           python -m venv angr_venv
           source angr_venv/bin/activate &> /dev/null || source angr_venv/Scripts/activate
           export PIP_FIND_LINKS="wheels wheels-ubuntu"
-          if [[ $(uname) == "Darwin" || $(uname) == "Linux" ]]; then
-            pip install --only-binary=pyvex,angr wheels/angr*$(arch | sed s/i386/x86_64/g).whl
-          else
-            pip install --only-binary=pyvex,angr wheels/angr*.whl
-          fi
+          pip install --only-binary=pyvex,angr angr
 
       - name: Test angr import
         run: |
