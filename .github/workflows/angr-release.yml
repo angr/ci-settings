@@ -23,6 +23,7 @@ env:
   REPOS: "binaries archinfo pyvex cle claripy angr angr-management"
   PACKAGES: "archinfo pyvex cle claripy angr angr-management"
   NATIVE_PACKAGES: "pyvex angr"
+  PURE_PYTHON_PACKAGES: "archinfo cle claripy angr-management"
   CHECKOUT_DIR: repos
 
 jobs:
@@ -119,12 +120,12 @@ jobs:
           wheels_dir="$(python -c "import os; print(os.path.abspath('../wheels'))")"
 
           if [[ "$(uname -sp)" == "Linux x86_64" ]]; then
-            BUILD_LIST="$PACKAGES"
-          else
-            BUILD_LIST="$NATIVE_PACKAGES"
+            for pkg in $PURE_PYTHON_PACKAGES; do
+              uvx build --wheel --out-dir "$wheels_dir" ../sdist/${pkg}-*
+            done
           fi
 
-          for pkg in $BUILD_LIST; do
+          for pkg in $NATIVE_PACKAGES; do
             uvx cibuildwheel --output-dir "$wheels_dir" ../sdist/${pkg}-*
           done
 
