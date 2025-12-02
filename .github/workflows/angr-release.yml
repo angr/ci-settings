@@ -23,7 +23,7 @@ env:
   REPOS: "binaries archinfo pyvex cle claripy angr angr-management"
   PACKAGES: "archinfo pyvex cle claripy angr angr-management"
   NATIVE_PACKAGES: "pyvex angr"
-  PURE_PYTHON_PACKAGES: "archinfo cle claripy angr-management"
+  PURE_PYTHON_PACKAGES: "archinfo cle claripy angr_management"
   CHECKOUT_DIR: repos
 
 jobs:
