@@ -101,6 +101,7 @@ jobs:
         if: startsWith(runner.os, 'windows')
       - name: Build wheels
         env:
+          CIBW_BUILD_FRONTEND: "build[uv]"
           CIBW_BEFORE_ALL_LINUX: "curl -sSf https://sh.rustup.rs | sh -s -- -y"
           CIBW_BEFORE_ALL_WINDOWS: "rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\Program Files\\Git\\usr\\bin\\link.exe\""
           CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
@@ -114,7 +115,7 @@ jobs:
 
           # Set environment variables for cibuildwheel
           # Use python to get the absolute path to ../sdist
-          export PIP_FIND_LINKS="$(python -c "import os; print(os.path.abspath('../sdist'))")"
+          export UV_FIND_LINKS="$(python -c "import os; print(os.path.abspath('../sdist'))")"
           export CIBW_ENVIRONMENT_LINUX="PATH=\$PATH:\$HOME/.cargo/bin PIP_FIND_LINKS=/host$PIP_FIND_LINKS"
 
           wheels_dir="$(python -c "import os; print(os.path.abspath('../wheels'))")"
