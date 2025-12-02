@@ -121,7 +121,7 @@ jobs:
 
           if [[ "$(uname -sp)" == "Linux x86_64" ]]; then
             for pkg in $PURE_PYTHON_PACKAGES; do
-              uvx build --wheel --out-dir "$wheels_dir" ../sdist/${pkg}-*
+              uv build --wheel --out-dir "$wheels_dir" ../sdist/${pkg}-*
             done
           fi
 
