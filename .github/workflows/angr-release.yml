@@ -92,7 +92,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
       - name: Download sdists
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: sdist
           path: sdist
@@ -155,14 +155,14 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Download wheels artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-${{ matrix.os }}
           path: wheels
 
       - name: Download ubuntu x86_64 wheels artifact
         if: ${{ matrix.os != 'ubuntu-22.04' }}
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-ubuntu-22.04
           path: wheels-ubuntu
@@ -208,7 +208,7 @@ jobs:
 
       # Git release commits
       - name: Download repos artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: repos
           path: repos
@@ -234,32 +234,32 @@ jobs:
         run: mkdir artifacts dist
 
       - name: Download sdist artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: sdist
           path: artifacts/sdist
       - name: Download Ubuntu wheels artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-ubuntu-22.04
           path: artifacts/wheels-ubuntu-22.04
       - name: Download Ubuntu ARM wheels artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-ubuntu-24.04-arm
           path: artifacts/wheels-ubuntu-24.04-arm
       - name: Download Windows wheels artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-windows-2022
           path: artifacts/wheels-windows-2022
       - name: Download macOS x86_64 wheels artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-macos-15-intel
           path: artifacts/wheels-macos-15-intel
       - name: Download macOS arm64 wheels artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v4
         with:
           name: wheels-macos-15
           path: artifacts/wheels-macos-15
