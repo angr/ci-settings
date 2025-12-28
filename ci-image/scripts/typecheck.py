@@ -23,7 +23,9 @@ def typecheck_files(filenames):
     if not filenames:
         return {}
     proc = subprocess.run(["pyright", "--outputjson", *filenames], text=False, check=False, stdout=subprocess.PIPE)
-    pyright_report = json.loads(proc.stdout)
+    # HACK - a dep of pyright added a spruious print on first use
+    stdout = proc.stdout.removeprefix(b"{'x86': False, 'risc': False, 'lts': False}\n")
+    pyright_report = json.loads(stdout)
     my_report = {os.path.realpath(filename): FileReport(filename, diagnostics=[], lines=count_lines(filename)) for filename in filenames}
     for diagnostic in pyright_report["generalDiagnostics"]:
         severity = diagnostic["severity"]
