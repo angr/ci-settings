@@ -38,7 +38,10 @@ def typecheck_files(filenames):
         my_report[filename].diagnostics.append((start["line"], start["character"], severity, diagnostic["message"]))
 
     for report in my_report.values():
-        report.score = (report.errors * 10 + report.warnings) / report.lines
+        if report.lines == 0:
+            report.score = 0
+        else:
+            report.score = (report.errors * 10 + report.warnings) / report.lines
 
     return my_report
 
