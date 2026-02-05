@@ -42,6 +42,7 @@ def main(conf_dir, out_dir, target_repo, ref):
             fp_script.write(script_base)
 
             for target in targets:
+                is_target_repo = '%s/%s' % (target.owner, target.repo) == target_repo
                 # clone the target repo first
                 if target.repo == "dec-snapshots":
                     fp_script.write('git clone https://github.com/%s/%s.git --depth 1 --branch master\n' %
@@ -50,14 +51,18 @@ def main(conf_dir, out_dir, target_repo, ref):
                     fp_script.write('git init %s && '
                                     'pushd %s && '
                                     'git remote add origin https://github.com/%s/%s.git && '
-                                    'git fetch --depth 1 origin %s && '
+                                    'git fetch --depth 1 origin %s%s && '
                                     'git checkout FETCH_HEAD && '
                                     'git submodule update --init --recursive --depth 1 && '
                                     'popd\n' %
-                            (target.repo, target.repo, target.owner, target.repo, target.branch))
+                            (target.repo, target.repo, target.owner, target.repo, target.branch,
+                             ' master' if is_target_repo else ''))
                 else:
                     fp_script.write('git clone --depth 1 --recursive --shallow-submodules -b %s https://github.com/%s/%s.git\n' %
                             (target.branch, target.owner, target.repo))
+                    if target.branch != 'master' and is_target_repo:
+                        fp_script.write('git -C %s fetch --depth 1 origin master\n' %
+                                target.repo)
 
             fp_script.write('CONF=' + conf_dir + '\n')
 
