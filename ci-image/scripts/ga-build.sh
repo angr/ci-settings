@@ -38,6 +38,7 @@ find build \( \
 		-or \( -wholename "*/sphinx/locale/*" -and -not -name LC_MESSAGES \) \
 		-or \( -wholename "build/virtualenv/*" -and -name tests \) \
 		-or -wholename "*/angr/build" \
+		-or -wholename "*/angr/target" \
 		-or -wholename "*/pyvex/build" \
 	\) \
 	-or -type f -and \( \
