@@ -12,11 +12,12 @@ source virtualenv/bin/activate
 uv pip install pyright
 
 cd src/${GITHUB_REPOSITORY##*/}
+git fetch --unshallow || true
+git fetch origin master:master || true
 HEAD_REV="$(git rev-parse HEAD)"
 if [[ $GITHUB_REF == "master" ]]; then
     BASE_REV="$(git rev-parse --abbrev-ref HEAD~)"
 else
-    git fetch origin master:master || true
     BASE_REV="$(git rev-parse --abbrev-ref master)"
 fi
 
