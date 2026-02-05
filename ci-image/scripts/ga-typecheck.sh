@@ -16,6 +16,7 @@ HEAD_REV="$(git rev-parse HEAD)"
 if [[ $GITHUB_REF == "master" ]]; then
     BASE_REV="$(git rev-parse --abbrev-ref HEAD~)"
 else
+    git fetch origin master:master || true
     BASE_REV="$(git rev-parse --abbrev-ref master)"
 fi
 

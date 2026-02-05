@@ -49,6 +49,7 @@ def compare_lint():
     if cur_branch == "master":
         compare_ref = 'HEAD^'
     else:
+        subprocess.call("git fetch origin master".split())
         compare_ref = subprocess.check_output("git merge-base origin/master {}".format(cur_branch).split()).decode()
 
     # get the files to lint
