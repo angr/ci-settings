@@ -47,15 +47,16 @@ def main(conf_dir, out_dir, target_repo, ref):
                     fp_script.write('git clone https://github.com/%s/%s.git --depth 1 --branch master\n' %
                             (target.owner, target.repo))
                 elif target.branch.startswith('refs/'):
-                    fp_script.write('git clone --recursive https://github.com/%s/%s.git && '
-                                    'cd %s && '
-                                    'git fetch origin %s && '
+                    fp_script.write('git init %s && '
+                                    'pushd %s && '
+                                    'git remote add origin https://github.com/%s/%s.git && '
+                                    'git fetch --depth 1 origin %s && '
                                     'git checkout FETCH_HEAD && '
-                                    'git submodule update --init --recursive && '
-                                    'cd ..\n' %
-                            (target.owner, target.repo, target.repo, target.branch))
+                                    'git submodule update --init --recursive --depth 1 && '
+                                    'popd\n' %
+                            (target.repo, target.repo, target.owner, target.repo, target.branch))
                 else:
-                    fp_script.write('git clone --recursive -b %s https://github.com/%s/%s.git\n' %
+                    fp_script.write('git clone --depth 1 --recursive --shallow-submodules -b %s https://github.com/%s/%s.git\n' %
                             (target.branch, target.owner, target.repo))
 
             fp_script.write('CONF=' + conf_dir + '\n')
