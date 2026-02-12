@@ -191,6 +191,7 @@ jobs:
     needs: verify
     permissions:
       id-token: write
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -276,3 +277,19 @@ jobs:
         uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
         with:
           verbose: true
+
+      - name: Get angr-management version tag
+        id: get-version
+        run: |
+          version_tag=$(git -C ${{ env.CHECKOUT_DIR }}/angr-management describe --tags | head -n 1)
+          echo "version=$version_tag" >> $GITHUB_OUTPUT
+
+      - name: Dispatch angr-management release workflow
+        if: github.event_name == 'schedule' || github.event.inputs.dry_run == 'false'
+        run: |
+          gh workflow run release.yml \
+            --repo angr/angr-management \
+            --ref master \
+            --field version=${{ steps.get-version.outputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
