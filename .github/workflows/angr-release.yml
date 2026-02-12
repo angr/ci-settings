@@ -280,9 +280,15 @@ jobs:
 
       - name: Get angr-management version tag
         id: get-version
+        if: github.event_name == 'schedule' || github.event.inputs.dry_run == 'false'
         run: |
           version_tag=$(git -C ${{ env.CHECKOUT_DIR }}/angr-management describe --tags | head -n 1)
+          if [ -z "$version_tag" ]; then
+            echo "Error: Failed to extract version tag from angr-management repository"
+            exit 1
+          fi
           echo "version=$version_tag" >> $GITHUB_OUTPUT
+          echo "Extracted version: $version_tag"
 
       - name: Dispatch angr-management release workflow
         if: github.event_name == 'schedule' || github.event.inputs.dry_run == 'false'
