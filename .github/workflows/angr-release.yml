@@ -54,12 +54,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
       - name: Checkout repos
+        env:
+          REPO_URL_BASE: ${{ secrets.RELEASE_KEY && 'git@github.com:angr' || 'https://github.com/angr' }}
         run: |
           mkdir -p "${{ env.CHECKOUT_DIR }}"
           echo "!.git" > ${{ env.CHECKOUT_DIR }}/.artifactignore
 
           for r in ${{ env.REPOS }}; do
-            git clone git@github.com:angr/$r.git ${{ env.CHECKOUT_DIR }}/$r --depth=1 --recursive
+            git clone ${{ env.REPO_URL_BASE }}/$r.git ${{ env.CHECKOUT_DIR }}/$r --depth=1 --recursive
           done
       - name: Create release commits
         run: release-scripts/create_release_commits.sh
