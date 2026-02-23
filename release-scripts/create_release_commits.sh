@@ -34,7 +34,7 @@ for i in $(ls $CHECKOUT_DIR); do
     # Commit
     git checkout -q -b "release/$VERSION"
     git add --all
-    git commit -m "Update version to $VERSION [ci skip]"
+    git commit -m "Update version to $VERSION"
     git tag -a "v$VERSION" -m "release version $VERSION"
 
     popd
