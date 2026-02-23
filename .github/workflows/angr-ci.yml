@@ -152,7 +152,7 @@ jobs:
 
       - name: Trigger corpus upload
         if: needs.build.result == 'success' && needs.corpus-test.result == 'success' && vars.SNAPSHOTS_DISPATCH_TOKEN != ''
-        uses: benc-uk/workflow-dispatch@v1.2.4
+        uses: benc-uk/workflow-dispatch@v1.3.1
         with:
           workflow: "angr-corpus-upload.yml"
           repo: angr/snapshots-deputy
