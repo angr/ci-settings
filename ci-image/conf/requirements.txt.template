@@ -34,3 +34,4 @@ binharness~=0.1.1
 pyxdia~=0.0
 types-pefile
 pwntools==4.14.1
+pydantic-ai
