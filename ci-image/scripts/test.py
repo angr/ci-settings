@@ -18,7 +18,7 @@ INCLUDE_SELF = os.environ.get("INCLUDE_SELF", "true").lower() == "true"
 
 def test_project(project: str) -> bool:
     command = (
-        f"pytest -v -nauto --splits {NUM_WORKERS} --group {WORKER} "
+        f"pytest -v -nauto --forked --splits {NUM_WORKERS} --group {WORKER} "
         f"--rootdir=./src/{project}/tests ./src/{project}/tests"
     )
 
