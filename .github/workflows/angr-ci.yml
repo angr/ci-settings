@@ -51,7 +51,7 @@ jobs:
       image: ${{ inputs.container_image }}
     needs: build
     steps:
-    - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v4
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-lint.sh
@@ -64,7 +64,7 @@ jobs:
       image: ${{ inputs.container_image }}
     needs: build
     steps:
-    - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v4
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-typecheck.sh
@@ -87,7 +87,7 @@ jobs:
         echo core | tee /hostproc/sys/kernel/core_pattern
       name: Set AFL parameters
       if: ${{ inputs.afl }}
-    - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v4
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-test.sh
@@ -113,7 +113,7 @@ jobs:
       matrix:
         worker: [0]  # could be expanded when we increase the workload
     steps:
-    - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v4
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
       with:
         name: build_archive
     - run: /root/scripts/ga-corpustest.sh
