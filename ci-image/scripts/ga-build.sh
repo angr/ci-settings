@@ -42,16 +42,16 @@ find build \( \
 		-or -wholename "*/pyvex/build" \
 	\) \
 	-or -type f -and \( \
-		-wholename build/virtualenv -and \( \
-			-name *.exe \
-			-or -name *.dylib \
+		-wholename "build/virtualenv/*" -and \( \
+			-name "*.exe" \
+			-or -name "*.dylib" \
 			-or -name libunicorn.a \
 			-or -name libcapstone.a \
-			-or -wholename "*/babel/locale-data" \
+			-or -wholename "*/babel/locale-data/*" \
 			-or -wholename "*/bin/z3" \
 		\) \
-		-or -wholename build/src/pyvex/*.a \
-		-or -wholename build/src/pyvex/*.o \
+		-or -wholename "build/src/pyvex/*.a" \
+		-or -wholename "build/src/pyvex/*.o" \
 	\) \
 \) -exec rm -rf {} +
 
