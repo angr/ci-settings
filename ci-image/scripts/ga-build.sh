@@ -43,8 +43,7 @@ find build \( \
 	\) \
 	-or -type f -and \( \
 		-wholename "build/virtualenv/*" -and \( \
-			-name "*.exe" \
-			-or -name "*.dylib" \
+			-name "*.dylib" \
 			-or -name libunicorn.a \
 			-or -name libcapstone.a \
 			-or -wholename "*/babel/locale-data/*" \
