@@ -90,7 +90,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15-intel, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15]
       fail-fast: false
     needs: create
 
@@ -151,7 +151,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15-intel, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15]
         python: ["3.10", "3.12"]
       fail-fast: false
     needs: build
@@ -263,11 +263,6 @@ jobs:
         with:
           name: wheels-windows-2022
           path: artifacts/wheels-windows-2022
-      - name: Download macOS x86_64 wheels artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
-        with:
-          name: wheels-macos-15-intel
-          path: artifacts/wheels-macos-15-intel
       - name: Download macOS arm64 wheels artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
         with:
