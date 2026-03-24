@@ -2,6 +2,7 @@
 pytest
 pytest-insta
 pytest-xdist
+pytest-forked
 pytest-split
 flaky
 pylint>=2.14.0
