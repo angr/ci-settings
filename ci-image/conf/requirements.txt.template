@@ -36,3 +36,4 @@ pyxdia~=0.0
 types-pefile
 pwntools==4.14.1
 pydantic-ai
+fastmcp
