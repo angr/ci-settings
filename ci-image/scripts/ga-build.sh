@@ -8,8 +8,6 @@ WHEELS=$BASEDIR/wheels
 
 git config --global url.https://github.com/.insteadOf git@github.com:
 
-export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
-
 mkdir build
 pushd build
 $SCRIPTS/resolve_refs.py $CONF . $GITHUB_REPOSITORY $GITHUB_REF

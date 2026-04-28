@@ -6,12 +6,7 @@ mostly useful if you are either hacking on CI, or super confused why tests are
 failing for your pull request.
 
 ## CI options
-angr CI supports directives to customize the CI run.
-When making a PR, nightly tests can be enabled by adding the following line to the PR body:
-```
-ci: include-nightly
-```
-Additionally, other PRs can be used in place of default branches by simply linking the PR, for example
+Other PRs can be used in place of default branches by simply linking the PR, for example
 ```
 sync: angr/angr#<id>
 ```
