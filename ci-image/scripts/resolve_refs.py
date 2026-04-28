@@ -2,17 +2,49 @@
 
 import sys
 import os
-from github import Github, GithubException
+import json
+import subprocess
+import urllib.request
+import urllib.error
+from typing import Iterable, Iterator, Optional, Sequence, Tuple
 
 sys.path.append(os.path.dirname(os.path.basename(__file__)))
-from repos import load_config
+from repos import Target, load_config
 
 join = os.path.join
 
 # API requests are rate limited... so we try to be thrifty.  API requests are commented.
 
 
-def main(conf_dir, out_dir, target_repo, ref):
+def _get_pr(repo_name: str, pull_number: int) -> Tuple[Optional[str], Optional[str]]:
+    """Return (state, body) for the given PR, or (None, None) if the PR doesn't exist."""
+    req = urllib.request.Request(
+        'https://api.github.com/repos/%s/pulls/%d' % (repo_name, pull_number),
+        headers={'Accept': 'application/vnd.github+json'})
+    token = os.environ.get('GITHUB_TOKEN')
+    if token:
+        req.add_header('Authorization', 'Bearer ' + token)
+    try:
+        with urllib.request.urlopen(req) as resp:
+            data = json.load(resp)
+        return data.get('state'), data.get('body')
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None, None
+        raise
+
+
+def _branch_exists(owner: str, repo: str, branch: str) -> bool:
+    """Return True if `branch` exists on the remote, using git ls-remote (no API quota)."""
+    r = subprocess.run(
+        ['git', 'ls-remote', '--exit-code', '--heads',
+         'https://github.com/%s/%s.git' % (owner, repo),
+         'refs/heads/' + branch],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return r.returncode == 0
+
+
+def main(conf_dir: str, out_dir: str, target_repo: str, ref: str) -> int:
     sources = load_config(join(conf_dir, 'repo-list.txt'))
 
     if target_repo.endswith('.git'):
@@ -69,28 +101,18 @@ def main(conf_dir, out_dir, target_repo, ref):
     os.chmod(join(out_dir, 'install.sh'), 0o755)
     return 0
 
-def sync_reqs_branch(sources, branch):
-    g = Github()
+def sync_reqs_branch(sources: Iterable[Target], branch: str) -> Iterator[Target]:
     for source in sources:
         # save on API calls by not bothering with this nonsense while testing master
-        if branch != 'master':
-            shortname = '%s/%s' % (source.owner, source.repo)
-            r = g.get_repo(shortname, lazy=True)
-            try:
-                r.get_branch(branch)                            # API: get branch, 1 per target
-            except GithubException:
-                chosen_branch = 'master'
-            else:
-                chosen_branch = branch
+        if branch != 'master' and _branch_exists(source.owner, source.repo, branch):
+            chosen_branch = branch
         else:
             chosen_branch = 'master'
 
         yield source._replace(branch=chosen_branch)
 
-def sync_reqs_pr(sources, repo_name, pull_number):
-    g = Github()
-    repo = g.get_repo(repo_name, lazy=True)
-    pull = repo.get_pull(pull_number)                       # API: get pull, 1 per build
+def sync_reqs_pr(sources: Sequence[Target], repo_name: str, pull_number: int) -> Iterator[Target]:
+    _, body = _get_pr(repo_name, pull_number)               # API: get pull, 1 per build
 
     # mapping from repo name to a partial Target object
     result_pulls = {}
@@ -99,15 +121,15 @@ def sync_reqs_pr(sources, repo_name, pull_number):
     for source in sources:
         if repo_name == '%s/%s' % (source.owner, source.repo):
             result_pulls[source.repo] = source._replace(
-                branch='refs/pull/%d/%s' % (pull_number, 'merge' if pull.mergeable else 'head'))
+                branch='refs/pull/%d/head' % pull_number)
             break
     else:
         raise ValueError("repo_name %s doesn't match any source spec" % repo_name)
 
     # Check if the pull request has a body
-    if pull.body is not None:
+    if body is not None:
 
-        for word in pull.body.replace('(', ' ').replace(')', ' ').split():
+        for word in body.replace('(', ' ').replace(')', ' ').split():
             if '#' in word:
                 target_repo_name, target_pull_name = word.strip(',;').split('#', 1)
             elif "github.com" in word and "pull/" in word:
@@ -133,29 +155,23 @@ def sync_reqs_pr(sources, repo_name, pull_number):
             else:
                 continue
 
-            # must actually be a pull request!
-            target_pull_number = int(target_pull_name)
-            target_repo = g.get_repo(target_repo_name, lazy=True)
-            try:
-                target_pull = target_repo.get_pull(target_pull_number)  # API: get pull, 1 per link
-            except GithubException:
-                continue
-
             # must not have seen this repo before...?
+            target_pull_number = int(target_pull_name)
             # pylint: disable=undefined-loop-variable
             if source.repo in result_pulls:
                 print("Warning: multiple references to pull requests of %s" % source.repo)
                 continue
 
             # pull request shouldn't be merged/closed
-            if target_pull.state != "open":
+            target_state, _ = _get_pr(target_repo_name, target_pull_number)  # API: get pull, 1 per link
+            if target_state is None:
+                continue
+            if target_state != 'open':
                 print("Warning: PR %s#%d is not open, skipping" % (target_repo_name, target_pull_number))
                 continue
 
             result_pulls[source.repo] = source._replace(
-                branch='refs/pull/%d/%s' %
-                    (target_pull_number,
-                        'merge' if target_pull.mergeable else 'head'))
+                branch='refs/pull/%d/head' % target_pull_number)
 
     for source in sources:
         if source.repo in result_pulls:

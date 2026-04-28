@@ -25,8 +25,6 @@ ENV CARGO_HOME=/opt/cargo
 RUN bash -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y"
 ENV PATH=$CARGO_HOME/bin:$PATH
 
-RUN pip3 install pygithub
-
 # fix missing libreadline.so.7
 RUN ln -s /lib/x86_64-linux-gnu/libreadline.so /lib/x86_64-linux-gnu/libreadline.so.7
 
