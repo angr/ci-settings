@@ -17,6 +17,7 @@ RUN apt-get install -y fontconfig
 RUN apt-get install -y gcc-multilib g++-multilib
 RUN apt-get install -y libxkbcommon-dev libegl-dev
 RUN apt-get install -y zstd curl
+COPY --from=ghcr.io/astral-sh/uv:0.11.8 /uv /uvx /usr/local/bin/
 
 # Install rust toolchain
 ENV RUSTUP_HOME=/opt/rustup

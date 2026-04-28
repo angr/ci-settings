@@ -10,8 +10,6 @@ git config --global url.https://github.com/.insteadOf git@github.com:
 
 export CI_DIRECTIVES=$($SCRIPTS/read_directives.py)
 
-pip install "uv~=0.9.30"
-
 mkdir build
 pushd build
 $SCRIPTS/resolve_refs.py $CONF . $GITHUB_REPOSITORY $GITHUB_REF

@@ -6,8 +6,6 @@ SCRIPTS=$BASEDIR/scripts
 tar -I zstd -xf build.tar.zst
 cd build
 
-pip install uv
-
 source virtualenv/bin/activate
 uv pip install pyright
 
