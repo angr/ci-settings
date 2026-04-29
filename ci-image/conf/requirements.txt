@@ -21,7 +21,10 @@ git+https://github.com/eliben/pyelftools#egg=pyelftools
 sqlalchemy
 qtrace
 shellphish-afl
-types-pefile
 pwntools==4.14.1
 pydantic-ai
 fastmcp
+
+# For type checking
+sortedcontainers-stubs>=2.4.3
+types-pefile
