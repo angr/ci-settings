@@ -25,12 +25,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
       - name: Build ci image
         run: |
-          docker build -t angr/ci:3 ci-image
+          docker build -t angr/ci:4 ci-image
       - name: Login to docker hub
         if: github.event_name != 'pull_request'
         run: echo $DOCKER_PASSWORD | docker login -u angrbot --password-stdin
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_API_KEY }}
       - name: Push ci image
-        run: docker push angr/ci:3
+        run: docker push angr/ci:4
         if: github.event_name != 'pull_request'
