@@ -27,7 +27,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: ${{ inputs.container_image }}
     steps:
@@ -46,7 +46,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: ${{ inputs.container_image }}
     needs: build
@@ -59,7 +59,7 @@ jobs:
 
   typecheck:
     name: Typecheck
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: ${{ inputs.container_image }}
     needs: build
@@ -72,7 +72,7 @@ jobs:
 
   test:
     name: Test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: ${{ inputs.container_image }}
       options: -v /var/run/docker.sock:/var/run/docker.sock -v /proc:/hostproc --cap-add=SYS_PTRACE --security-opt seccomp:unconfined
@@ -105,7 +105,7 @@ jobs:
 
   corpus-test:
     name: Decompiler Snapshot Testing
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: ${{ inputs.container_image }}
     needs: build
