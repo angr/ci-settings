@@ -7,14 +7,8 @@ pytest-split
 flaky
 pylint>=2.14.0
 
-wheel
 setuptools
 setuptools-rust
-maturin
-scikit_build_core>=0.11.4
-pybind11>=2.13.6,<3
-cffi
-ninja
 unicorn==2.1.4
 
 # Lots of angr doc tests use monkeyhex
@@ -24,15 +18,9 @@ monkeyhex
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 
 # CI doesn't support installing optional dependencies yet
-minidump
-pyxbe
 sqlalchemy
-pypcode~=3.0
 qtrace
 shellphish-afl
-binsync
-binharness~=0.1.1
-pyxdia~=0.0
 types-pefile
 pwntools==4.14.1
 pydantic-ai
