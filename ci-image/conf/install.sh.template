@@ -16,10 +16,11 @@ venv_install() {
 }
 
 venv_install ./src/archinfo
+uv build ./src/pyvex  # angr will need the wheel
 venv_install ./src/pyvex
 venv_install ./src/claripy
 venv_install ./src/cle
-venv_install --no-build-isolation ./src/angr
+venv_install -f ./src/pyvex/dist ./src/angr
 venv_install ./src/angr-platforms
 venv_install -e ./src/pysoot --config-settings editable_mode=compat
 venv_install ./src/tracer
