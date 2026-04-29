@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 USER root
 WORKDIR /root
@@ -8,7 +8,7 @@ RUN chmod 755 .
 RUN dpkg --add-architecture i386
 RUN apt-get update
 RUN apt-get install -y vim build-essential python3 python3-dev zip git libffi-dev libtool libtool-bin wget automake bison cmake nasm clang socat lld
-RUN apt-get install -y libglib2.0-dev libreadline-dev libc6:i386 libgcc1:i386 libstdc++6:i386 libtinfo5:i386 zlib1g:i386
+RUN apt-get install -y libglib2.0-dev libreadline-dev libc6:i386 libgcc1:i386 libstdc++6:i386 libtinfo6:i386 zlib1g:i386
 RUN apt-get install -y libc6-armhf-cross libc6-arm64-cross libc6-mips-cross libc6-mips64-cross libc6-powerpc-cross libc6-powerpc-ppc64-cross
 RUN apt-get install -y gdb gdbserver gdb-multiarch openjdk-17-jdk-headless docker.io libgl1
 RUN apt-get install -y binutils-mips-linux-gnu binutils-mipsel-linux-gnu binutils-arm-linux-gnueabi
