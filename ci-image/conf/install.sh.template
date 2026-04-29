@@ -9,7 +9,7 @@ cd ..
 uv venv ./virtualenv
 source ./virtualenv/bin/activate
 
-uv pip install --no-cache --requirement ./requirements.txt
+uv pip install --no-cache --requirement /root/conf/requirements.txt
 
 venv_install() {
     uv pip install --no-sources "$@"

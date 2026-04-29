@@ -62,38 +62,34 @@ def main(conf_dir: str, out_dir: str, target_repo: str, ref: str) -> int:
         print("I don't know how to process ref %s - must start with 'refs/pull/' or 'refs/heads/'" % ref)
         return 1
 
-    with open(join(conf_dir, 'requirements.txt.template')) as fp:
-        reqs_base = fp.read()
     with open(join(conf_dir, 'install.sh.template')) as fp:
         script_body = fp.read()
     script_base, script_tail = script_body.split('#{TEMPLATE}\n')
 
-    with open(join(out_dir, 'requirements.txt'), 'w') as fp_reqs:
-        with open(join(out_dir, 'install.sh'), 'w') as fp_script:
-            fp_reqs.write(reqs_base)
-            fp_script.write(script_base)
+    with open(join(out_dir, 'install.sh'), 'w') as fp_script:
+        fp_script.write(script_base)
 
-            for target in targets:
-                # clone the target repo first
-                if target.repo == "dec-snapshots":
-                    fp_script.write('git clone https://github.com/%s/%s.git --depth 1 --branch master\n' %
-                            (target.owner, target.repo))
-                elif target.branch.startswith('refs/'):
-                    fp_script.write('git init %s && '
-                                    'pushd %s && '
-                                    'git remote add origin https://github.com/%s/%s.git && '
-                                    'git fetch --depth 1 origin %s && '
-                                    'git checkout FETCH_HEAD && '
-                                    'git submodule update --init --recursive --depth 1 && '
-                                    'popd\n' %
-                            (target.repo, target.repo, target.owner, target.repo, target.branch))
-                else:
-                    fp_script.write('git clone --depth 1 --recursive --shallow-submodules -b %s https://github.com/%s/%s.git\n' %
-                            (target.branch, target.owner, target.repo))
+        for target in targets:
+            # clone the target repo first
+            if target.repo == "dec-snapshots":
+                fp_script.write('git clone https://github.com/%s/%s.git --depth 1 --branch master\n' %
+                        (target.owner, target.repo))
+            elif target.branch.startswith('refs/'):
+                fp_script.write('git init %s && '
+                                'pushd %s && '
+                                'git remote add origin https://github.com/%s/%s.git && '
+                                'git fetch --depth 1 origin %s && '
+                                'git checkout FETCH_HEAD && '
+                                'git submodule update --init --recursive --depth 1 && '
+                                'popd\n' %
+                        (target.repo, target.repo, target.owner, target.repo, target.branch))
+            else:
+                fp_script.write('git clone --depth 1 --recursive --shallow-submodules -b %s https://github.com/%s/%s.git\n' %
+                        (target.branch, target.owner, target.repo))
 
-            fp_script.write('CONF=' + conf_dir + '\n')
+        fp_script.write('CONF=' + conf_dir + '\n')
 
-            fp_script.write(script_tail)
+        fp_script.write(script_tail)
 
     with open(join(out_dir, 'snapshot_branch.txt'), 'w') as fp:
         fp.write(snapshot_branch)
