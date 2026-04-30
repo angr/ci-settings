@@ -7,23 +7,14 @@ pytest-split
 flaky
 pylint>=2.14.0
 
-setuptools
-setuptools-rust
-unicorn==2.1.4
-
 # Lots of angr doc tests use monkeyhex
 monkeyhex
 
 # We frequently need upstream pyelftools fixes
 git+https://github.com/eliben/pyelftools#egg=pyelftools
 
-# CI doesn't support installing optional dependencies yet
-sqlalchemy
-qtrace
 shellphish-afl
 pwntools==4.14.1
-pydantic-ai
-fastmcp
 
 # For type checking
 sortedcontainers-stubs>=2.4.3

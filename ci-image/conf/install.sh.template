@@ -20,11 +20,11 @@ uv build ./src/pyvex  # angr will need the wheel
 venv_install ./src/pyvex
 venv_install ./src/claripy
 venv_install ./src/cle
-venv_install -f ./src/pyvex/dist ./src/angr
+venv_install -f ./src/pyvex/dist ./src/angr[angrdb,llm,unicorn]
 venv_install ./src/angr-platforms
 venv_install ./src/pysoot
 venv_install ./src/tracer
-venv_install ./src/archr
+venv_install ./src/archr[qtrace]
 venv_install ./src/angr-management
 venv_install ./src/angrop
 venv_install ./src/phuzzer
