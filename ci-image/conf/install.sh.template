@@ -22,7 +22,7 @@ venv_install ./src/claripy
 venv_install ./src/cle
 venv_install -f ./src/pyvex/dist ./src/angr
 venv_install ./src/angr-platforms
-venv_install -e ./src/pysoot --config-settings editable_mode=compat
+venv_install ./src/pysoot
 venv_install ./src/tracer
 venv_install ./src/archr
 venv_install ./src/angr-management
