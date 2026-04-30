@@ -12,7 +12,7 @@ mkdir build
 pushd build
 $SCRIPTS/resolve_refs.py $CONF . $GITHUB_REPOSITORY $GITHUB_REF
 echo "snapshot_branch=$(cat ./snapshot_branch.txt)" >> "$GITHUB_OUTPUT"
-./install.sh
+$SCRIPTS/install.sh
 
 source virtualenv/bin/activate
 

@@ -1,11 +1,6 @@
 #!/bin/bash
 set -ex
 
-mkdir src
-cd src
-#{TEMPLATE}
-cd ..
-
 uv venv ./virtualenv
 source ./virtualenv/bin/activate
 

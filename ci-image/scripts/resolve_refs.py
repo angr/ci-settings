@@ -8,7 +8,7 @@ import urllib.request
 import urllib.error
 from typing import Iterable, Iterator, Optional, Sequence, Tuple
 
-sys.path.append(os.path.dirname(os.path.basename(__file__)))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from repos import Target, load_config
 
 join = os.path.join
@@ -44,6 +44,29 @@ def _branch_exists(owner: str, repo: str, branch: str) -> bool:
     return r.returncode == 0
 
 
+def _checkout(target: Target, src_dir: str) -> None:
+    """Clone or fetch a target repo into src_dir/<repo>."""
+    url = 'https://github.com/%s/%s.git' % (target.owner, target.repo)
+    dest = join(src_dir, target.repo)
+    if target.repo == 'dec-snapshots':
+        subprocess.run(
+            ['git', 'clone', url, '--depth', '1', '--branch', 'master'],
+            cwd=src_dir, check=True)
+    elif target.branch.startswith('refs/'):
+        subprocess.run(['git', 'init', target.repo], cwd=src_dir, check=True)
+        subprocess.run(['git', 'remote', 'add', 'origin', url], cwd=dest, check=True)
+        subprocess.run(['git', 'fetch', '--depth', '1', 'origin', target.branch], cwd=dest, check=True)
+        subprocess.run(['git', 'checkout', 'FETCH_HEAD'], cwd=dest, check=True)
+        subprocess.run(
+            ['git', 'submodule', 'update', '--init', '--recursive', '--depth', '1'],
+            cwd=dest, check=True)
+    else:
+        subprocess.run(
+            ['git', 'clone', '--depth', '1', '--recursive', '--shallow-submodules',
+             '-b', target.branch, url],
+            cwd=src_dir, check=True)
+
+
 def main(conf_dir: str, out_dir: str, target_repo: str, ref: str) -> int:
     sources = load_config(join(conf_dir, 'repo-list.txt'))
 
@@ -53,48 +76,23 @@ def main(conf_dir: str, out_dir: str, target_repo: str, ref: str) -> int:
         target_repo = '/'.join(target_repo.split('/')[-2:])
 
     if ref.startswith('refs/pull/'):
-        targets = sync_reqs_pr(sources, target_repo, int(ref.split('/')[2]))
+        targets = list(sync_reqs_pr(sources, target_repo, int(ref.split('/')[2])))
         snapshot_branch = "%s_%s" % (target_repo, int(ref.split('/')[2]))
     elif ref.startswith('refs/heads/'):
-        targets = sync_reqs_branch(sources, ref.split('/', 2)[-1])
+        targets = list(sync_reqs_branch(sources, ref.split('/', 2)[-1]))
         snapshot_branch = ref.split('/', 2)[-1]
     else:
         print("I don't know how to process ref %s - must start with 'refs/pull/' or 'refs/heads/'" % ref)
         return 1
 
-    with open(join(conf_dir, 'install.sh.template')) as fp:
-        script_body = fp.read()
-    script_base, script_tail = script_body.split('#{TEMPLATE}\n')
-
-    with open(join(out_dir, 'install.sh'), 'w') as fp_script:
-        fp_script.write(script_base)
-
-        for target in targets:
-            # clone the target repo first
-            if target.repo == "dec-snapshots":
-                fp_script.write('git clone https://github.com/%s/%s.git --depth 1 --branch master\n' %
-                        (target.owner, target.repo))
-            elif target.branch.startswith('refs/'):
-                fp_script.write('git init %s && '
-                                'pushd %s && '
-                                'git remote add origin https://github.com/%s/%s.git && '
-                                'git fetch --depth 1 origin %s && '
-                                'git checkout FETCH_HEAD && '
-                                'git submodule update --init --recursive --depth 1 && '
-                                'popd\n' %
-                        (target.repo, target.repo, target.owner, target.repo, target.branch))
-            else:
-                fp_script.write('git clone --depth 1 --recursive --shallow-submodules -b %s https://github.com/%s/%s.git\n' %
-                        (target.branch, target.owner, target.repo))
-
-        fp_script.write('CONF=' + conf_dir + '\n')
-
-        fp_script.write(script_tail)
+    src_dir = join(out_dir, 'src')
+    os.makedirs(src_dir, exist_ok=True)
+    for target in targets:
+        _checkout(target, src_dir)
 
     with open(join(out_dir, 'snapshot_branch.txt'), 'w') as fp:
         fp.write(snapshot_branch)
 
-    os.chmod(join(out_dir, 'install.sh'), 0o755)
     return 0
 
 def sync_reqs_branch(sources: Iterable[Target], branch: str) -> Iterator[Target]:
