@@ -9,5 +9,6 @@ tar -I zstd -xf build.tar.zst
 cd build
 
 source virtualenv/bin/activate
+uv pip install "pylint>=2.14.0"
 
 python $SCRIPTS/lint.py

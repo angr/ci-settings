@@ -5,7 +5,6 @@ pytest-xdist
 pytest-forked
 pytest-split
 flaky
-pylint>=2.14.0
 
 # Lots of angr doc tests use monkeyhex
 monkeyhex
