@@ -33,7 +33,7 @@ env:
 jobs:
   create:
     name: Create release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
@@ -90,7 +90,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2022, macos-15]
       fail-fast: false
     needs: create
 
@@ -112,10 +112,10 @@ jobs:
           CIBW_BUILD_FRONTEND: "build[uv]"
           CIBW_BEFORE_ALL_LINUX: "curl -sSf https://sh.rustup.rs | sh -s -- -y && (command -v apk > /dev/null && apk add libucontext-dev || true)"
           CIBW_BEFORE_ALL_WINDOWS: "rustup toolchain install stable-x86_64-pc-windows-msvc && rustup default stable-x86_64-pc-windows-msvc && del \"C:\\Program Files\\Git\\usr\\bin\\link.exe\""
-          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_BUILD: "cp312-* cp313-* cp314-*"
           CIBW_ARCHS: "native"
           # Skip all musl wheels except for the current version, to save space on PyPI
-          CIBW_SKIP: "cp310-musllinux_* cp311-musllinux_* cp312-musllinux_* cp313-musllinux_*"
+          CIBW_SKIP: "cp312-musllinux_* cp313-musllinux_*"
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
           MACOSX_DEPLOYMENT_TARGET: "10.12"
@@ -153,7 +153,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04-arm, windows-2022, macos-15]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2022, macos-15]
         python: ["3.10", "3.12"]
       fail-fast: false
     needs: build
@@ -171,10 +171,10 @@ jobs:
           path: wheels
 
       - name: Download ubuntu x86_64 wheels artifact
-        if: ${{ matrix.os != 'ubuntu-22.04' }}
+        if: ${{ matrix.os != 'ubuntu-24.04' }}
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
         with:
-          name: wheels-ubuntu-22.04
+          name: wheels-ubuntu-24.04
           path: wheels-ubuntu
 
       - name: Find
@@ -193,7 +193,7 @@ jobs:
           python -c "import angr; print('angr imports!')"
 
   publish:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: verify
     permissions:
       id-token: write
@@ -253,8 +253,8 @@ jobs:
       - name: Download Ubuntu wheels artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
         with:
-          name: wheels-ubuntu-22.04
-          path: artifacts/wheels-ubuntu-22.04
+          name: wheels-ubuntu-24.04
+          path: artifacts/wheels-ubuntu-24.04
       - name: Download Ubuntu ARM wheels artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
         with:
