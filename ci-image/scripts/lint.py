@@ -7,16 +7,21 @@ import subprocess
 
 logging.basicConfig()
 l = logging.getLogger("lint")
-#l.setLevel(logging.DEBUG)
+
+def has_pylint_config():
+    try:
+        with open("pyproject.toml") as f:
+            return "[tool.pylint" in f.read()
+    except FileNotFoundError:
+        return False
 
 def lint_file(filename):
     l.debug("Linting file %s", filename)
     try:
-        cmd = [
-            "pylint",
-            "--rcfile=%s" % pylint_rc,
-            os.path.abspath(filename)
-        ]
+        cmd = ["pylint"]
+        if not has_pylint_config():
+            cmd.append("--rcfile=%s" % pylint_rc)
+        cmd.append(os.path.abspath(filename))
         pylint_out = subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as e:
         if e.returncode == 32:
