@@ -4,22 +4,11 @@ import os
 import sys
 import subprocess
 
-PYLINT_RC = '/root/conf/pylintrc'
-
-def has_pylint_config() -> bool:
-    try:
-        with open("pyproject.toml") as f:
-            return "[tool.pylint" in f.read()
-    except FileNotFoundError:
-        return False
+os.environ["PYLINTRC"] = '/root/conf/pylintrc'
 
 def lint_file(filename: str) -> tuple[list[str], float]:
     try:
-        cmd = ["pylint"]
-        if not has_pylint_config():
-            cmd.append(f"--rcfile={PYLINT_RC}")
-        cmd.append(os.path.abspath(filename))
-        pylint_out = subprocess.check_output(cmd).decode()
+        pylint_out = subprocess.check_output(["pylint", os.path.abspath(filename)]).decode()
     except subprocess.CalledProcessError as e:
         if e.returncode == 32:
             print(f"LINT FAILURE: pylint failed to run on {filename}")
