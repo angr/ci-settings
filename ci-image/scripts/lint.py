@@ -2,30 +2,27 @@
 
 import os
 import sys
-import logging
 import subprocess
 
-logging.basicConfig()
-l = logging.getLogger("lint")
+PYLINT_RC = '/root/conf/pylintrc'
 
-def has_pylint_config():
+def has_pylint_config() -> bool:
     try:
         with open("pyproject.toml") as f:
             return "[tool.pylint" in f.read()
     except FileNotFoundError:
         return False
 
-def lint_file(filename):
-    l.debug("Linting file %s", filename)
+def lint_file(filename: str) -> tuple[list[str], float]:
     try:
         cmd = ["pylint"]
         if not has_pylint_config():
-            cmd.append("--rcfile=%s" % pylint_rc)
+            cmd.append(f"--rcfile={PYLINT_RC}")
         cmd.append(os.path.abspath(filename))
         pylint_out = subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as e:
         if e.returncode == 32:
-            print("LINT FAILURE: pylint failed to run on %s" % filename)
+            print(f"LINT FAILURE: pylint failed to run on {filename}")
             pylint_out = "-1337/10"
         else:
             pylint_out = e.output.decode()
@@ -39,32 +36,27 @@ def lint_file(filename):
     out_lines = pylint_out.split('\n')
     errors = out_lines[1:out_lines.index('Report')-2]
     score = float(out_lines[-3].split("/")[0].split(" ")[-1])
-    l.info("File %s has score %.2f", filename, score)
     return errors, score
 
-def lint_files(tolint):
+def lint_files(tolint: list[str]) -> dict[str, tuple[list[str], float]]:
     return { f: lint_file(f) for f in tolint if os.path.isfile(f) }
 
-def compare_lint():
-    repo_dir = "{}/src/{}".format(os.getcwd(), os.getenv("GITHUB_REPOSITORY").split('/')[-1])
-    repo_name = os.path.basename(repo_dir)
-
-    os.chdir(repo_dir)
+def compare_lint() -> bool:
     subprocess.call("git fetch --unshallow".split())
     subprocess.call("git fetch origin master".split())
     cur_branch = subprocess.check_output("git rev-parse --abbrev-ref HEAD".split()).decode().strip()
     if cur_branch == "master":
         compare_ref = 'HEAD^'
     else:
-        compare_ref = subprocess.check_output("git merge-base origin/master {}".format(cur_branch).split()).decode()
+        compare_ref = subprocess.check_output(f"git merge-base origin/master {cur_branch}".split()).decode().strip()
 
     # get the files to lint
     changed_files = [
         o.split()[-1] for o in
-        subprocess.check_output("git diff --name-status {}".format(compare_ref).split()).decode().split("\n")[:-1]
+        subprocess.check_output(f"git diff --name-status {compare_ref}".split()).decode().split("\n")[:-1]
     ]
     tolint = [ f for f in changed_files if f.endswith(".py") and os.path.exists(f)]
-    print("Changed files: %s" % (tolint,))
+    print(f"Changed files: {tolint}")
 
     if len(tolint) > 150:
         print("")
@@ -72,65 +64,49 @@ def compare_lint():
         return True
 
     new_results = lint_files(tolint)
-    subprocess.check_call("git checkout -q {}".format(compare_ref).split())
+    subprocess.check_call(f"git checkout -q {compare_ref}".split())
     try:
         old_results = lint_files(tolint)
     finally:
-        subprocess.check_call("git checkout -q {}".format(cur_branch).split())
+        subprocess.check_call(f"git checkout -q {cur_branch}".split())
 
+    repo = os.path.basename(os.getcwd())
     print("")
     print("###")
-    print("### LINT REPORT FOR %s" % repo_name)
+    print(f"### LINT REPORT FOR {repo}")
     print("###")
     print("")
 
-    regressions = [ ]
+    regressions: list[tuple[str, float | None, float]] = [ ]
     for v in new_results:
         new_errors, new_score = new_results[v]
         if v not in old_results:
             if new_score != 10.00:
-                print("LINT FAILURE: new file %s lints at %.2f/10.00. Errors:" % (v, new_score))
+                print(f"LINT FAILURE: new file {v} lints at {new_score:.2f}/10.00. Errors:")
                 print("... " + "\n... ".join(new_errors))
                 regressions.append((v, None, new_score))
             else:
-                print("LINT SUCCESS: new file %s is a perfect 10.00!" % v)
+                print(f"LINT SUCCESS: new file {v} is a perfect 10.00!")
         else:
             _, old_score = old_results[v]
             if new_score < old_score:
-                print("LINT FAILURE: %s regressed to %.2f/%.2f" % (v, new_score, old_score))
+                print(f"LINT FAILURE: {v} regressed to {new_score:.2f}/{old_score:.2f}")
                 print("... " + "\n... ".join(new_errors))
                 regressions.append((v, old_score, new_score))
             elif new_score > old_score:
-                print("LINT SUCCESS: %s has improved to %.2f (from %.2f)! " % (v, new_score, old_score))
+                print(f"LINT SUCCESS: {v} has improved to {new_score:.2f} (from {old_score:.2f})! ")
             else:
-                print("LINT SUCCESS: %s has remained at %.2f " % (v, new_score))
+                print(f"LINT SUCCESS: {v} has remained at {new_score:.2f} ")
 
     print("")
     print("###")
-    print("### END LINT REPORT FOR %s" % repo_name)
+    print(f"### END LINT REPORT FOR {repo}")
     print("###")
     print("")
 
     return len(regressions) == 0
 
-def do_in(directory, function, *args, **kwargs):
-    cur_dir = os.path.abspath(os.getcwd())
-    try:
-        os.chdir(directory)
-        return function(*args, **kwargs)
-    finally:
-        os.chdir(cur_dir)
 
 if __name__ == '__main__':
-    pylint_rc = os.path.join(os.path.dirname(os.path.abspath(__file__)), '/root/conf/pylintrc')
-    if not os.path.isfile("tests/lint.py"):
-        # lint the cwd
-        sys.exit(0 if compare_lint() else 1)
-    elif len(sys.argv) == 1:
-        # lint all
-        sys.exit(0 if all(do_in(r, compare_lint) for r in [
-            i for i in os.listdir(".") if os.path.isdir(os.path.join(i, ".git"))
-        ]) else 1)
-    else:
-        # lint several
-        sys.exit(0 if all(do_in(r, compare_lint) for r in sys.argv[1:]) else 1)
+    sys.exit(0 if compare_lint() else 1)
+

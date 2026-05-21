@@ -6,9 +6,9 @@ CONF=$BASEDIR/conf
 
 
 tar -I zstd -xf build.tar.zst
-cd build
-
-source virtualenv/bin/activate
+source build/virtualenv/bin/activate
 uv pip install "pylint>=2.14.0"
+
+cd build/src/${GITHUB_REPOSITORY##*/}
 
 python $SCRIPTS/lint.py
