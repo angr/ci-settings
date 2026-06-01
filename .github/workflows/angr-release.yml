@@ -5,8 +5,8 @@ on:
     paths:
       - .github/workflows/angr-release.yml
       - release-scripts/*
-  schedule:
-    - cron: "0 17 1-7,15-21 * 2"
+  #schedule:
+  #  - cron: "0 17 1-7,15-21 * 2"
   workflow_dispatch:
     inputs:
       dry_run:
