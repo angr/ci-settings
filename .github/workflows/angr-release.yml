@@ -26,8 +26,8 @@ defaults:
 env:
   REPOS: "binaries archinfo pyvex cle claripy angr angr-management"
   PACKAGES: "archinfo pyvex cle claripy angr angr-management"
-  NATIVE_PACKAGES: "pyvex angr"
-  PURE_PYTHON_PACKAGES: "archinfo cle claripy angr_management"
+  NATIVE_PACKAGES: "pyvex cle angr"
+  PURE_PYTHON_PACKAGES: "archinfo claripy angr_management"
   CHECKOUT_DIR: repos
 
 jobs:
