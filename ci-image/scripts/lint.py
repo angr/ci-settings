@@ -19,11 +19,12 @@ def lint_file(filename: str) -> tuple[list[str], float]:
     if "\n0 statements analysed." in pylint_out:
         return [ ], 10.00
 
-    if "Report" not in pylint_out:
+    if "------" not in pylint_out:
         return [ "LINT FAILURE: syntax error in file?" ], 0
 
     out_lines = pylint_out.split('\n')
-    errors = out_lines[1:out_lines.index('Report')-2]
+    split_idx = next(i for i, line in enumerate(out_lines) if "------" in line)
+    errors = out_lines[1:split_idx - 1]
     score = float(out_lines[-3].split("/")[0].split(" ")[-1])
     return errors, score
 
