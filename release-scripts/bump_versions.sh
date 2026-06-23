@@ -5,6 +5,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 pip install packaging
 
+# Keep angr's pin floor pointing at the latest angr-data published on PyPI
+# (angr-data is released from its own separate pipeline). Empty if unpublished.
+ANGR_DATA_VERSION=$(python $SCRIPT_DIR/latest_pypi_version.py angr-data)
+
 export CHECKOUT_DIR=$(mktemp -d)
 for r in $REPOS; do
     git clone git@github.com:angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
@@ -22,11 +26,8 @@ for i in $(ls $CHECKOUT_DIR); do
         VERSION=$(cat VERSION)
 
     elif [ -e pyproject.toml ]; then
-        # Replace version in __init__.py. angr-data stays in lockstep with the
-        # shared angr version line (its package dir uses an underscore, which the
-        # generic repo->dir heuristic would otherwise mangle to "angrdata").
+        # Replace version in __init__.py
         project_name=$(sed 's/-//g' <<< "$i")
-        [ "$i" == "angr-data" ] && project_name=angr_data
         init_file=$project_name/__init__.py
         old_version=$(cat $init_file | grep '__version__' | head -n 1 | cut -d'"' -f2)
         VERSION=$(python $SCRIPT_DIR/versiontool.py bumpmicro "$old_version")

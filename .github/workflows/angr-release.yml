@@ -24,10 +24,10 @@ defaults:
     shell: bash
 
 env:
-  REPOS: "binaries angr-data archinfo pyvex cle claripy angr angr-management"
-  PACKAGES: "angr-data archinfo pyvex cle claripy angr angr-management"
+  REPOS: "binaries archinfo pyvex cle claripy angr angr-management"
+  PACKAGES: "archinfo pyvex cle claripy angr angr-management"
   NATIVE_PACKAGES: "pyvex cle angr"
-  PURE_PYTHON_PACKAGES: "angr_data archinfo claripy angr_management"
+  PURE_PYTHON_PACKAGES: "archinfo claripy angr_management"
   CHECKOUT_DIR: repos
 
 jobs:
@@ -70,11 +70,6 @@ jobs:
           mkdir sdist
 
           for i in ${{ env.PACKAGES }}; do
-            # angr-data is only built when it was released this cycle.
-            if [ "$i" == "angr-data" ] && [ "$ANGR_DATA_RELEASED" != "true" ]; then
-              echo "Skipping angr-data sdist (no data changes this cycle)"
-              continue
-            fi
             uv build --sdist --out-dir=sdist --find-links=sdist ${{ env.CHECKOUT_DIR }}/$i
           done
       - name: Publish repo artifacts
@@ -138,8 +133,6 @@ jobs:
 
           if [[ "$(uname -sp)" == "Linux x86_64" ]]; then
             for pkg in $PURE_PYTHON_PACKAGES; do
-              # angr_data may not have an sdist if it was not released this cycle.
-              compgen -G "../sdist/${pkg}-*" > /dev/null || continue
               uv build --wheel --out-dir "$wheels_dir" ../sdist/${pkg}-*
             done
           fi
@@ -232,19 +225,9 @@ jobs:
           name: repos
           path: repos
 
-      - name: Load release metadata
-        run: |
-          if [ -f "${{ env.CHECKOUT_DIR }}/.release-meta" ]; then
-            cat "${{ env.CHECKOUT_DIR }}/.release-meta" >> "$GITHUB_ENV"
-          fi
-
       - name: Publish release commits
         run: |
           for i in $(ls ${{ env.CHECKOUT_DIR }}); do
-            # angr-data has no new release ref when it was not released this cycle.
-            if [ "$i" == "angr-data" ] && [ "$ANGR_DATA_RELEASED" != "true" ]; then
-              continue
-            fi
             ref_to_push=$(git -C ${{ env.CHECKOUT_DIR }}/$i describe --tags | head -n 1)
             if [ "${{ env.DRY_RUN }}" == "false" ]; then
               git -C ${{ env.CHECKOUT_DIR }}/$i push origin "$ref_to_push"
