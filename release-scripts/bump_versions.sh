@@ -5,10 +5,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 pip install packaging
 
-# Keep angr's pin floor pointing at the latest angr-data published on PyPI
-# (angr-data is released from its own separate pipeline). Empty if unpublished.
-ANGR_DATA_VERSION=$(python $SCRIPT_DIR/latest_pypi_version.py angr-data)
-
 export CHECKOUT_DIR=$(mktemp -d)
 for r in $REPOS; do
     git clone git@github.com:angr/$r.git $CHECKOUT_DIR/$r --depth=1 --recursive
@@ -34,12 +30,6 @@ for i in $(ls $CHECKOUT_DIR); do
         sed -i "s/$old_version/$VERSION/g" $init_file
         sed -i "s/$old_version/$VERSION/g" pyproject.toml
         [ -f setup.cfg ] && sed -i "s/$old_version/$VERSION/g" setup.cfg
-
-        # Keep angr's compatible-release pin floor pointing at the latest
-        # angr-data version on master as well.
-        if [ "$i" == "angr" ] && [ -n "$ANGR_DATA_VERSION" ]; then
-            sed -i -E "s/angr-data~=[0-9][0-9.]*/angr-data~=$ANGR_DATA_VERSION/g" pyproject.toml
-        fi
 
     else
         popd
