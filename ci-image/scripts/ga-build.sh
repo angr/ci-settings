@@ -28,6 +28,7 @@ uv build ./src/pyvex  # angr will need the wheel
 venv_install ./src/pyvex
 venv_install ./src/claripy
 venv_install ./src/cle
+venv_install ./src/angr-data
 venv_install -f ./src/pyvex/dist ./src/angr[angrdb,llm,unicorn]
 venv_install ./src/angr-platforms
 venv_install ./src/pysoot

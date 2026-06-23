@@ -22,14 +22,23 @@ for i in $(ls $CHECKOUT_DIR); do
         VERSION=$(cat VERSION)
 
     elif [ -e pyproject.toml ]; then
-        # Replace version in __init__.py
+        # Replace version in __init__.py. angr-data stays in lockstep with the
+        # shared angr version line (its package dir uses an underscore, which the
+        # generic repo->dir heuristic would otherwise mangle to "angrdata").
         project_name=$(sed 's/-//g' <<< "$i")
+        [ "$i" == "angr-data" ] && project_name=angr_data
         init_file=$project_name/__init__.py
         old_version=$(cat $init_file | grep '__version__' | head -n 1 | cut -d'"' -f2)
         VERSION=$(python $SCRIPT_DIR/versiontool.py bumpmicro "$old_version")
         sed -i "s/$old_version/$VERSION/g" $init_file
         sed -i "s/$old_version/$VERSION/g" pyproject.toml
         [ -f setup.cfg ] && sed -i "s/$old_version/$VERSION/g" setup.cfg
+
+        # Keep angr's compatible-release pin floor pointing at the latest
+        # angr-data version on master as well.
+        if [ "$i" == "angr" ] && [ -n "$ANGR_DATA_VERSION" ]; then
+            sed -i -E "s/angr-data~=[0-9][0-9.]*/angr-data~=$ANGR_DATA_VERSION/g" pyproject.toml
+        fi
 
     else
         popd
