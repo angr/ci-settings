@@ -14,6 +14,11 @@ on:
         default: true
         type: boolean
         required: false
+      release_version:
+        description: "Manual angr version (e.g. 9.3.1.post1). If set, releases ONLY angr and angr-management and skips the .dev0 bump"
+        default: ""
+        type: string
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}
@@ -53,6 +58,11 @@ jobs:
           RELEASE_KEY: ${{ secrets.RELEASE_KEY }}
       - name: Install uv
         uses: astral-sh/setup-uv@v7
+      - name: Restrict release to angr and angr-management (manual version)
+        if: github.event.inputs.release_version != ''
+        run: |
+          echo "REPOS=angr angr-management" >> "$GITHUB_ENV"
+          echo "PACKAGES=angr angr-management" >> "$GITHUB_ENV"
       - name: Checkout repos
         env:
           REPO_URL_BASE: ${{ secrets.RELEASE_KEY && 'git@github.com:angr' || 'https://github.com/angr' }}
@@ -65,6 +75,8 @@ jobs:
           done
       - name: Create release commits
         run: release-scripts/create_release_commits.sh
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.release_version }}
       - name: Create sdists
         run: |
           mkdir sdist
@@ -104,6 +116,11 @@ jobs:
         with:
           name: sdist
           path: sdist
+      - name: Restrict build to angr and angr-management (manual version)
+        if: github.event.inputs.release_version != ''
+        run: |
+          echo "NATIVE_PACKAGES=angr" >> "$GITHUB_ENV"
+          echo "PURE_PYTHON_PACKAGES=angr_management" >> "$GITHUB_ENV"
       - name: Setup MSVC build environment
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
         if: startsWith(runner.os, 'windows')
@@ -237,6 +254,7 @@ jobs:
           DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run != 'false' }}
 
       - name: Bump versions on master
+        if: github.event.inputs.release_version == ''
         run: release-scripts/bump_versions.sh
         env:
           DRY_RUN: ${{ github.event_name != 'schedule' && github.event.inputs.dry_run != 'false' }}
