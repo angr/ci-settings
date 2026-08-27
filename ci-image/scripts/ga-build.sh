@@ -6,7 +6,7 @@ SCRIPTS=$BASEDIR/scripts
 CONF=$BASEDIR/conf
 
 git config --global url.https://github.com/.insteadOf git@github.com:
-
+export UV_LINK_MODE=copy
 
 mkdir build
 pushd build
