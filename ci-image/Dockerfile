@@ -26,10 +26,14 @@ RUN bash -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -
 ENV PATH=$CARGO_HOME/bin:$PATH
 
 # Libraries for compilerex examples
-# libtinfo.so.5
-RUN curl -fsSL http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_i386.deb -o /tmp/libtinfo5.deb \
+# libtinfo.so.5. security.ubuntu.com's pool carries only the current version of a
+# package, so a pinned URL there 404s at the next ncurses security update; take it
+# from the immutable timestamped snapshot mirror instead.
+RUN curl -fsSL https://snapshot.ubuntu.com/ubuntu/20260826T000000Z/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_i386.deb -o /tmp/libtinfo5.deb \
+ && echo "98bf90d49ed5f8112c8bcb9a4ebe5231f4ce297043d53f35f8e45b28c9fbfe4e  /tmp/libtinfo5.deb" > /tmp/libtinfo5.sha256 \
+ && sha256sum -c /tmp/libtinfo5.sha256 \
  && apt-get install -y /tmp/libtinfo5.deb \
- && rm /tmp/libtinfo5.deb
+ && rm /tmp/libtinfo5.deb /tmp/libtinfo5.sha256
 
 # fix missing libreadline.so.7
 RUN ln -s /lib/x86_64-linux-gnu/libreadline.so /lib/x86_64-linux-gnu/libreadline.so.7
