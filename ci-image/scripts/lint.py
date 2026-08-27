@@ -33,7 +33,7 @@ def lint_files(tolint: list[str]) -> dict[str, tuple[list[str], float]]:
 
 def compare_lint() -> bool:
     subprocess.call("git fetch --unshallow".split())
-    subprocess.call("git fetch origin master".split())
+    subprocess.check_call("git fetch origin +refs/heads/master:refs/remotes/origin/master".split())
     cur_branch = subprocess.check_output("git rev-parse --abbrev-ref HEAD".split()).decode().strip()
     if cur_branch == "master":
         compare_ref = 'HEAD^'
