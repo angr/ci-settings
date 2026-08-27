@@ -27,7 +27,7 @@ ENV PATH=$CARGO_HOME/bin:$PATH
 
 # Libraries for compilerex examples
 # libtinfo.so.5
-RUN curl -fsSL http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_i386.deb -o /tmp/libtinfo5.deb \
+RUN curl -fsSL http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_i386.deb -o /tmp/libtinfo5.deb \
  && apt-get install -y /tmp/libtinfo5.deb \
  && rm /tmp/libtinfo5.deb
 
