@@ -18,9 +18,6 @@ cle:
 - cle/__init__.py#8
 - setup.cfg dependencies
 
-claripy:
-- claripy/__init__.py#4
-
 angr:
 - angr/__init__.py#L4
 - setup.cfg dependencies

@@ -6,9 +6,8 @@
 # main angr suite
 angr/archinfo
 angr/pyvex -> archinfo
-angr/claripy
 angr/cle -> archinfo, pyvex, cle
-angr/angr -> archinfo, pyvex, claripy, cle, pysoot
+angr/angr -> archinfo, pyvex, cle, pysoot
 
 # docs and add-ons
 !angr/angr-examples -> angr

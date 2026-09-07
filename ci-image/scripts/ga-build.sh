@@ -26,7 +26,6 @@ venv_install() {
 venv_install ./src/archinfo
 uv build ./src/pyvex  # angr will need the wheel
 venv_install ./src/pyvex
-venv_install ./src/claripy
 venv_install ./src/cle
 venv_install -f ./src/pyvex/dist ./src/angr[angrdb,llm,unicorn]
 venv_install ./src/angr-platforms
