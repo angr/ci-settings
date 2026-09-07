@@ -7,7 +7,6 @@ The following repos currently use angr CI:
 - angr-targets
 - archinfo
 - archr
-- claripy
 - cle
 - heaphopper
 - patcherex
