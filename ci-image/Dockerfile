@@ -26,10 +26,11 @@ RUN bash -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -
 ENV PATH=$CARGO_HOME/bin:$PATH
 
 # Libraries for compilerex examples
-# libtinfo.so.5
-RUN curl -fsSL http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_i386.deb -o /tmp/libtinfo5.deb \
- && apt-get install -y /tmp/libtinfo5.deb \
- && rm /tmp/libtinfo5.deb
+# libtinfo.so.5: compilerex's 32-bit libLLVM-3.4.so imports setupterm, tigetnum,
+# set_curterm and del_curterm, all unversioned, and noble's own libtinfo.so.6
+# defines all four
+RUN apt-get install -y libtinfo6:i386 \
+ && ln -s libtinfo.so.6 /usr/lib/i386-linux-gnu/libtinfo.so.5
 
 # fix missing libreadline.so.7
 RUN ln -s /lib/x86_64-linux-gnu/libreadline.so /lib/x86_64-linux-gnu/libreadline.so.7
