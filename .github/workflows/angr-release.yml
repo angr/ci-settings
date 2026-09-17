@@ -133,7 +133,8 @@ jobs:
           CIBW_ARCHS: "native"
           # Skip all musl wheels except for the current version, to save space on PyPI
           CIBW_SKIP: "cp312-musllinux_* cp313-musllinux_*"
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --exclude libpyvex.so -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --exclude libpyvex.so --exclude \"libz3.so.5.*\" -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --exclude libz3.dll -w {dest_dir} {wheel}"
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-wheel --require-archs {delocate_archs} --ignore-missing-dependencies -w {dest_dir} -v {wheel}"
           MACOSX_DEPLOYMENT_TARGET: "10.12"
         run: |
