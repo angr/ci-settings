@@ -73,6 +73,9 @@ jobs:
           for r in ${{ env.REPOS }}; do
             git clone ${{ env.REPO_URL_BASE }}/$r.git ${{ env.CHECKOUT_DIR }}/$r --depth=1 --recursive
           done
+      - name: Check angr and binaries versions are in sync
+        if: github.event.inputs.release_version == ''
+        run: release-scripts/check_versions_in_sync.sh
       - name: Create release commits
         run: release-scripts/create_release_commits.sh
         env:
