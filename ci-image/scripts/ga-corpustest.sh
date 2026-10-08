@@ -15,4 +15,5 @@ ln -sf $PWD/src/dec-snapshots $PWD/src/angr/corpus_tests/snapshots
 pytest --insta=update $PWD/src/angr/corpus_tests/test_corpus.py --binaries $(cat todo.txt)
 
 mkdir -p results
-git -C $PWD/src/angr/corpus_tests/snapshots diff >results/$WORKER.diff
+git -C $PWD/src/angr/corpus_tests/snapshots add -A .
+git -C $PWD/src/angr/corpus_tests/snapshots diff --cached --no-renames >results/$WORKER.diff
