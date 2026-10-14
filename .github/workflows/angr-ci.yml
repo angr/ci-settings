@@ -37,7 +37,7 @@ jobs:
       env:
         NIGHTLY: ${{ inputs.nightly }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
       with:
         name: build_archive
         path: ./build.tar.zst
@@ -98,7 +98,7 @@ jobs:
         NUM_WORKERS: 10
         INCLUDE_SELF: ${{ inputs.include_self }}
         NIGHTLY: ${{ inputs.nightly }}
-    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
       if: always()
       with:
         name: Test Results ${{ matrix.worker }}
@@ -122,7 +122,7 @@ jobs:
       env:
         WORKER: ${{ matrix.worker }}
         NUM_WORKERS: 1
-    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
       if: always()
       with:
         name: corpus_diffs
