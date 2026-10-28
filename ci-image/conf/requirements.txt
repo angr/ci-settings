@@ -1,5 +1,6 @@
 # CI infrastructure
-pytest
+# pytest 9.2.0 does not support pytest-forked yet
+pytest<9.2
 pytest-insta
 pytest-xdist
 pytest-forked
