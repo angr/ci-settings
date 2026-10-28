@@ -1,0 +1,31 @@
+name: Resolve sibling pull request refs for uv
+description: >-
+  Configure uv to use open sibling pull requests referenced by the current pull
+  request body. The project must declare each sibling in tool.uv.sources.
+inputs:
+  project-directory:
+    description: Directory containing the project's pyproject.toml.
+    default: .
+    required: false
+  pull-request-body:
+    description: Pull request body to scan. Defaults to the current event's body.
+    default: ""
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Resolve sibling refs
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_BODY: ${{ inputs.pull-request-body || github.event.pull_request.body }}
+        PROJECT_DIRECTORY: ${{ inputs.project-directory }}
+      run: |
+        python_command=python3
+        if ! command -v "$python_command" >/dev/null 2>&1; then
+          python_command=python
+        fi
+        "$python_command" "$GITHUB_ACTION_PATH/resolve.py" \
+          --project-directory "$PROJECT_DIRECTORY" \
+          --output "$RUNNER_TEMP/angr-sibling-refs.toml" \
+          --github-env "$GITHUB_ENV"
