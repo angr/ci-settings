@@ -1,34 +1,27 @@
 #!/usr/bin/env python
 
 import os
+import re
 import sys
 import subprocess
 
 os.environ["PYLINTRC"] = '/root/conf/pylintrc'
 
-def lint_file(filename: str) -> tuple[list[str], float]:
+MESSAGE_RE = re.compile(r".+:\d+:\d+: [A-Z]\d{4}: ")
+
+def lint_file(filename: str) -> tuple[list[str], int]:
     try:
         pylint_out = subprocess.check_output(["pylint", os.path.abspath(filename)]).decode()
     except subprocess.CalledProcessError as e:
         if e.returncode == 32:
             print(f"LINT FAILURE: pylint failed to run on {filename}")
-            pylint_out = "-1337/10"
-        else:
-            pylint_out = e.output.decode()
+            return [ "LINT FAILURE: pylint failed to run" ], sys.maxsize
+        pylint_out = e.output.decode()
 
-    if "\n0 statements analysed." in pylint_out:
-        return [ ], 10.00
+    messages = [ line for line in pylint_out.split('\n') if MESSAGE_RE.match(line) ]
+    return messages, len(messages)
 
-    if "------" not in pylint_out:
-        return [ "LINT FAILURE: syntax error in file?" ], 0
-
-    out_lines = pylint_out.split('\n')
-    split_idx = next(i for i, line in enumerate(out_lines) if "------" in line)
-    errors = out_lines[1:split_idx - 1]
-    score = float(out_lines[-3].split("/")[0].split(" ")[-1])
-    return errors, score
-
-def lint_files(tolint: list[str]) -> dict[str, tuple[list[str], float]]:
+def lint_files(tolint: list[str]) -> dict[str, tuple[list[str], int]]:
     return { f: lint_file(f) for f in tolint if os.path.isfile(f) }
 
 def compare_lint() -> bool:
@@ -67,26 +60,26 @@ def compare_lint() -> bool:
     print("###")
     print("")
 
-    regressions: list[tuple[str, float | None, float]] = [ ]
+    regressions: list[tuple[str, int | None, int]] = [ ]
     for v in new_results:
-        new_errors, new_score = new_results[v]
+        new_messages, new_count = new_results[v]
         if v not in old_results:
-            if new_score != 10.00:
-                print(f"LINT FAILURE: new file {v} lints at {new_score:.2f}/10.00. Errors:")
-                print("... " + "\n... ".join(new_errors))
-                regressions.append((v, None, new_score))
+            if new_count != 0:
+                print(f"LINT FAILURE: new file {v} has {new_count} messages. Please fix:")
+                print("... " + "\n... ".join(new_messages))
+                regressions.append((v, None, new_count))
             else:
-                print(f"LINT SUCCESS: new file {v} is a perfect 10.00!")
+                print(f"LINT SUCCESS: new file {v} has no messages!")
         else:
-            _, old_score = old_results[v]
-            if new_score < old_score:
-                print(f"LINT FAILURE: {v} regressed to {new_score:.2f}/{old_score:.2f}")
-                print("... " + "\n... ".join(new_errors))
-                regressions.append((v, old_score, new_score))
-            elif new_score > old_score:
-                print(f"LINT SUCCESS: {v} has improved to {new_score:.2f} (from {old_score:.2f})! ")
+            _, old_count = old_results[v]
+            if new_count > old_count:
+                print(f"LINT FAILURE: {v} messages increased from {old_count} to {new_count}. Please fix:")
+                print("... " + "\n... ".join(new_messages))
+                regressions.append((v, old_count, new_count))
+            elif new_count < old_count:
+                print(f"LINT SUCCESS: {v} messages decreased from {old_count} to {new_count}!")
             else:
-                print(f"LINT SUCCESS: {v} has remained at {new_score:.2f} ")
+                print(f"LINT SUCCESS: {v} messages remained at {new_count}")
 
     print("")
     print("###")
