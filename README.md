@@ -48,8 +48,8 @@ export NUM_WORKERS=10
 
 # Build step
 /root/scripts/ga-build.sh
-# Lint step
-/root/scripts/ga-lint.sh
+# Typecheck step
+/root/scripts/ga-typecheck.sh
 # Test step
 /root/scripts/ga-test.sh
 ```

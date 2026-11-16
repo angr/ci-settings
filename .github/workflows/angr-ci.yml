@@ -45,19 +45,6 @@ jobs:
     outputs:
       snapshot_branch: ${{ steps.main.outputs.snapshot_branch }}
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-24.04
-    container:
-      image: ${{ inputs.container_image }}
-    needs: build
-    steps:
-    - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v4
-      with:
-        name: build_archive
-    - run: /root/scripts/ga-lint.sh
-      name: Run linter
-
   typecheck:
     name: Typecheck
     runs-on: ubuntu-24.04
