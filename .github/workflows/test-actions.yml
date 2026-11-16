@@ -1,0 +1,59 @@
+name: Test composite actions
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "actions/sibling-refs/**"
+      - ".github/workflows/test-actions.yml"
+  pull_request:
+    paths:
+      - "actions/sibling-refs/**"
+      - ".github/workflows/test-actions.yml"
+
+jobs:
+  sibling-refs-unit:
+    name: Test sibling ref resolver units
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v6
+      - run: python -m unittest discover actions/sibling-refs/tests -v
+
+  sibling-refs-integration:
+    name: Test sibling ref action (${{ matrix.os }}, ${{ matrix.scenario }})
+    if: github.event_name == 'pull_request'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2022]
+        scenario: [selected, normal]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v6
+      - name: Prepare local git and API fixtures
+        run: >-
+          python actions/sibling-refs/tests/integration.py prepare
+          --root "$RUNNER_TEMP/sibling-refs-test"
+          --github-env "$GITHUB_ENV"
+      - name: Resolve sibling reference
+        uses: ./actions/sibling-refs
+        with:
+          project-directory: ${{ env.SIBLING_REFS_TEST_PROJECT }}
+          pull-request-body: >-
+            ${{ matrix.scenario == 'selected' && 'sync: angr/sibling-ref-fixture#7' || 'No sibling references' }}
+      - name: Lock, sync, and verify selected commit
+        run: >-
+          python actions/sibling-refs/tests/integration.py verify
+          --root "$SIBLING_REFS_TEST_ROOT"
+          --scenario "${{ matrix.scenario }}"
